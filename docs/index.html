@@ -3,25 +3,42 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#05070a">
 <title>Super Draft 26/27</title>
 <meta name="description" content="Tabeller, bundpokal, held og uheld i Super Draft 26/27.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2314261E'/><text x='16' y='23' font-family='Arial Narrow,Arial' font-weight='700' font-size='18' text-anchor='middle' fill='%23F2C230'>SD</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%237c3aed'/><stop offset='1' stop-color='%23059669'/></linearGradient></defs><rect width='32' height='32' rx='8' fill='url(%23g)'/><text x='16' y='21.5' font-family='Arial' font-weight='800' font-size='13' text-anchor='middle' fill='white'>SD</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="lights" aria-hidden="true">
+  <i></i>
+  <svg class="pitch" viewBox="0 0 1200 760" fill="none" stroke="#fff" stroke-width="2">
+    <rect x="40" y="20" width="1120" height="720" rx="4"/>
+    <line x1="600" y1="20" x2="600" y2="740"/>
+    <circle cx="600" cy="380" r="110"/>
+    <circle cx="600" cy="380" r="4" fill="#fff"/>
+    <rect x="40" y="200" width="170" height="360"/>
+    <rect x="40" y="290" width="60" height="180"/>
+    <rect x="990" y="200" width="170" height="360"/>
+    <rect x="1100" y="290" width="60" height="180"/>
+    <path d="M210 315a90 90 0 0 1 0 130M990 315a90 90 0 0 0 0 130"/>
+  </svg>
+</div>
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="#stilling">Super Draft 26/27</a>
+    <a class="brand" href="#stilling"><span class="brand-mark">SD</span>Super Draft 26/27</a>
     <nav class="tabs" aria-label="Sider">
+      <span class="pill-thumb" aria-hidden="true"></span>
       <a href="#stilling" data-view="stilling">Stilling</a>
       <a href="#bundpokal" data-view="bundpokal">Bundpokal</a>
       <a href="#held" data-view="held">Held og uheld</a>
       <a href="#runder" data-view="runder">Runder</a>
       <a href="#rekorder" data-view="rekorder">Rekorder</a>
     </nav>
+    <span class="stamp" id="stamp"></span>
   </div>
 </header>
 <main id="app" tabindex="-1">
