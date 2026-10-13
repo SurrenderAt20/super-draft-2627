@@ -211,6 +211,26 @@ function buildChips(root) {
   }, { rootMargin: "-30% 0px -45% 0px", threshold: [0, 0.25, 0.5, 1] });
   items.forEach((it) => chipObserver.observe(it.sec));
   setActive(items[0].sec.id);
+
+  // phones and tablets: a small button by each heading jumps to the next section
+  const jump = (target, label, up) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "jump";
+    b.setAttribute("aria-label", up ? "Til toppen" : `Næste: ${label}`);
+    b.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${up ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6"}"/></svg>${up ? "Til toppen" : "Næste"}`;
+    b.addEventListener("click", () => (up ? window.scrollTo({ top: 0, behavior: REDUCED ? "auto" : "smooth" })
+      : target.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" })));
+    return b;
+  };
+  const pageH1 = root.querySelector(":scope > h1");
+  if (pageH1 && !items[0].sec.classList.contains("hero")) pageH1.append(jump(items[0].sec, items[0].label));
+  items.forEach((it, i) => {
+    const h = it.sec.querySelector(":scope > .sec-head h2") || it.sec.querySelector("h1");
+    if (!h) return;
+    const next = items[i + 1];
+    h.append(next ? jump(next.sec, next.label) : jump(null, "", true));
+  });
 }
 
 // one line telling phone users that numbers and rows open details
