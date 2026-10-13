@@ -429,3 +429,83 @@ tr.sep td { border-top: 1px solid var(--border); }
 .award dt small { display: block; color: var(--dim); font-size: 12px; margin-top: 2px; }
 .sheet-body b + br, .tip b + br { display: none; }
 .tip b { display: block; }
+
+/* ---------- hero: title + summary left, deadlines right ---------- */
+.hero.sec { margin-top: 0; }
+@media (min-width: 860px) {
+  .hero-top.has-dl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 400px); gap: 32px; align-items: stretch; }
+  .hero-top.has-dl .hero-title { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+}
+.hero-sum { color: var(--muted); font-size: 16px; line-height: 1.55; margin: 16px 0 0; max-width: 46ch; }
+.link { display: inline-block; margin-top: 14px; color: var(--violet); font-weight: 600; text-decoration: none; font-size: 14px; }
+.link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.deadlines .dl-head h3 { font-size: 16px; margin-bottom: 10px; }
+.steps .st span { max-width: 34ch; }
+
+/* ---------- section chips ---------- */
+.sec { margin-top: 44px; }
+section.sec { scroll-margin-top: calc(var(--top, 64px) + 60px); }
+.chips {
+  position: sticky; top: var(--top, 64px); z-index: 20;
+  margin: 14px calc(var(--gutter) * -1) 0; padding: 8px var(--gutter);
+  background: linear-gradient(180deg, rgba(5,7,10,.92), rgba(5,7,10,.75));
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.chips-inner { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.chips-inner::-webkit-scrollbar { display: none; }
+.chips button {
+  flex: none; padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 500; white-space: nowrap;
+  color: var(--muted); background: var(--panel); border: 1px solid var(--border); transition: color .2s, background .2s, border-color .2s;
+}
+.chips button:hover { color: var(--text); }
+.chips button.on { color: #fff; background: rgba(167,139,250,.16); border-color: rgba(167,139,250,.45); }
+
+.tap-hint {
+  display: inline-flex; align-items: center; gap: 8px; margin: 14px 0 0; padding: 7px 12px; border-radius: 999px;
+  font-size: 13px; color: var(--text); background: rgba(167,139,250,.1); border: 1px solid rgba(167,139,250,.3);
+}
+.tap-hint::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 10px var(--violet); }
+
+/* ---------- sheet key/value list ---------- */
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; margin: 10px 0 0; }
+.kv dt { color: var(--dim); font-size: 14px; }
+.kv dd { margin: 0; color: var(--text); text-align: right; font-weight: 600; }
+
+/* ---------- grids that must scroll sideways ---------- */
+.scroll.matrix th:first-child, .scroll.matrix td:first-child {
+  position: sticky; left: 0; z-index: 1; background: #0b0e13; box-shadow: 1px 0 0 var(--border);
+}
+.scroll.matrix.more {
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent);
+          mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent);
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 720px) {
+  .rtable .opt { display: none; }
+  .rtable tbody tr { cursor: pointer; }
+  .rtable tbody td:last-child { padding-right: 30px; position: relative; }
+  .rtable tbody td:last-child::after {
+    content: ""; position: absolute; right: 14px; top: 50%; width: 6px; height: 6px; margin-top: -4px;
+    border-right: 2px solid var(--dim); border-top: 2px solid var(--dim); transform: rotate(45deg);
+  }
+  .rtable .who span { max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+  .rtable .tag { display: none; }
+  .scroll.matrix .who span { display: none; }
+
+  .matches { grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px; }
+  .match { padding: 4px 12px; }
+  .match .line { padding: 7px 0; gap: 8px; }
+  .match .line.w::before { left: -12px; top: 9px; bottom: 9px; }
+  .match .nm { font-size: 14px; }
+  .match .tm { display: none; }
+  .match .sc { font-size: 24px; }
+  .hero { padding-top: 24px; }
+  .hero h1 { font-size: 56px; }
+  .hero-sum { font-size: 15px; }
+  .deadlines { margin-top: 18px; }
+  .steps li:not(.next) .st span { display: none; }
+  .steps li { padding: 5px 0; }
+  .sec { margin-top: 36px; }
+}

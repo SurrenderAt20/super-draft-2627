@@ -139,22 +139,112 @@ function enhance(root) {
   });
 }
 
+// short column headers spelled out for the sheet
+const FULL_HEAD = { K: "Kampe", V: "Vundet", U: "Uafgjort", T: "Tabt", Scoret: "Point scoret", Imod: "Point imod" };
+const fullHead = (h) => FULL_HEAD[h] || h.replace(/^R(\d+)$/, "Runde $1");
+
+// phones: tables show their key columns; tapping a row opens every column in the sheet
+const NARROW = matchMedia("(max-width: 720px)");
+function enhanceTables(root) {
+  root.querySelectorAll("table[data-keep]").forEach((t) => {
+    const heads = [...t.tHead.rows[0].cells];
+    const n = heads.length;
+    const keep = new Set(t.dataset.keep.split(",").map((x) => (Number(x) + n) % n));
+    t.querySelectorAll("tr").forEach((tr) => [...tr.cells].forEach((c, i) => c.classList.toggle("opt", !keep.has(i))));
+    t.classList.add("rtable");
+    t.tBodies[0].querySelectorAll("tr").forEach((tr) => {
+      tr.addEventListener("click", () => {
+        if (!(TOUCH || NARROW.matches)) return;
+        const title = tr.querySelector(".who b, td.l b")?.textContent ?? "";
+        const rows = [...tr.cells].map((c, i) => [heads[i].textContent.trim(), c]).filter(([h, c]) => h && h !== "#" && !c.querySelector(".who"));
+        openSheet(`<b>${esc(title)}</b><dl class="kv">${rows.map(([h, c]) => `<dt>${esc(fullHead(h))}</dt><dd>${c.innerHTML}</dd>`).join("")}</dl>`);
+      });
+    });
+  });
+}
+
+// wide grids scroll sideways: names stay put and the edge fades while there is more to see
+function enhanceMatrices(root) {
+  root.querySelectorAll(".scroll.matrix").forEach((sc) => {
+    const upd = () => sc.classList.toggle("more", sc.scrollLeft + sc.clientWidth < sc.scrollWidth - 4);
+    sc.addEventListener("scroll", upd, { passive: true });
+    upd();
+  });
+}
+
+// section chips: jump straight to any part of the page, with the current one highlighted
+let chipObserver = null;
+function buildChips(root) {
+  chipObserver?.disconnect();
+  const secs = [...root.querySelectorAll("section.sec")].filter((sec) => sec.dataset.chip || sec.querySelector(":scope > .sec-head h2"));
+  if (secs.length < 2) return;
+  const slug = (t) => t.toLowerCase().replace(/[æ]/g, "ae").replace(/[ø]/g, "oe").replace(/[å]/g, "aa").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const items = secs.map((sec) => {
+    const label = sec.dataset.chip || sec.querySelector(":scope > .sec-head h2").textContent.trim();
+    sec.id = sec.id || `s-${slug(label)}`;
+    return { sec, label };
+  });
+  const nav = document.createElement("nav");
+  nav.className = "chips";
+  nav.setAttribute("aria-label", "Sektioner på siden");
+  nav.innerHTML = `<div class="chips-inner">${items.map((it) => `<button type="button" data-target="${it.sec.id}">${esc(it.label)}</button>`).join("")}</div>`;
+  let anchor = root.querySelector(":scope > h1");
+  while (anchor?.nextElementSibling?.matches(".lede, .gw-pick")) anchor = anchor.nextElementSibling;
+  if (anchor && !items[0].sec.classList.contains("hero")) anchor.after(nav); else root.prepend(nav);
+  const btns = [...nav.querySelectorAll("button")];
+  const setActive = (id) => btns.forEach((b) => {
+    const on = b.dataset.target === id;
+    b.classList.toggle("on", on);
+    if (on) b.scrollIntoView({ block: "nearest", inline: "nearest" });
+  });
+  btns.forEach((b) => b.addEventListener("click", () => {
+    document.getElementById(b.dataset.target).scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
+    setActive(b.dataset.target);
+  }));
+  const visible = new Map();
+  chipObserver = new IntersectionObserver((entries) => {
+    entries.forEach((e) => visible.set(e.target.id, e.isIntersecting ? e.intersectionRect.height : 0));
+    const best = [...visible.entries()].sort((a, b) => b[1] - a[1])[0];
+    if (best && best[1] > 0) setActive(best[0]);
+  }, { rootMargin: "-30% 0px -45% 0px", threshold: [0, 0.25, 0.5, 1] });
+  items.forEach((it) => chipObserver.observe(it.sec));
+  setActive(items[0].sec.id);
+}
+
+// one line telling phone users that numbers and rows open details
+function addTapHint(root) {
+  if (!TOUCH) return;
+  if (!root.querySelector("[data-tip], table[data-keep]")) return;
+  const p = document.createElement("p");
+  p.className = "tap-hint";
+  p.textContent = "Tryk på tal, navne og rækker for flere detaljer.";
+  const chips = root.querySelector(".chips");
+  (chips || root.firstElementChild).after(p);
+}
+
+// the top bar's height decides where sticky chips and section jumps stop
+function measureTop() {
+  const h = document.querySelector(".topbar").offsetHeight;
+  document.documentElement.style.setProperty("--top", `${h}px`);
+}
+window.addEventListener("resize", measureTop);
+
 // the next gameweek's deadlines, with a countdown to whichever comes next
 function milestones() {
   const g = D.game;
   return [
-    g.next_trades && { at: g.next_trades, label: "Frist for byttehandler", note: "Handler skal være godkendt" },
-    g.next_waivers && { at: g.next_waivers, label: "Waiver-frist", note: "Sidste chance for claims" },
-    g.next_waivers && { at: null, label: "Frie spillere åbner", note: g.waivers_processed ? "Waivers er behandlet" : "Når waivers er behandlet", done: !!g.waivers_processed },
-    g.next_deadline && { at: g.next_deadline, label: "Holdet låses", note: "Sidste frist for holdudtagelse og frie spillere" },
-    g.next_kickoff && { at: g.next_kickoff, label: "Første kamp", note: `Runde ${g.next} går i gang` },
+    g.next_trades && { at: g.next_trades, label: "Byttehandler lukker", note: `Et bytte med en anden manager skal være godkendt inden da for at tælle i runde ${g.next}.` },
+    g.next_waivers && { at: g.next_waivers, label: "Waiver-ønsker lukker", note: "Sidste chance for at ønske ledige spillere. Ønskerne afgøres efter waiver-rækkefølgen." },
+    g.next_waivers && { at: null, label: "Ledige spillere frigives", note: g.waivers_processed ? "Waivers er afgjort. Nu gælder først til mølle." : "Når waivers er afgjort, gælder først til mølle.", done: !!g.waivers_processed },
+    g.next_deadline && { at: g.next_deadline, label: "Holdet låses", note: "Startopstilling og sidste skift skal være på plads." },
+    g.next_kickoff && { at: g.next_kickoff, label: "Første kamp", note: `Runde ${g.next} går i gang.` },
   ].filter(Boolean);
 }
 const short = (iso) => new Intl.DateTimeFormat("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Copenhagen" }).format(new Date(iso));
 
 function deadlinesHtml() {
   return `<div class="deadlines panel">
-    <div class="dl-head"><span class="lbl" id="cd-label"></span><div class="t" id="cd"></div></div>
+    <div class="dl-head"><h3>Inden runde ${D.game.next}</h3><span class="lbl" id="cd-label"></span><div class="t" id="cd"></div></div>
     <ol class="steps" id="steps"></ol>
   </div>`;
 }
@@ -228,16 +318,22 @@ async function viewStilling() {
   const latest = D.latest_gw;
   let hero = "";
   if (D.live && D.live.matches.length) {
-    hero = `<section class="hero">
+    hero = `<section class="hero sec" id="runde" data-chip="Runde ${D.live.gw}">
       <div class="hero-top"><div><span class="badge live"><span class="dot"></span>Live</span><h1>Runde ${D.live.gw}</h1></div>
       <p class="muted small">Stillingen ${dateOnly(D.updated)}</p></div>
       ${matchCards(D.live.matches)}</section>`;
   } else if (latest) {
     const snap = await loadGw(latest);
     const dl = D.next_round && D.game.next_deadline;
-    hero = `<section class="hero">
-      <div class="hero-top">
-        <div><span class="badge"><span class="dot"></span>Færdigspillet</span><h1>Runde ${latest}</h1></div>
+    const A = snap.awards;
+    const sum = [
+      A.top_score && `${names(A.top_score.le)} scorede mest med ${A.top_score.value} point.`,
+      A.biggest_win && (() => { const m = A.biggest_win.matches[0]; const [w, l] = m.pa > m.pb ? [m.a, m.b] : [m.b, m.a]; return `Største sejr: ${esc(mgr(w))} over ${esc(mgr(l))} med ${A.biggest_win.value}.`; })(),
+      A.low_score && `${names(A.low_score.le)} fik træskeen med ${A.low_score.value}.`,
+    ].filter(Boolean).join(" ");
+    hero = `<section class="hero sec" id="runde" data-chip="Runde ${latest}">
+      <div class="hero-top${dl ? " has-dl" : ""}">
+        <div class="hero-title"><span class="badge"><span class="dot"></span>Færdigspillet</span><h1>Runde ${latest}</h1><p class="hero-sum">${sum}</p><a class="link" href="#runder/${latest}">Se hele runden</a></div>
         ${dl ? deadlinesHtml() : ""}
       </div>
       ${matchCards(snap.matches)}</section>`;
@@ -274,7 +370,7 @@ async function viewStilling() {
     if (tableMode === "h2h") {
       lede.textContent = "Den officielle stilling. Ved lige point afgør flest scorede point.";
       const half = Math.floor(D.standings.length / 2);
-      box.innerHTML = `<table><thead><tr><th>#</th><th class="l">Hold</th><th>K</th><th>V</th><th>U</th><th>T</th><th>Scoret</th><th>Imod</th><th class="l">Form</th><th>Point</th></tr></thead><tbody>
+      box.innerHTML = `<table data-keep="0,1,6,9"><thead><tr><th>#</th><th class="l">Hold</th><th>K</th><th>V</th><th>U</th><th>T</th><th>Scoret</th><th>Imod</th><th class="l">Form</th><th>Point</th></tr></thead><tbody>
         ${D.standings.map((s, i) => {
           const mv = s.last_rank && s.last_rank !== s.rank ? (s.last_rank > s.rank ? `<span class="mv delta-up" title="Op fra ${s.last_rank}.">▲</span>` : `<span class="mv delta-down" title="Ned fra ${s.last_rank}.">▼</span>`) : "";
           return `<tr class="${i === half ? "cut" : ""}"><td class="rank">${rank(s.rank)}${mv}</td><td class="l"><span style="display:inline-flex;align-items:center">${who(s.le)}${trophy.has(s.le) ? '<span class="tag">Bundpokal</span>' : ""}</span></td><td>${s.w + s.d + s.l}</td><td>${s.w}</td><td>${s.d}</td><td>${s.l}</td><td>${s.pf}</td><td class="muted">${s.pa}</td><td class="l">${form(s.form)}</td><td class="pts">${s.pts}</td></tr>`;
@@ -283,7 +379,7 @@ async function viewStilling() {
     } else if (tableMode === "points") {
       lede.textContent = "Hvis vi spillede klassisk FPL: alle scorede point lagt sammen, uden kampe.";
       const rankOf = Object.fromEntries(D.standings.map((s) => [s.le, s.rank]));
-      box.innerHTML = `<table><thead><tr><th>#</th><th class="l">Hold</th><th>Snit</th><th>Bedst</th><th>Værst</th><th>Plads i H2H</th><th>Point</th></tr></thead><tbody>
+      box.innerHTML = `<table data-keep="0,1,2,6"><thead><tr><th>#</th><th class="l">Hold</th><th>Snit</th><th>Bedst</th><th>Værst</th><th>Plads i H2H</th><th>Point</th></tr></thead><tbody>
         ${D.points_table.map((p, i) => {
           const diff = rankOf[p.le] - (i + 1);
           const d = diff > 0 ? `<span class="delta-down">${rankOf[p.le]}.</span>` : diff < 0 ? `<span class="delta-up">${rankOf[p.le]}.</span>` : `<span class="muted">${rankOf[p.le]}.</span>`;
@@ -294,7 +390,7 @@ async function viewStilling() {
       const gws = D.gameweeks.slice(-4).map((g) => g.gw);
       lede.textContent = `Point i de seneste ${gws.length} runder (runde ${gws[0]}–${gws[gws.length - 1]}).`;
       const rows = [...D.points_table].sort((a, b) => b.recent - a.recent);
-      box.innerHTML = `<table><thead><tr><th>#</th><th class="l">Hold</th>${gws.map((g) => `<th>R${g}</th>`).join("")}<th class="l">Resultater</th><th>Point</th></tr></thead><tbody>
+      box.innerHTML = `<table data-keep="0,1,-1"><thead><tr><th>#</th><th class="l">Hold</th>${gws.map((g) => `<th>R${g}</th>`).join("")}<th class="l">Resultater</th><th>Point</th></tr></thead><tbody>
         ${rows.map((p, i) => {
           const last = p.by_gw.slice(-gws.length);
           const st = D.standings.find((s) => s.le === p.le);
@@ -306,6 +402,7 @@ async function viewStilling() {
   sw.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
     tableMode = b.dataset.mode;
     draw();
+    enhanceTables(app.querySelector("#table-box"));
     if (!REDUCED) app.querySelectorAll("#table-box td.pts").forEach(countUp);
   }));
   draw();
@@ -335,7 +432,6 @@ function viewBundpokal() {
       ${badge}
       <h2 style="margin-top:14px">Runde ${current.from}–${current.to}</h2>
       <p class="lede">${status}</p>
-      <p class="small muted touch-only" style="margin:10px 0 0">Tryk på et navn for point per runde.</p>
       <ol class="race">${current.standings.map((r, i) => {
         const gap = i === 0 ? "" : ` (${lead.total - r.total} efter)`;
         const rk = current.group_ranks?.[r.le];
@@ -439,12 +535,12 @@ async function viewHeld() {
     <section class="sec">
       <div class="sec-head"><h2>Forventet mod faktisk</h2></div>
       <div class="panel chart">${luckChart(rows)}</div>
-      <div class="legend"><span class="touch-only">Tryk på en række for detaljer.</span><span><i class="key-x"></i> forventede point</span><span><i class="key-a"></i> faktiske point</span><span><i class="key-pos"></i> heldig</span><span><i class="key-neg"></i> uheldig</span></div>
+      <div class="legend"><span><i class="key-x"></i> forventede point</span><span><i class="key-a"></i> faktiske point</span><span><i class="key-pos"></i> heldig</span><span><i class="key-neg"></i> uheldig</span></div>
     </section>
 
     <section class="sec">
       <div class="sec-head"><div><h2>Tabellen uden held</h2><p class="lede">Sorteret efter forventede point.</p></div></div>
-      <div class="panel"><div class="scroll"><table><thead><tr><th>#</th><th class="l">Hold</th><th>Mod alle (V-U-T)</th><th>Vundet</th><th>Forventet</th><th>Faktisk</th><th>Held</th><th>Plads nu</th></tr></thead><tbody>
+      <div class="panel"><div class="scroll"><table data-keep="0,1,4,6"><thead><tr><th>#</th><th class="l">Hold</th><th>Mod alle (V-U-T)</th><th>Vundet</th><th>Forventet</th><th>Faktisk</th><th>Held</th><th>Plads nu</th></tr></thead><tbody>
       ${byXp.map((r, i) => {
         const games = r.w + r.d + r.l;
         const st = D.standings.find((s) => s.le === r.le);
@@ -454,7 +550,7 @@ async function viewHeld() {
 
     <section class="sec">
       <div class="sec-head"><div><h2>Forventede point per runde</h2><p class="lede">Hvor mange H2H-point runden var værd, målt mod hele feltet. 3,0 betyder, at du slog alle.</p></div></div>
-      <div class="panel"><div class="scroll"><table><thead><tr><th class="l">Hold</th>${snaps.map((s) => `<th style="text-align:center">R${s.gw}</th>`).join("")}<th>I alt</th></tr></thead><tbody>
+      <div class="panel"><div class="scroll matrix"><table><thead><tr><th class="l">Hold</th>${snaps.map((s) => `<th style="text-align:center">R${s.gw}</th>`).join("")}<th>I alt</th></tr></thead><tbody>
       ${byXp.map((r) => `<tr><td class="l">${who(r.le)}</td>${snaps.map((s) => {
         const ap = s.all_play[r.le];
         const m = s.matches.find((m) => m.a === r.le || m.b === r.le);
@@ -463,18 +559,18 @@ async function viewHeld() {
         const t = `<b>${esc(mgr(r.le))}, runde ${s.gw}</b><br>${mine} point slog ${ap.w} af 9<br>Forventet ${num(ap.xpts, 2)}, fik ${got}`;
         return `<td class="cell" style="${divergeBg(got - ap.xpts, 2)}" data-tip="${esc(t)}">${num(ap.xpts)}</td>`;
       }).join("")}<td class="pts">${num(r.xpts)}</td></tr>`).join("")}</tbody></table></div></div>
-      <div class="legend"><span>Grøn: fik flere point end forventet den runde. Rød: færre.</span><span class="touch-only">Tryk på en celle for detaljer.</span></div>
+      <div class="legend"><span>Grøn: fik flere point end forventet den runde. Rød: færre.</span></div>
     </section>
 
     <section class="sec">
       <div class="sec-head"><div><h2>Byt kampprogram</h2><p class="lede">Hvor mange point havde du haft med en andens modstandere? Rækken er holdets egne scorer mod programmet i kolonnen. Den indrammede celle er virkeligheden.</p></div></div>
-      <div class="panel"><div class="scroll"><table><thead><tr><th class="l">Hold</th>${ids.map((b) => `<th class="rot">${esc(mgr(b))}</th>`).join("")}</tr></thead><tbody>
+      <div class="panel"><div class="scroll matrix"><table><thead><tr><th class="l">Hold</th>${ids.map((b) => `<th class="rot">${esc(mgr(b))}</th>`).join("")}</tr></thead><tbody>
       ${ids.map((a) => `<tr><td class="l">${who(a)}</td>${ids.map((b) => {
         const v = swap[a][b], d = v - swap[a][a];
         const t = `<b>${esc(mgr(a))}</b> med ${esc(mgr(b))}s program<br>${v} point (${d === 0 ? "samme som nu" : `${d > 0 ? "+" : "−"}${Math.abs(d)} i forhold til nu`})`;
         return `<td class="cell${a === b ? " diag" : ""}" style="${a === b ? "" : divergeBg(d, span)}" data-tip="${esc(t)}">${v}</td>`;
       }).join("")}</tr>`).join("")}</tbody></table></div></div>
-      <div class="legend"><span>Grøn: bedre end dit eget program. Rød: værre.</span><span class="touch-only">Tryk på en celle for detaljer.</span></div>
+      <div class="legend"><span>Grøn: bedre end dit eget program. Rød: værre.</span></div>
     </section>`;
   bindTips(app);
 }
@@ -543,7 +639,7 @@ async function viewRunder(gwArg) {
     </section>
     <section class="sec">
       <div class="sec-head"><h2>Tabellen efter runde ${gw}</h2></div>
-      <div class="panel"><div class="scroll"><table><thead><tr><th>#</th><th class="l">Hold</th><th>V</th><th>U</th><th>T</th><th>Scoret</th><th>Point</th></tr></thead><tbody>
+      <div class="panel"><div class="scroll"><table data-keep="0,1,5,6"><thead><tr><th>#</th><th class="l">Hold</th><th>V</th><th>U</th><th>T</th><th>Scoret</th><th>Point</th></tr></thead><tbody>
       ${s.table_after.map((r, i) => `<tr class="${i === Math.floor(s.table_after.length / 2) ? "cut" : ""}"><td class="rank">${rank(r.rank)}</td><td class="l">${who(r.le)}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.pf}</td><td class="pts">${r.pts}</td></tr>`).join("")}
       </tbody></table></div></div>
     </section>`;
@@ -576,7 +672,7 @@ function viewRekorder() {
 
     <section class="sec">
       <div class="sec-head"><div><h2>Prisoversigt</h2><p class="lede">Hvor mange gange hver har fået rundens priser. Ved delt pris tæller den for begge.</p></div></div>
-      <div class="panel"><div class="scroll"><table><thead><tr><th class="l">Hold</th>${honourKeys.map(([, l]) => `<th>${l}</th>`).join("")}<th>Stime nu</th><th>Længste sejrsstime</th></tr></thead><tbody>
+      <div class="panel"><div class="scroll matrix"><table><thead><tr><th class="l">Hold</th>${honourKeys.map(([, l]) => `<th>${l}</th>`).join("")}<th>Stime nu</th><th>Længste sejrsstime</th></tr></thead><tbody>
       ${honourRows.map((r) => `<tr><td class="l">${who(r.le)}</td>${r.v.map((v) => `<td>${v ? `<b>${v}</b>` : '<span style="color:var(--dim)">0</span>'}</td>`).join("")}<td>${streak(r.s)}</td><td>${r.s.best_win}</td></tr>`).join("")}
       </tbody></table></div></div>
     </section>
@@ -590,7 +686,7 @@ function viewRekorder() {
       </section>
       <section class="sec">
         <div class="sec-head"><div><h2>Waiver-kongen</h2><p class="lede">Point fra spillere i startelleveren, som ikke blev draftet af holdet.</p></div></div>
-        <div class="panel"><div class="scroll"><table><thead><tr><th class="l">Hold</th><th>Claims</th><th>Frie</th><th>Andel</th><th>Point</th></tr></thead><tbody>
+        <div class="panel"><div class="scroll"><table data-keep="0,1,4"><thead><tr><th class="l">Hold</th><th>Claims</th><th>Frie</th><th>Andel</th><th>Point</th></tr></thead><tbody>
         ${D.waivers.map((w) => `<tr><td class="l">${who(w.le)}</td><td data-tip="${w.claims_won} claims vundet, ${w.claims_lost} tabt">${w.claims_won}/${w.claims_won + w.claims_lost}</td><td>${w.free_agents}</td><td>${Math.round(w.share * 100)}%</td><td class="pts">${w.pts}</td></tr>`).join("")}
         </tbody></table></div></div>
         <p class="small muted">Claims: vundne af forsøgte. Frie: hentet som fri spiller uden claim.</p>
@@ -599,14 +695,14 @@ function viewRekorder() {
 
     <section class="sec">
       <div class="sec-head"><div><h2>Sæsonens bedste fund</h2><p class="lede">Spillere hentet på waivers eller som fri spiller, efter point i startelleveren for det hold, der hentede dem.</p></div></div>
-      <div class="panel"><div class="scroll"><table><thead><tr><th>#</th><th class="l">Spiller</th><th class="l">Hentet af</th><th class="l">Hvordan</th><th>Kampe i XI</th><th>Point</th></tr></thead><tbody>
+      <div class="panel"><div class="scroll"><table data-keep="0,1,2,5"><thead><tr><th>#</th><th class="l">Spiller</th><th class="l">Hentet af</th><th class="l">Hvordan</th><th>Kampe i XI</th><th>Point</th></tr></thead><tbody>
       ${D.best_pickups.map((p, i) => `<tr><td class="rank">${rank(i + 1)}</td><td class="l"><b>${esc(p.name)}</b> <span class="muted small">${esc(p.pos)}, ${esc(p.club)}</span></td><td class="l">${esc(mgr(p.le))}</td><td class="l"><span class="acq ${p.acq}">${ACQ[p.acq]}</span></td><td>${p.starts}</td><td class="pts">${p.pts}</td></tr>`).join("")}
       </tbody></table></div></div>
     </section>
 
     <section class="sec">
-      <div class="sec-head"><div><h2>Indbyrdes opgør</h2><p class="lede">Rækkens resultater mod kolonnen (V-U-T).<span class="touch-only"> Tryk på en celle for point.</span></p></div></div>
-      <div class="panel"><div class="scroll"><table><thead><tr><th class="l">Hold</th>${ids.map((b) => `<th class="rot">${esc(mgr(b))}</th>`).join("")}</tr></thead><tbody>
+      <div class="sec-head"><div><h2>Indbyrdes opgør</h2><p class="lede">Rækkens resultater mod kolonnen (V-U-T).</p></div></div>
+      <div class="panel"><div class="scroll matrix"><table><thead><tr><th class="l">Hold</th>${ids.map((b) => `<th class="rot">${esc(mgr(b))}</th>`).join("")}</tr></thead><tbody>
       ${ids.map((a) => `<tr><td class="l">${who(a)}</td>${ids.map((b) => {
         if (a === b) return `<td class="cell" style="color:var(--dim)">·</td>`;
         const r = h2h[a][b];
@@ -641,6 +737,11 @@ async function route() {
     console.error(e);
   }
   if (route.ran) { window.scrollTo(0, 0); app.focus({ preventScroll: true }); }
+  measureTop();
+  enhanceTables(app);
+  enhanceMatrices(app);
+  buildChips(app);
+  addTapHint(app);
   enhance(app);
   route.ran = true;
 }
