@@ -187,15 +187,17 @@ function buildChips(root) {
   const nav = document.createElement("nav");
   nav.className = "chips";
   nav.setAttribute("aria-label", "Sektioner på siden");
-  nav.innerHTML = `<div class="chips-inner">${items.map((it) => `<button type="button" data-target="${it.sec.id}">${esc(it.label)}</button>`).join("")}</div>`;
+  nav.innerHTML = `<span class="chips-title">På siden</span><div class="chips-inner">${items.map((it) => `<button type="button" data-target="${it.sec.id}">${esc(it.label)}</button>`).join("")}</div>`;
   let anchor = root.querySelector(":scope > h1");
   while (anchor?.nextElementSibling?.matches(".lede, .gw-pick")) anchor = anchor.nextElementSibling;
   if (anchor && !items[0].sec.classList.contains("hero")) anchor.after(nav); else root.prepend(nav);
   const btns = [...nav.querySelectorAll("button")];
+  const inner = nav.querySelector(".chips-inner");
   const setActive = (id) => btns.forEach((b) => {
     const on = b.dataset.target === id;
     b.classList.toggle("on", on);
-    if (on) b.scrollIntoView({ block: "nearest", inline: "nearest" });
+    // keep the active chip in view in the sideways row (never scrolls the page itself)
+    if (on && inner.scrollWidth > inner.clientWidth) inner.scrollTo({ left: b.offsetLeft - 24, behavior: REDUCED ? "auto" : "smooth" });
   });
   btns.forEach((b) => b.addEventListener("click", () => {
     document.getElementById(b.dataset.target).scrollIntoView({ behavior: REDUCED ? "auto" : "smooth", block: "start" });
