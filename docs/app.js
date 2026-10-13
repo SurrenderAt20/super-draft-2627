@@ -19,7 +19,6 @@ const names = (list) => list.map(mgr).map(esc).join(" og ");
 const RES = { W: "V", D: "U", L: "T" };
 const form = (seq) => `<span class="form">${seq.map((r) => `<i class="${r}" title="${{ W: "Vundet", D: "Uafgjort", L: "Tabt" }[r]}">${RES[r]}</i>`).join("")}</span>`;
 const rank = (n) => (n <= 3 ? `<span class="rk r${n}">${n}</span>` : `<span class="rk">${n}</span>`);
-const when = (iso) => new Intl.DateTimeFormat("da-DK", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Copenhagen" }).format(new Date(iso));
 const dateOnly = (iso) => new Intl.DateTimeFormat("da-DK", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Copenhagen" }).format(new Date(iso));
 const panel = (inner, cls = "") => `<div class="panel spot ${cls}">${inner}</div>`;
 
@@ -35,20 +34,41 @@ async function loadGw(gw) {
 
 // ---------------------------------------------------------------- interaction helpers
 
+const TOUCH = matchMedia("(hover: none)").matches;
+const sheet = document.getElementById("sheet");
+
+function openSheet(html) {
+  sheet.querySelector(".sheet-body").innerHTML = html;
+  sheet.hidden = false;
+  requestAnimationFrame(() => sheet.classList.add("open"));
+  sheet.querySelector(".sheet-close").focus({ preventScroll: true });
+}
+function closeSheet() {
+  sheet.classList.remove("open");
+  setTimeout(() => (sheet.hidden = true), REDUCED ? 0 : 220);
+}
+sheet.addEventListener("click", (e) => { if (e.target === sheet || e.target.closest(".sheet-close")) closeSheet(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !sheet.hidden) closeSheet(); });
+
 function bindTips(root) {
   root.querySelectorAll("[data-tip]").forEach((el) => {
-    const show = (e) => {
-      tip.innerHTML = el.dataset.tip;
-      tip.hidden = false;
-      const pt = e.touches ? e.touches[0] : e;
-      const x = Math.min(pt.clientX + 14, window.innerWidth - tip.offsetWidth - 8);
-      const y = pt.clientY + 16 + tip.offsetHeight > window.innerHeight ? pt.clientY - tip.offsetHeight - 12 : pt.clientY + 16;
-      tip.style.left = `${Math.max(8, x)}px`;
-      tip.style.top = `${y}px`;
-    };
-    el.addEventListener("mousemove", show);
-    el.addEventListener("mouseleave", () => (tip.hidden = true));
-    el.addEventListener("touchstart", show, { passive: true });
+    el.setAttribute("tabindex", "0");
+    el.setAttribute("role", "button");
+    el.classList.add("has-tip");
+    if (TOUCH) {
+      el.addEventListener("click", () => openSheet(el.dataset.tip));
+    } else {
+      el.addEventListener("mousemove", (e) => {
+        tip.innerHTML = el.dataset.tip;
+        tip.hidden = false;
+        const x = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8);
+        const y = e.clientY + 16 + tip.offsetHeight > window.innerHeight ? e.clientY - tip.offsetHeight - 12 : e.clientY + 16;
+        tip.style.left = `${Math.max(8, x)}px`;
+        tip.style.top = `${y}px`;
+      });
+      el.addEventListener("mouseleave", () => (tip.hidden = true));
+    }
+    el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openSheet(el.dataset.tip); } });
   });
 }
 document.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
@@ -70,34 +90,101 @@ function moveThumb(container, active) {
   thumb.style.transform = `translateX(${active.offsetLeft}px)`;
 }
 
-// count numbers up from 0 once
-function tick(root) {
-  if (REDUCED || !root) return;
-  root.querySelectorAll("[data-count]").forEach((el, i) => {
-    const target = Number(el.dataset.count);
-    const start = performance.now() + i * 40;
-    const dur = 900;
-    el.textContent = "0";
-    const step = (t) => {
-      const p = Math.min(1, Math.max(0, (t - start) / dur));
-      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
+// numbers count up from 0 the first time they scroll into view
+const COUNT_SEL = ".match .sc, td.pts, .rec .v, .award .v, .race .pts, details.lineup .s, .prize b";
+function countUp(el) {
+  const m = el.textContent.trim().match(/^([+−-]?)(\d+)(?:,(\d+))?([\s\S]*)$/);
+  if (!m) return;
+  const [, sign, int, frac = "", rest] = m;
+  const target = Number(int + (frac ? "." + frac : ""));
+  const dec = frac.length;
+  const fmt = (v) => sign + (dec ? num(v, dec) : String(Math.round(v))) + rest;
+  const dur = 900, start = performance.now();
+  el.textContent = fmt(0);
+  const step = (t) => {
+    const p = Math.min(1, (t - start) / dur);
+    el.textContent = fmt(target * (1 - Math.pow(1 - p, 3)));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// elements rise into place as they scroll into view; grids stagger their children
+const REVEAL_SEL = "main > h1, main > .lede, .hero-top, .sec-head, .matches > .panel, .recs > .panel, .awards > .panel, .timeline > li, .lineups > details, .trophy > .panel, .sec > .panel, .gw-pick, .legend";
+const io = "IntersectionObserver" in window ? new IntersectionObserver((entries) => {
+  entries.forEach((en) => {
+    if (!en.isIntersecting) return;
+    const el = en.target;
+    io.unobserve(el);
+    el.classList.add("in");
+    el.querySelectorAll(COUNT_SEL).forEach(countUp);
+  });
+}, { rootMargin: "0px 0px -6% 0px", threshold: 0.06 }) : null;
+
+function enhance(root) {
+  if (REDUCED || !io) return;
+  const seen = new Map();
+  root.querySelectorAll(REVEAL_SEL).forEach((el) => {
+    const i = seen.get(el.parentElement) ?? 0;
+    seen.set(el.parentElement, i + 1);
+    el.style.setProperty("--d", `${Math.min(i, 8) * 55}ms`);
+    el.classList.add("reveal");
+    // anything already on screen shows at once; the rest waits for the scroll
+    const r = el.getBoundingClientRect();
+    if (r.top < innerHeight && r.bottom > 0) {
+      requestAnimationFrame(() => el.classList.add("in"));
+      setTimeout(() => el.classList.add("in"), 50);
+      el.querySelectorAll(COUNT_SEL).forEach(countUp);
+    } else io.observe(el);
   });
 }
 
-function startCountdown(iso) {
+// the next gameweek's deadlines, with a countdown to whichever comes next
+function milestones() {
+  const g = D.game;
+  return [
+    g.next_trades && { at: g.next_trades, label: "Frist for byttehandler", note: "Handler skal være godkendt" },
+    g.next_waivers && { at: g.next_waivers, label: "Waiver-frist", note: "Sidste chance for claims" },
+    g.next_waivers && { at: null, label: "Frie spillere åbner", note: g.waivers_processed ? "Waivers er behandlet" : "Når waivers er behandlet", done: !!g.waivers_processed },
+    g.next_deadline && { at: g.next_deadline, label: "Holdet låses", note: "Sidste frist for holdudtagelse og frie spillere" },
+    g.next_kickoff && { at: g.next_kickoff, label: "Første kamp", note: `Runde ${g.next} går i gang` },
+  ].filter(Boolean);
+}
+const short = (iso) => new Intl.DateTimeFormat("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Copenhagen" }).format(new Date(iso));
+
+function deadlinesHtml() {
+  return `<div class="deadlines panel">
+    <div class="dl-head"><span class="lbl" id="cd-label"></span><div class="t" id="cd"></div></div>
+    <ol class="steps" id="steps"></ol>
+  </div>`;
+}
+
+function startCountdown() {
   clearInterval(countdownTimer);
   const el = app.querySelector("#cd");
-  if (!el || !iso) return;
-  const end = new Date(iso).getTime();
+  if (!el) return;
+  const steps = app.querySelector("#steps");
+  const label = app.querySelector("#cd-label");
+  let lastSteps = "";
   const draw = () => {
-    let s = Math.max(0, Math.floor((end - Date.now()) / 1000));
+    const now = Date.now();
+    const ms = milestones();
+    // a step without a time (free agents) counts as done once the step before it has passed and the API says so
+    const isDone = (m) => (m.at ? new Date(m.at).getTime() <= now : m.done);
+    const next = ms.find((m) => m.at && !isDone(m));
+    const html = ms.map((m) => `<li class="${isDone(m) ? "done" : m === next ? "next" : ""}">
+        <span class="mk" aria-hidden="true"></span>
+        <span class="st"><b>${m.label}</b><span>${m.note}</span></span>
+        <span class="tm">${m.at ? short(m.at) : ""}</span>
+      </li>`).join("");
+    if (html !== lastSteps) { steps.innerHTML = html; lastSteps = html; }
+    if (!next) { label.textContent = `Runde ${D.game.next} er i gang`; el.innerHTML = ""; return; }
+    label.textContent = `${next.label} om`;
+    let s = Math.max(0, Math.floor((new Date(next.at).getTime() - now) / 1000));
     const d = Math.floor(s / 86400); s -= d * 86400;
     const h = Math.floor(s / 3600); s -= h * 3600;
-    const m = Math.floor(s / 60); s -= m * 60;
-    el.innerHTML = [[d, "dage"], [h, "timer"], [m, "min"], [s, "sek"]].map(([v, l]) => `<span>${String(v).padStart(2, "0")}<small>${l}</small></span>`).join("");
+    const mi = Math.floor(s / 60); s -= mi * 60;
+    el.innerHTML = [[d, "dage"], [h, "timer"], [mi, "min"], [s, "sek"]].map(([v, l]) => `<span>${String(v).padStart(2, "0")}<small>${l}</small></span>`).join("");
   };
   draw();
   countdownTimer = setInterval(draw, 1000);
@@ -108,7 +195,7 @@ function startCountdown(iso) {
 function matchCards(matches, { pending = false, style = "" } = {}) {
   const line = (le, mine, theirs, cls) => `<div class="line ${cls}">
       <span class="side"><span class="nm">${esc(mgr(le))}</span><span class="tm">${esc(team(le))}</span></span>
-      ${pending ? "" : `<span class="sc" data-count="${mine}">${mine}</span>`}
+      ${pending ? "" : `<span class="sc">${mine}</span>`}
     </div>`;
   return `<div class="matches" style="${style}">${matches.map((m, i) => {
     const ca = pending ? "" : m.pa > m.pb ? "w" : m.pa < m.pb ? "l" : "d";
@@ -141,17 +228,17 @@ async function viewStilling() {
   const latest = D.latest_gw;
   let hero = "";
   if (D.live && D.live.matches.length) {
-    hero = `<section class="hero intro">
+    hero = `<section class="hero">
       <div class="hero-top"><div><span class="badge live"><span class="dot"></span>Live</span><h1>Runde ${D.live.gw}</h1></div>
       <p class="muted small">Stillingen ${dateOnly(D.updated)}</p></div>
       ${matchCards(D.live.matches)}</section>`;
   } else if (latest) {
     const snap = await loadGw(latest);
-    const dl = D.next_round && D.game.next_deadline && new Date(D.game.next_deadline) > new Date();
-    hero = `<section class="hero intro">
+    const dl = D.next_round && D.game.next_deadline;
+    hero = `<section class="hero">
       <div class="hero-top">
         <div><span class="badge"><span class="dot"></span>Færdigspillet</span><h1>Runde ${latest}</h1></div>
-        ${dl ? `<div class="countdown"><div class="lbl">Runde ${D.next_round.gw} lukker om</div><div class="t" id="cd"></div><div class="when">${when(D.game.next_deadline)}</div></div>` : ""}
+        ${dl ? deadlinesHtml() : ""}
       </div>
       ${matchCards(snap.matches)}</section>`;
   }
@@ -216,11 +303,14 @@ async function viewStilling() {
       legend.innerHTML = "";
     }
   };
-  sw.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { tableMode = b.dataset.mode; draw(); }));
+  sw.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    tableMode = b.dataset.mode;
+    draw();
+    if (!REDUCED) app.querySelectorAll("#table-box td.pts").forEach(countUp);
+  }));
   draw();
   requestAnimationFrame(() => moveThumb(sw, sw.querySelector(`[data-mode="${tableMode}"]`)));
-  tick(app.querySelector(".hero"));
-  startCountdown(D.game.next_deadline);
+  startCountdown();
 }
 
 // ---------------------------------------------------------------- view: bundpokal
@@ -245,6 +335,7 @@ function viewBundpokal() {
       ${badge}
       <h2 style="margin-top:14px">Runde ${current.from}–${current.to}</h2>
       <p class="lede">${status}</p>
+      <p class="small muted touch-only" style="margin:10px 0 0">Tryk på et navn for point per runde.</p>
       <ol class="race">${current.standings.map((r, i) => {
         const gap = i === 0 ? "" : ` (${lead.total - r.total} efter)`;
         const rk = current.group_ranks?.[r.le];
@@ -348,7 +439,7 @@ async function viewHeld() {
     <section class="sec">
       <div class="sec-head"><h2>Forventet mod faktisk</h2></div>
       <div class="panel chart">${luckChart(rows)}</div>
-      <div class="legend"><span><i class="key-x"></i> forventede point</span><span><i class="key-a"></i> faktiske point</span><span><i class="key-pos"></i> heldig</span><span><i class="key-neg"></i> uheldig</span></div>
+      <div class="legend"><span class="touch-only">Tryk på en række for detaljer.</span><span><i class="key-x"></i> forventede point</span><span><i class="key-a"></i> faktiske point</span><span><i class="key-pos"></i> heldig</span><span><i class="key-neg"></i> uheldig</span></div>
     </section>
 
     <section class="sec">
@@ -372,7 +463,7 @@ async function viewHeld() {
         const t = `<b>${esc(mgr(r.le))}, runde ${s.gw}</b><br>${mine} point slog ${ap.w} af 9<br>Forventet ${num(ap.xpts, 2)}, fik ${got}`;
         return `<td class="cell" style="${divergeBg(got - ap.xpts, 2)}" data-tip="${esc(t)}">${num(ap.xpts)}</td>`;
       }).join("")}<td class="pts">${num(r.xpts)}</td></tr>`).join("")}</tbody></table></div></div>
-      <div class="legend"><span>Grøn: fik flere point end forventet den runde. Rød: færre.</span></div>
+      <div class="legend"><span>Grøn: fik flere point end forventet den runde. Rød: færre.</span><span class="touch-only">Tryk på en celle for detaljer.</span></div>
     </section>
 
     <section class="sec">
@@ -383,7 +474,7 @@ async function viewHeld() {
         const t = `<b>${esc(mgr(a))}</b> med ${esc(mgr(b))}s program<br>${v} point (${d === 0 ? "samme som nu" : `${d > 0 ? "+" : "−"}${Math.abs(d)} i forhold til nu`})`;
         return `<td class="cell${a === b ? " diag" : ""}" style="${a === b ? "" : divergeBg(d, span)}" data-tip="${esc(t)}">${v}</td>`;
       }).join("")}</tr>`).join("")}</tbody></table></div></div>
-      <div class="legend"><span>Grøn: bedre end dit eget program. Rød: værre.</span></div>
+      <div class="legend"><span>Grøn: bedre end dit eget program. Rød: værre.</span><span class="touch-only">Tryk på en celle for detaljer.</span></div>
     </section>`;
   bindTips(app);
 }
@@ -416,7 +507,7 @@ function awardHtml(a) {
     } else {
       body = `<span class="v">${x.value}</span><span class="n">${names(x.le)}</span>`;
     }
-    return `<div class="panel spot award ${tone}"${hint ? ` title="${hint}"` : ""}><dt>${label}</dt><dd>${body}</dd></div>`;
+    return `<div class="panel spot award ${tone}"><dt>${label}${hint ? `<small>${hint}</small>` : ""}</dt><dd>${body}</dd></div>`;
   }).join("");
 }
 
@@ -456,7 +547,6 @@ async function viewRunder(gwArg) {
       ${s.table_after.map((r, i) => `<tr class="${i === Math.floor(s.table_after.length / 2) ? "cut" : ""}"><td class="rank">${rank(r.rank)}</td><td class="l">${who(r.le)}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.pf}</td><td class="pts">${r.pts}</td></tr>`).join("")}
       </tbody></table></div></div>
     </section>`;
-  tick(app.querySelector(".matches"));
 }
 
 // ---------------------------------------------------------------- view: rekorder
@@ -501,7 +591,7 @@ function viewRekorder() {
       <section class="sec">
         <div class="sec-head"><div><h2>Waiver-kongen</h2><p class="lede">Point fra spillere i startelleveren, som ikke blev draftet af holdet.</p></div></div>
         <div class="panel"><div class="scroll"><table><thead><tr><th class="l">Hold</th><th>Claims</th><th>Frie</th><th>Andel</th><th>Point</th></tr></thead><tbody>
-        ${D.waivers.map((w) => `<tr><td class="l">${who(w.le)}</td><td title="${w.claims_won} vundet, ${w.claims_lost} tabt">${w.claims_won}/${w.claims_won + w.claims_lost}</td><td>${w.free_agents}</td><td>${Math.round(w.share * 100)}%</td><td class="pts">${w.pts}</td></tr>`).join("")}
+        ${D.waivers.map((w) => `<tr><td class="l">${who(w.le)}</td><td data-tip="${w.claims_won} claims vundet, ${w.claims_lost} tabt">${w.claims_won}/${w.claims_won + w.claims_lost}</td><td>${w.free_agents}</td><td>${Math.round(w.share * 100)}%</td><td class="pts">${w.pts}</td></tr>`).join("")}
         </tbody></table></div></div>
         <p class="small muted">Claims: vundne af forsøgte. Frie: hentet som fri spiller uden claim.</p>
       </section>
@@ -515,7 +605,7 @@ function viewRekorder() {
     </section>
 
     <section class="sec">
-      <div class="sec-head"><div><h2>Indbyrdes opgør</h2><p class="lede">Rækkens resultater mod kolonnen (V-U-T).</p></div></div>
+      <div class="sec-head"><div><h2>Indbyrdes opgør</h2><p class="lede">Rækkens resultater mod kolonnen (V-U-T).<span class="touch-only"> Tryk på en celle for point.</span></p></div></div>
       <div class="panel"><div class="scroll"><table><thead><tr><th class="l">Hold</th>${ids.map((b) => `<th class="rot">${esc(mgr(b))}</th>`).join("")}</tr></thead><tbody>
       ${ids.map((a) => `<tr><td class="l">${who(a)}</td>${ids.map((b) => {
         if (a === b) return `<td class="cell" style="color:var(--dim)">·</td>`;
@@ -542,6 +632,7 @@ async function route() {
   });
   moveThumb(nav, active);
   tip.hidden = true;
+  if (!sheet.hidden) closeSheet();
   clearInterval(countdownTimer);
   try {
     await VIEWS[view](arg);
@@ -550,6 +641,7 @@ async function route() {
     console.error(e);
   }
   if (route.ran) { window.scrollTo(0, 0); app.focus({ preventScroll: true }); }
+  enhance(app);
   route.ran = true;
 }
 

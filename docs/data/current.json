@@ -62,7 +62,11 @@
   "current": 6,
   "current_finished": true,
   "next": 7,
-  "next_deadline": "2026-10-17T10:00:00Z"
+  "waivers_processed": false,
+  "next_trades": "2026-10-15T10:00:00Z",
+  "next_waivers": "2026-10-16T10:00:00Z",
+  "next_deadline": "2026-10-17T10:00:00Z",
+  "next_kickoff": "2026-10-17T11:30:00Z"
  },
  "gameweeks": [
   {
@@ -2361,5 +2365,5 @@
    "best_player": 1
   }
  },
- "updated": "2026-10-13T12:05+00:00"
+ "updated": "2026-10-13T12:43+00:00"
 }

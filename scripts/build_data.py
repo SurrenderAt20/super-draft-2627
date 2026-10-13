@@ -434,6 +434,13 @@ def season_stats(ctx, snapshots, details, game, transactions):
 
 # ---------------------------------------------------------------- main
 
+def first_kickoff(boot, gw):
+    fixtures = boot.get("fixtures") or {}
+    games = fixtures.get(str(gw)) or fixtures.get(gw) or [] if isinstance(fixtures, dict) else [f for f in fixtures if f.get("event") == gw]
+    times = sorted(f["kickoff_time"] for f in games if f.get("kickoff_time"))
+    return times[0] if times else None
+
+
 def main():
     config = read_json(os.path.join(DATA, "config.json"))
     league = config["league_id"]
@@ -511,7 +518,11 @@ def main():
                    "prize_kr": config["prize_kr"], "draft_id": draft_id},
         "managers": {le: {"team": e["team"], "manager": e["manager"], "short": e["short"]} for le, e in entries.items()},
         "game": {"current": cur, "current_finished": game.get("current_event_finished"), "next": nxt,
-                 "next_deadline": ev.get(nxt, {}).get("deadline_time") if nxt else None},
+                 "waivers_processed": game.get("waivers_processed"),
+                 "next_trades": ev.get(nxt, {}).get("trades_time") if nxt else None,
+                 "next_waivers": ev.get(nxt, {}).get("waivers_time") if nxt else None,
+                 "next_deadline": ev.get(nxt, {}).get("deadline_time") if nxt else None,
+                 "next_kickoff": first_kickoff(boot, nxt)},
         "gameweeks": [{"gw": g, "final": snapshots[g]["final"]} for g in sorted(snapshots)],
         "latest_gw": max(snapshots) if snapshots else None,
         "live": {"gw": live_gw, "matches": live_matches} if live_gw else None,
