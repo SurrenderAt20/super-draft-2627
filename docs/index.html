@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Super Draft 26/27</title>
+<meta name="description" content="Tabeller, bundpokal, held og uheld i Super Draft 26/27.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2314261E'/><text x='16' y='23' font-family='Arial Narrow,Arial' font-weight='700' font-size='18' text-anchor='middle' fill='%23F2C230'>SD</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#stilling">Super Draft 26/27</a>
+    <nav class="tabs" aria-label="Sider">
+      <a href="#stilling" data-view="stilling">Stilling</a>
+      <a href="#bundpokal" data-view="bundpokal">Bundpokal</a>
+      <a href="#held" data-view="held">Held og uheld</a>
+      <a href="#runder" data-view="runder">Runder</a>
+      <a href="#rekorder" data-view="rekorder">Rekorder</a>
+    </nav>
+  </div>
+</header>
+<main id="app" tabindex="-1">
+  <p class="loading">Henter ligaen…</p>
+</main>
+<footer class="foot">
+  <p id="updated"></p>
+  <p>Data fra draft.premierleague.com. Opdateres automatisk hver tredje time.</p>
+</footer>
+<div id="tip" class="tip" role="tooltip" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>

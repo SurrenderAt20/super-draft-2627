@@ -1,0 +1,19 @@
+{
+  "league_id": 780,
+  "season": "2026/27",
+  "prize_kr": 100,
+  "final_after_hours": 72,
+  "blocks": [
+    {"id": 1, "from": 1,  "to": 6,  "group": "all"},
+    {"id": 2, "from": 7,  "to": 12, "group": "bottom_half_after", "after_gw": 6},
+    {"id": 3, "from": 13, "to": 19, "group": "bottom_half_after", "after_gw": 12},
+    {"id": 4, "from": 20, "to": 26, "group": "bottom_half_after", "after_gw": 19},
+    {"id": 5, "from": 27, "to": 32, "group": "bottom_half_after", "after_gw": 26},
+    {"id": 6, "from": 33, "to": 38, "group": "bottom_half_after", "after_gw": 32}
+  ],
+  "notes": {
+    "group": "'all' = everyone takes part. 'bottom_half_after' = the bottom 5 of the H2H table after 'after_gw', locked for the whole block.",
+    "tiebreak": "Table: H2H points, then points scored. Block: most points scored in the block; a tie shares the prize.",
+    "final_after_hours": "A gameweek is frozen this many hours after its last kickoff. Frozen files are never rewritten by the script."
+  }
+}

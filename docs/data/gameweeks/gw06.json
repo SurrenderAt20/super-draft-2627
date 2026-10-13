@@ -1,0 +1,1591 @@
+{
+ "gw": 6,
+ "final": false,
+ "final_at": "2026-10-15T19:00:00+00:00",
+ "updated": "2026-10-13T12:05+00:00",
+ "matches": [
+  {
+   "event": 6,
+   "a": 1850,
+   "b": 205703,
+   "pa": 34,
+   "pb": 25,
+   "finished": true,
+   "started": true
+  },
+  {
+   "event": 6,
+   "a": 239612,
+   "b": 50414,
+   "pa": 47,
+   "pb": 36,
+   "finished": true,
+   "started": true
+  },
+  {
+   "event": 6,
+   "a": 243916,
+   "b": 33708,
+   "pa": 33,
+   "pb": 43,
+   "finished": true,
+   "started": true
+  },
+  {
+   "event": 6,
+   "a": 263989,
+   "b": 294024,
+   "pa": 47,
+   "pb": 40,
+   "finished": true,
+   "started": true
+  },
+  {
+   "event": 6,
+   "a": 265639,
+   "b": 274299,
+   "pa": 52,
+   "pb": 40,
+   "finished": true,
+   "started": true
+  }
+ ],
+ "teams": {
+  "1850": {
+   "score": 34,
+   "calc": 34,
+   "bench_pts": 10,
+   "waiver_pts": 15,
+   "xi": [
+    {
+     "id": 411,
+     "name": "Haaland",
+     "pos": "FWD",
+     "club": "MCI",
+     "pts": 6,
+     "acq": "draft"
+    },
+    {
+     "id": 127,
+     "name": "Gomez",
+     "pos": "MID",
+     "club": "BHA",
+     "pts": 5,
+     "acq": "waiver"
+    },
+    {
+     "id": 261,
+     "name": "Iwobi",
+     "pos": "MID",
+     "club": "FUL",
+     "pts": 4,
+     "acq": "free"
+    },
+    {
+     "id": 391,
+     "name": "Gvardiol",
+     "pos": "DEF",
+     "club": "MCI",
+     "pts": 4,
+     "acq": "draft"
+    },
+    {
+     "id": 239,
+     "name": "Garner",
+     "pos": "MID",
+     "club": "EVE",
+     "pts": 4,
+     "acq": "draft"
+    },
+    {
+     "id": 257,
+     "name": "Bassey",
+     "pos": "DEF",
+     "club": "FUL",
+     "pts": 2,
+     "acq": "free"
+    },
+    {
+     "id": 588,
+     "name": "Khalaili",
+     "pos": "DEF",
+     "club": "CRY",
+     "pts": 2,
+     "acq": "free"
+    },
+    {
+     "id": 334,
+     "name": "Muharemović",
+     "pos": "DEF",
+     "club": "LEE",
+     "pts": 2,
+     "acq": "waiver"
+    },
+    {
+     "id": 467,
+     "name": "Sels",
+     "pos": "GKP",
+     "club": "NFO",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 346,
+     "name": "Calvert-Lewin",
+     "pos": "FWD",
+     "club": "LEE",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 68,
+     "name": "Tavernier",
+     "pos": "MID",
+     "club": "BOU",
+     "pts": 1,
+     "acq": "draft"
+    }
+   ],
+   "bench": [
+    {
+     "id": 384,
+     "name": "Donnarumma",
+     "pos": "GKP",
+     "club": "MCI",
+     "pts": 9,
+     "acq": "draft"
+    },
+    {
+     "id": 152,
+     "name": "Palestra",
+     "pos": "DEF",
+     "club": "CHE",
+     "pts": 1,
+     "acq": "free"
+    },
+    {
+     "id": 593,
+     "name": "David",
+     "pos": "FWD",
+     "club": "BHA",
+     "pts": 0,
+     "acq": "waiver"
+    },
+    {
+     "id": 368,
+     "name": "Szoboszlai",
+     "pos": "MID",
+     "club": "LIV",
+     "pts": 0,
+     "acq": "draft"
+    }
+   ]
+  },
+  "33708": {
+   "score": 43,
+   "calc": 43,
+   "bench_pts": 0,
+   "waiver_pts": 19,
+   "xi": [
+    {
+     "id": 236,
+     "name": "Dewsbury-Hall",
+     "pos": "MID",
+     "club": "EVE",
+     "pts": 13,
+     "acq": "draft"
+    },
+    {
+     "id": 113,
+     "name": "F.Kadıoğlu",
+     "pos": "DEF",
+     "club": "BHA",
+     "pts": 9,
+     "acq": "free"
+    },
+    {
+     "id": 390,
+     "name": "Rúben",
+     "pos": "DEF",
+     "club": "MCI",
+     "pts": 6,
+     "acq": "draft"
+    },
+    {
+     "id": 194,
+     "name": "Thomas-Asante",
+     "pos": "FWD",
+     "club": "COV",
+     "pts": 5,
+     "acq": "waiver"
+    },
+    {
+     "id": 110,
+     "name": "Rushworth",
+     "pos": "GKP",
+     "club": "COV",
+     "pts": 3,
+     "acq": "waiver"
+    },
+    {
+     "id": 544,
+     "name": "Xhaka",
+     "pos": "MID",
+     "club": "SUN",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 12,
+     "name": "Saka",
+     "pos": "MID",
+     "club": "ARS",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 86,
+     "name": "Lewis-Potter",
+     "pos": "MID",
+     "club": "BRE",
+     "pts": 2,
+     "acq": "free"
+    },
+    {
+     "id": 201,
+     "name": "Muñoz",
+     "pos": "DEF",
+     "club": "NFO",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 449,
+     "name": "Hall",
+     "pos": "DEF",
+     "club": "NEW",
+     "pts": 0,
+     "acq": "waiver"
+    },
+    {
+     "id": 356,
+     "name": "Virgil",
+     "pos": "DEF",
+     "club": "LIV",
+     "pts": 0,
+     "acq": "draft"
+    }
+   ],
+   "bench": [
+    {
+     "id": 552,
+     "name": "Brobbey",
+     "pos": "FWD",
+     "club": "SUN",
+     "pts": 0,
+     "acq": "draft"
+    },
+    {
+     "id": 69,
+     "name": "Scott",
+     "pos": "MID",
+     "club": "BOU",
+     "pts": 0,
+     "acq": "draft"
+    },
+    {
+     "id": 198,
+     "name": "Henderson",
+     "pos": "GKP",
+     "club": "CRY",
+     "pts": 0,
+     "acq": "draft"
+    },
+    {
+     "id": 223,
+     "name": "Mateta",
+     "pos": "FWD",
+     "club": "CRY",
+     "pts": 0,
+     "acq": "waiver"
+    }
+   ]
+  },
+  "50414": {
+   "score": 36,
+   "calc": 36,
+   "bench_pts": 6,
+   "waiver_pts": 18,
+   "xi": [
+    {
+     "id": 13,
+     "name": "Rice",
+     "pos": "MID",
+     "club": "ARS",
+     "pts": 7,
+     "acq": "draft"
+    },
+    {
+     "id": 388,
+     "name": "Guéhi",
+     "pos": "DEF",
+     "club": "MCI",
+     "pts": 6,
+     "acq": "draft"
+    },
+    {
+     "id": 106,
+     "name": "Thiago",
+     "pos": "FWD",
+     "club": "BRE",
+     "pts": 4,
+     "acq": "draft"
+    },
+    {
+     "id": 204,
+     "name": "Mitchell",
+     "pos": "DEF",
+     "club": "CRY",
+     "pts": 4,
+     "acq": "waiver"
+    },
+    {
+     "id": 129,
+     "name": "Ayari",
+     "pos": "MID",
+     "club": "BHA",
+     "pts": 3,
+     "acq": "waiver"
+    },
+    {
+     "id": 98,
+     "name": "Janelt",
+     "pos": "MID",
+     "club": "BRE",
+     "pts": 3,
+     "acq": "free"
+    },
+    {
+     "id": 579,
+     "name": "Charles",
+     "pos": "MID",
+     "club": "FUL",
+     "pts": 3,
+     "acq": "free"
+    },
+    {
+     "id": 553,
+     "name": "Isidor",
+     "pos": "FWD",
+     "club": "SUN",
+     "pts": 2,
+     "acq": "free"
+    },
+    {
+     "id": 628,
+     "name": "Barcola",
+     "pos": "MID",
+     "club": "LIV",
+     "pts": 2,
+     "acq": "waiver"
+    },
+    {
+     "id": 226,
+     "name": "Pickford",
+     "pos": "GKP",
+     "club": "EVE",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 469,
+     "name": "N.Williams",
+     "pos": "DEF",
+     "club": "NFO",
+     "pts": 1,
+     "acq": "waiver"
+    }
+   ],
+   "bench": [
+    {
+     "id": 362,
+     "name": "Jacquet",
+     "pos": "DEF",
+     "club": "LIV",
+     "pts": 3,
+     "acq": "free"
+    },
+    {
+     "id": 385,
+     "name": "Trafford",
+     "pos": "GKP",
+     "club": "LEE",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 646,
+     "name": "Flemming",
+     "pos": "FWD",
+     "club": "IPS",
+     "pts": 1,
+     "acq": "waiver"
+    },
+    {
+     "id": 233,
+     "name": "Mykolenko",
+     "pos": "DEF",
+     "club": "EVE",
+     "pts": 0,
+     "acq": "waiver"
+    }
+   ]
+  },
+  "205703": {
+   "score": 25,
+   "calc": 25,
+   "bench_pts": 14,
+   "waiver_pts": 3,
+   "xi": [
+    {
+     "id": 124,
+     "name": "Groß",
+     "pos": "MID",
+     "club": "BHA",
+     "pts": 6,
+     "acq": "draft"
+    },
+    {
+     "id": 222,
+     "name": "Strand Larsen",
+     "pos": "FWD",
+     "club": "CRY",
+     "pts": 5,
+     "acq": "draft"
+    },
+    {
+     "id": 112,
+     "name": "Van Hecke",
+     "pos": "DEF",
+     "club": "TOT",
+     "pts": 3,
+     "acq": "draft"
+    },
+    {
+     "id": 480,
+     "name": "Gibbs-White",
+     "pos": "MID",
+     "club": "NFO",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 200,
+     "name": "Lacroix",
+     "pos": "DEF",
+     "club": "CHE",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 366,
+     "name": "Wirtz",
+     "pos": "MID",
+     "club": "LIV",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 472,
+     "name": "Murillo",
+     "pos": "DEF",
+     "club": "NFO",
+     "pts": 2,
+     "acq": "waiver"
+    },
+    {
+     "id": 5,
+     "name": "J.Timber",
+     "pos": "DEF",
+     "club": "ARS",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 556,
+     "name": "M.Sangaré",
+     "pos": "MID",
+     "club": "BRE",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 401,
+     "name": "Marmoush",
+     "pos": "FWD",
+     "club": "TOT",
+     "pts": 1,
+     "acq": "waiver"
+    },
+    {
+     "id": 566,
+     "name": "Horníček",
+     "pos": "GKP",
+     "club": "NEW",
+     "pts": 0,
+     "acq": "draft"
+    }
+   ],
+   "bench": [
+    {
+     "id": 526,
+     "name": "Solanke",
+     "pos": "FWD",
+     "club": "TOT",
+     "pts": 7,
+     "acq": "draft"
+    },
+    {
+     "id": 387,
+     "name": "O'Reilly",
+     "pos": "DEF",
+     "club": "MCI",
+     "pts": 5,
+     "acq": "draft"
+    },
+    {
+     "id": 82,
+     "name": "Kelleher",
+     "pos": "GKP",
+     "club": "BRE",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 554,
+     "name": "Tzolis",
+     "pos": "MID",
+     "club": "ARS",
+     "pts": 0,
+     "acq": "draft"
+    }
+   ]
+  },
+  "239612": {
+   "score": 47,
+   "calc": 47,
+   "bench_pts": 0,
+   "waiver_pts": 13,
+   "xi": [
+    {
+     "id": 115,
+     "name": "De Cuyper",
+     "pos": "DEF",
+     "club": "BHA",
+     "pts": 15,
+     "acq": "draft"
+    },
+    {
+     "id": 165,
+     "name": "João Pedro",
+     "pos": "FWD",
+     "club": "CHE",
+     "pts": 12,
+     "acq": "draft"
+    },
+    {
+     "id": 447,
+     "name": "Botman",
+     "pos": "DEF",
+     "club": "NEW",
+     "pts": 8,
+     "acq": "waiver"
+    },
+    {
+     "id": 229,
+     "name": "Tarkowski",
+     "pos": "DEF",
+     "club": "EVE",
+     "pts": 3,
+     "acq": "draft"
+    },
+    {
+     "id": 155,
+     "name": "Enzo",
+     "pos": "MID",
+     "club": "MCI",
+     "pts": 3,
+     "acq": "draft"
+    },
+    {
+     "id": 453,
+     "name": "Barnes",
+     "pos": "MID",
+     "club": "NEW",
+     "pts": 2,
+     "acq": "free"
+    },
+    {
+     "id": 316,
+     "name": "Emersonn",
+     "pos": "FWD",
+     "club": "IPS",
+     "pts": 2,
+     "acq": "waiver"
+    },
+    {
+     "id": 541,
+     "name": "Meunier",
+     "pos": "DEF",
+     "club": "SUN",
+     "pts": 1,
+     "acq": "free"
+    },
+    {
+     "id": 94,
+     "name": "Schade",
+     "pos": "MID",
+     "club": "BRE",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 350,
+     "name": "A.Becker",
+     "pos": "GKP",
+     "club": "LIV",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 61,
+     "name": "Truffert",
+     "pos": "DEF",
+     "club": "BOU",
+     "pts": -1,
+     "acq": "draft"
+    }
+   ],
+   "bench": [
+    {
+     "id": 439,
+     "name": "Šeško",
+     "pos": "FWD",
+     "club": "MUN",
+     "pts": 0,
+     "acq": "draft"
+    },
+    {
+     "id": 398,
+     "name": "Foden",
+     "pos": "MID",
+     "club": "MCI",
+     "pts": 0,
+     "acq": "draft"
+    },
+    {
+     "id": 14,
+     "name": "Eze",
+     "pos": "MID",
+     "club": "ARS",
+     "pts": 0,
+     "acq": "free"
+    },
+    {
+     "id": 351,
+     "name": "Mamardashvili",
+     "pos": "GKP",
+     "club": "LIV",
+     "pts": 0,
+     "acq": "draft"
+    }
+   ]
+  },
+  "243916": {
+   "score": 33,
+   "calc": 33,
+   "bench_pts": 3,
+   "waiver_pts": 12,
+   "xi": [
+    {
+     "id": 399,
+     "name": "Cherki",
+     "pos": "MID",
+     "club": "MCI",
+     "pts": 10,
+     "acq": "draft"
+    },
+    {
+     "id": 286,
+     "name": "Belloumi",
+     "pos": "MID",
+     "club": "HUL",
+     "pts": 6,
+     "acq": "waiver"
+    },
+    {
+     "id": 125,
+     "name": "Georginio",
+     "pos": "FWD",
+     "club": "BHA",
+     "pts": 4,
+     "acq": "draft"
+    },
+    {
+     "id": 28,
+     "name": "Martinez",
+     "pos": "GKP",
+     "club": "CHE",
+     "pts": 3,
+     "acq": "draft"
+    },
+    {
+     "id": 4,
+     "name": "Gabriel",
+     "pos": "DEF",
+     "club": "ARS",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 268,
+     "name": "King",
+     "pos": "MID",
+     "club": "FUL",
+     "pts": 2,
+     "acq": "waiver"
+    },
+    {
+     "id": 464,
+     "name": "Wissa",
+     "pos": "FWD",
+     "club": "NEW",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 403,
+     "name": "Sávio",
+     "pos": "MID",
+     "club": "TOT",
+     "pts": 2,
+     "acq": "free"
+    },
+    {
+     "id": 144,
+     "name": "Gusto",
+     "pos": "DEF",
+     "club": "CHE",
+     "pts": 1,
+     "acq": "waiver"
+    },
+    {
+     "id": 305,
+     "name": "Davis",
+     "pos": "DEF",
+     "club": "IPS",
+     "pts": 1,
+     "acq": "waiver"
+    },
+    {
+     "id": 445,
+     "name": "Thiaw",
+     "pos": "DEF",
+     "club": "NEW",
+     "pts": 0,
+     "acq": "draft"
+    }
+   ],
+   "bench": [
+    {
+     "id": 571,
+     "name": "Tzolakis",
+     "pos": "GKP",
+     "club": "HUL",
+     "pts": 2,
+     "acq": "waiver"
+    },
+    {
+     "id": 25,
+     "name": "Gyökeres",
+     "pos": "FWD",
+     "club": "ARS",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 393,
+     "name": "Khusanov",
+     "pos": "DEF",
+     "club": "MCI",
+     "pts": 0,
+     "acq": "draft"
+    },
+    {
+     "id": 367,
+     "name": "Gakpo",
+     "pos": "MID",
+     "club": "LIV",
+     "pts": 0,
+     "acq": "draft"
+    }
+   ]
+  },
+  "263989": {
+   "score": 47,
+   "calc": 47,
+   "bench_pts": 2,
+   "waiver_pts": 8,
+   "xi": [
+    {
+     "id": 427,
+     "name": "Mbeumo",
+     "pos": "MID",
+     "club": "MUN",
+     "pts": 8,
+     "acq": "draft"
+    },
+    {
+     "id": 154,
+     "name": "Palmer",
+     "pos": "MID",
+     "club": "CHE",
+     "pts": 8,
+     "acq": "draft"
+    },
+    {
+     "id": 249,
+     "name": "Barry",
+     "pos": "FWD",
+     "club": "EVE",
+     "pts": 6,
+     "acq": "draft"
+    },
+    {
+     "id": 10,
+     "name": "White",
+     "pos": "DEF",
+     "club": "ARS",
+     "pts": 5,
+     "acq": "draft"
+    },
+    {
+     "id": 53,
+     "name": "Manzambi",
+     "pos": "MID",
+     "club": "AVL",
+     "pts": 5,
+     "acq": "waiver"
+    },
+    {
+     "id": 1,
+     "name": "Raya",
+     "pos": "GKP",
+     "club": "ARS",
+     "pts": 3,
+     "acq": "draft"
+    },
+    {
+     "id": 230,
+     "name": "Branthwaite",
+     "pos": "DEF",
+     "club": "EVE",
+     "pts": 3,
+     "acq": "draft"
+    },
+    {
+     "id": 264,
+     "name": "Bobb",
+     "pos": "MID",
+     "club": "FUL",
+     "pts": 3,
+     "acq": "waiver"
+    },
+    {
+     "id": 26,
+     "name": "Havertz",
+     "pos": "FWD",
+     "club": "ARS",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 149,
+     "name": "Colwill",
+     "pos": "DEF",
+     "club": "CHE",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 569,
+     "name": "Gonzalo",
+     "pos": "FWD",
+     "club": "FUL",
+     "pts": 2,
+     "acq": "draft"
+    }
+   ],
+   "bench": [
+    {
+     "id": 250,
+     "name": "Leno",
+     "pos": "GKP",
+     "club": "FUL",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 116,
+     "name": "Dunk",
+     "pos": "DEF",
+     "club": "BHA",
+     "pts": 1,
+     "acq": "free"
+    },
+    {
+     "id": 580,
+     "name": "Araujo",
+     "pos": "DEF",
+     "club": "LIV",
+     "pts": 0,
+     "acq": "draft"
+    },
+    {
+     "id": 371,
+     "name": "Gravenberch",
+     "pos": "MID",
+     "club": "LIV",
+     "pts": -1,
+     "acq": "draft"
+    }
+   ]
+  },
+  "265639": {
+   "score": 52,
+   "calc": 52,
+   "bench_pts": 1,
+   "waiver_pts": 33,
+   "xi": [
+    {
+     "id": 166,
+     "name": "N.Jackson",
+     "pos": "FWD",
+     "club": "AVL",
+     "pts": 9,
+     "acq": "waiver"
+    },
+    {
+     "id": 40,
+     "name": "Rogers",
+     "pos": "MID",
+     "club": "CHE",
+     "pts": 9,
+     "acq": "draft"
+    },
+    {
+     "id": 504,
+     "name": "Vuskovic",
+     "pos": "DEF",
+     "club": "BHA",
+     "pts": 8,
+     "acq": "waiver"
+    },
+    {
+     "id": 79,
+     "name": "Evanilson",
+     "pos": "FWD",
+     "club": "BOU",
+     "pts": 7,
+     "acq": "draft"
+    },
+    {
+     "id": 87,
+     "name": "Ajer",
+     "pos": "DEF",
+     "club": "BRE",
+     "pts": 6,
+     "acq": "waiver"
+    },
+    {
+     "id": 105,
+     "name": "Anthony",
+     "pos": "MID",
+     "club": "BRE",
+     "pts": 5,
+     "acq": "waiver"
+    },
+    {
+     "id": 649,
+     "name": "Fernandez-Pardo",
+     "pos": "FWD",
+     "club": "NEW",
+     "pts": 2,
+     "acq": "waiver"
+    },
+    {
+     "id": 591,
+     "name": "Enciso",
+     "pos": "MID",
+     "club": "IPS",
+     "pts": 2,
+     "acq": "waiver"
+    },
+    {
+     "id": 412,
+     "name": "Lammens",
+     "pos": "GKP",
+     "club": "MUN",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 426,
+     "name": "B.Fernandes",
+     "pos": "MID",
+     "club": "MUN",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 277,
+     "name": "Egan",
+     "pos": "DEF",
+     "club": "HUL",
+     "pts": 1,
+     "acq": "waiver"
+    }
+   ],
+   "bench": [
+    {
+     "id": 208,
+     "name": "Sarr",
+     "pos": "MID",
+     "club": "CRY",
+     "pts": 1,
+     "acq": "waiver"
+    },
+    {
+     "id": 57,
+     "name": "Petrović",
+     "pos": "GKP",
+     "club": "BOU",
+     "pts": 0,
+     "acq": "draft"
+    },
+    {
+     "id": 258,
+     "name": "Castagne",
+     "pos": "DEF",
+     "club": "FUL",
+     "pts": 0,
+     "acq": "free"
+    },
+    {
+     "id": 471,
+     "name": "Milenković",
+     "pos": "DEF",
+     "club": "NFO",
+     "pts": 0,
+     "acq": "waiver"
+    }
+   ]
+  },
+  "274299": {
+   "score": 40,
+   "calc": 40,
+   "bench_pts": 15,
+   "waiver_pts": 5,
+   "xi": [
+    {
+     "id": 428,
+     "name": "Cunha",
+     "pos": "MID",
+     "club": "MUN",
+     "pts": 10,
+     "acq": "draft"
+    },
+    {
+     "id": 8,
+     "name": "Calafiori",
+     "pos": "DEF",
+     "club": "ARS",
+     "pts": 9,
+     "acq": "draft"
+    },
+    {
+     "id": 109,
+     "name": "Verbruggen",
+     "pos": "GKP",
+     "club": "BHA",
+     "pts": 9,
+     "acq": "draft"
+    },
+    {
+     "id": 41,
+     "name": "Buendía",
+     "pos": "MID",
+     "club": "AVL",
+     "pts": 4,
+     "acq": "draft"
+    },
+    {
+     "id": 31,
+     "name": "Konsa",
+     "pos": "DEF",
+     "club": "ARS",
+     "pts": 4,
+     "acq": "waiver"
+    },
+    {
+     "id": 295,
+     "name": "McBurnie",
+     "pos": "FWD",
+     "club": "HUL",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 136,
+     "name": "Welbeck",
+     "pos": "FWD",
+     "club": "CHE",
+     "pts": 1,
+     "acq": "free"
+    },
+    {
+     "id": 237,
+     "name": "Ndiaye",
+     "pos": "MID",
+     "club": "MCI",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 15,
+     "name": "Ødegaard",
+     "pos": "MID",
+     "club": "ARS",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 417,
+     "name": "Dalot",
+     "pos": "DEF",
+     "club": "MUN",
+     "pts": 0,
+     "acq": "draft"
+    },
+    {
+     "id": 595,
+     "name": "Dedić",
+     "pos": "DEF",
+     "club": "NEW",
+     "pts": 0,
+     "acq": "free"
+    }
+   ],
+   "bench": [
+    {
+     "id": 400,
+     "name": "Doku",
+     "pos": "MID",
+     "club": "MCI",
+     "pts": 12,
+     "acq": "draft"
+    },
+    {
+     "id": 496,
+     "name": "Kinsky",
+     "pos": "GKP",
+     "club": "TOT",
+     "pts": 3,
+     "acq": "draft"
+    },
+    {
+     "id": 379,
+     "name": "Isak",
+     "pos": "FWD",
+     "club": "LIV",
+     "pts": 0,
+     "acq": "draft"
+    },
+    {
+     "id": 142,
+     "name": "James",
+     "pos": "DEF",
+     "club": "CHE",
+     "pts": 0,
+     "acq": "draft"
+    }
+   ]
+  },
+  "294024": {
+   "score": 40,
+   "calc": 40,
+   "bench_pts": 4,
+   "waiver_pts": 10,
+   "xi": [
+    {
+     "id": 452,
+     "name": "Bruno G.",
+     "pos": "MID",
+     "club": "ARS",
+     "pts": 9,
+     "acq": "draft"
+    },
+    {
+     "id": 481,
+     "name": "Anderson",
+     "pos": "MID",
+     "club": "MCI",
+     "pts": 6,
+     "acq": "draft"
+    },
+    {
+     "id": 389,
+     "name": "Matheus N.",
+     "pos": "DEF",
+     "club": "MCI",
+     "pts": 6,
+     "acq": "draft"
+    },
+    {
+     "id": 114,
+     "name": "Boscagli",
+     "pos": "DEF",
+     "club": "BHA",
+     "pts": 5,
+     "acq": "waiver"
+    },
+    {
+     "id": 397,
+     "name": "Semenyo",
+     "pos": "MID",
+     "club": "MCI",
+     "pts": 3,
+     "acq": "draft"
+    },
+    {
+     "id": 533,
+     "name": "Mukiele",
+     "pos": "DEF",
+     "club": "SUN",
+     "pts": 3,
+     "acq": "draft"
+    },
+    {
+     "id": 167,
+     "name": "Delap",
+     "pos": "FWD",
+     "club": "NFO",
+     "pts": 2,
+     "acq": "waiver"
+    },
+    {
+     "id": 335,
+     "name": "Stach",
+     "pos": "MID",
+     "club": "LEE",
+     "pts": 2,
+     "acq": "draft"
+    },
+    {
+     "id": 542,
+     "name": "E.Le Fée",
+     "pos": "MID",
+     "club": "SUN",
+     "pts": 2,
+     "acq": "waiver"
+    },
+    {
+     "id": 138,
+     "name": "Kostoulas",
+     "pos": "FWD",
+     "club": "BHA",
+     "pts": 1,
+     "acq": "free"
+    },
+    {
+     "id": 529,
+     "name": "Roefs",
+     "pos": "GKP",
+     "club": "SUN",
+     "pts": 1,
+     "acq": "draft"
+    }
+   ],
+   "bench": [
+    {
+     "id": 597,
+     "name": "Suzuki",
+     "pos": "GKP",
+     "club": "AVL",
+     "pts": 2,
+     "acq": "free"
+    },
+    {
+     "id": 465,
+     "name": "Osula",
+     "pos": "FWD",
+     "club": "NEW",
+     "pts": 1,
+     "acq": "draft"
+    },
+    {
+     "id": 330,
+     "name": "Bogle",
+     "pos": "DEF",
+     "club": "LEE",
+     "pts": 1,
+     "acq": "waiver"
+    },
+    {
+     "id": 555,
+     "name": "Silva",
+     "pos": "DEF",
+     "club": "BOU",
+     "pts": 0,
+     "acq": "waiver"
+    }
+   ]
+  }
+ },
+ "all_play": {
+  "1850": {
+   "w": 2,
+   "d": 0,
+   "l": 7,
+   "xpts": 0.667
+  },
+  "205703": {
+   "w": 0,
+   "d": 0,
+   "l": 9,
+   "xpts": 0.0
+  },
+  "239612": {
+   "w": 7,
+   "d": 1,
+   "l": 1,
+   "xpts": 2.444
+  },
+  "50414": {
+   "w": 3,
+   "d": 0,
+   "l": 6,
+   "xpts": 1.0
+  },
+  "243916": {
+   "w": 1,
+   "d": 0,
+   "l": 8,
+   "xpts": 0.333
+  },
+  "33708": {
+   "w": 6,
+   "d": 0,
+   "l": 3,
+   "xpts": 2.0
+  },
+  "263989": {
+   "w": 7,
+   "d": 1,
+   "l": 1,
+   "xpts": 2.444
+  },
+  "294024": {
+   "w": 4,
+   "d": 1,
+   "l": 4,
+   "xpts": 1.444
+  },
+  "265639": {
+   "w": 9,
+   "d": 0,
+   "l": 0,
+   "xpts": 3.0
+  },
+  "274299": {
+   "w": 4,
+   "d": 1,
+   "l": 4,
+   "xpts": 1.444
+  }
+ },
+ "table_after": [
+  {
+   "le": 239612,
+   "p": 6,
+   "w": 5,
+   "d": 1,
+   "l": 0,
+   "pf": 322,
+   "pa": 258,
+   "pts": 16,
+   "rank": 1
+  },
+  {
+   "le": 33708,
+   "p": 6,
+   "w": 4,
+   "d": 0,
+   "l": 2,
+   "pf": 246,
+   "pa": 230,
+   "pts": 12,
+   "rank": 2
+  },
+  {
+   "le": 1850,
+   "p": 6,
+   "w": 3,
+   "d": 0,
+   "l": 3,
+   "pf": 284,
+   "pa": 262,
+   "pts": 9,
+   "rank": 3
+  },
+  {
+   "le": 263989,
+   "p": 6,
+   "w": 3,
+   "d": 0,
+   "l": 3,
+   "pf": 278,
+   "pa": 270,
+   "pts": 9,
+   "rank": 4
+  },
+  {
+   "le": 274299,
+   "p": 6,
+   "w": 3,
+   "d": 0,
+   "l": 3,
+   "pf": 257,
+   "pa": 264,
+   "pts": 9,
+   "rank": 5
+  },
+  {
+   "le": 205703,
+   "p": 6,
+   "w": 3,
+   "d": 0,
+   "l": 3,
+   "pf": 246,
+   "pa": 244,
+   "pts": 9,
+   "rank": 6
+  },
+  {
+   "le": 243916,
+   "p": 6,
+   "w": 3,
+   "d": 0,
+   "l": 3,
+   "pf": 245,
+   "pa": 241,
+   "pts": 9,
+   "rank": 7
+  },
+  {
+   "le": 294024,
+   "p": 6,
+   "w": 2,
+   "d": 0,
+   "l": 4,
+   "pf": 257,
+   "pa": 242,
+   "pts": 6,
+   "rank": 8
+  },
+  {
+   "le": 50414,
+   "p": 6,
+   "w": 2,
+   "d": 0,
+   "l": 4,
+   "pf": 210,
+   "pa": 269,
+   "pts": 6,
+   "rank": 9
+  },
+  {
+   "le": 265639,
+   "p": 6,
+   "w": 1,
+   "d": 1,
+   "l": 4,
+   "pf": 224,
+   "pa": 289,
+   "pts": 4,
+   "rank": 10
+  }
+ ],
+ "awards": {
+  "top_score": {
+   "le": [
+    265639
+   ],
+   "value": 52
+  },
+  "low_score": {
+   "le": [
+    205703
+   ],
+   "value": 25
+  },
+  "biggest_win": {
+   "matches": [
+    {
+     "event": 6,
+     "a": 265639,
+     "b": 274299,
+     "pa": 52,
+     "pb": 40,
+     "finished": true,
+     "started": true
+    }
+   ],
+   "value": 12
+  },
+  "luckiest_win": {
+   "le": [
+    1850
+   ],
+   "value": 34
+  },
+  "unluckiest_loss": {
+   "le": [
+    294024,
+    274299
+   ],
+   "value": 40
+  },
+  "bench_shame": {
+   "le": [
+    274299
+   ],
+   "value": 15
+  },
+  "waiver_hero": {
+   "le": [
+    265639
+   ],
+   "value": 33
+  },
+  "best_player": {
+   "id": 115,
+   "name": "De Cuyper",
+   "pos": "DEF",
+   "club": "BHA",
+   "pts": 15,
+   "acq": "draft",
+   "le": 239612
+  }
+ }
+}
