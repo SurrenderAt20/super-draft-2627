@@ -127,6 +127,7 @@ function renderSection() {
   if (ADV_SUB === "prognose") return renderPrognose();
   if (ADV_SUB === "waivers") return renderWaivers();
   if (ADV_SUB === "hold") return renderHold();
+  if (ADV_SUB === "noejagtighed") return renderAccuracy();
   renderData();
 }
 

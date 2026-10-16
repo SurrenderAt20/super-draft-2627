@@ -810,3 +810,13 @@ td.blank { color: var(--dim); }
   .o-mid { grid-column: 1 / -1; grid-row: 2; }
   .o-pcts b { font-size: 20px; }
 }
+
+/* calibration: predicted vs observed on a 0-100% track */
+.calbar { position: relative; display: inline-block; width: 180px; height: 10px; border-radius: 5px; background: rgba(255,255,255,.06); vertical-align: middle; }
+.calbar i { position: absolute; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; }
+.calbar .p { border: 2px solid var(--text); background: var(--bg); }
+.calbar .o { background: var(--violet); box-shadow: 0 0 8px var(--violet); }
+.key-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; vertical-align: 0; margin: 0 4px 0 8px; }
+.key-dot.p { border: 2px solid var(--text); }
+.key-dot.o { background: var(--violet); }
+@media (max-width: 720px) { .calbar { width: 110px; } }

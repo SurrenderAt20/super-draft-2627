@@ -24,7 +24,9 @@ CORE = "https://raw.githubusercontent.com/olbauday/FPL-Core-Insights/main/data"
 LAST = "2025-2026"
 THIS = "2026-2027"
 CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache", f"season_{LAST}.json")
-CACHE_VERSION = 1
+CACHE_VERSION = 2
+OLDER = "2024-2025"   # weighted half; has xG, xA, bonus and minutes (via xGC per 90), no DefCon
+UNAVAILABLE = {"i", "s", "u", "n"}   # injured, suspended, unavailable, not available (loan etc.)
 DC_THR = {"Defender": 10, "Midfielder": 12, "Forward": 12}
 EURO_WINDOW_H = 100   # a European match within ~4 days before kick-off counts as "Europe in the week"
 
@@ -85,6 +87,90 @@ def euro_before(prem_kickoff, team_code, euro):
             if h <= EURO_WINDOW_H and (best is None or h < best):
                 best = h
     return best
+
+
+def season_rounds(season, players):
+    """Per player code: {gw: {mi, st, xg, xa, status, corner, fk}} from the cumulative per-round snapshots."""
+    rows = _csv(f"{CORE}/{season}/playerstats.csv")
+    by = defaultdict(dict)
+    for r in rows:
+        by[r["id"]][int(_f(r["gw"]))] = r
+    out = {}
+    for pid, snaps in by.items():
+        p = players.get(pid)
+        if not p:
+            continue
+        prev = {"mi": 0.0, "st": 0.0, "xg": 0.0, "xa": 0.0}
+        gws = {}
+        for gw in sorted(snaps):
+            r = snaps[gw]
+            cur = {"mi": _f(r.get("minutes")), "st": _f(r.get("starts")), "xg": _f(r.get("expected_goals")), "xa": _f(r.get("expected_assists"))}
+            d = {k: max(0.0, cur[k] - prev[k]) for k in cur}
+            prev = cur
+            ch = r.get("chance_of_playing_next_round")
+            gws[gw] = {**d, "status": r.get("status") or "a", "chance": _f(ch) if ch not in (None, "") else None,
+                       "corner": int(_f(r.get("corners_and_indirect_freekicks_order"))) or None,
+                       "fk": int(_f(r.get("direct_freekicks_order"))) or None}
+        out[p["player_code"]] = gws
+    return out
+
+
+def minutes_summary(gws):
+    """Availability-aware minutes pattern: rounds the player was injured/suspended do not count as benched."""
+    avail = [g for g in gws.values() if not (g["status"] in UNAVAILABLE and g["mi"] == 0)]
+    starts = [g for g in avail if g["st"] >= 1]
+    subs = [g for g in avail if g["st"] < 1 and g["mi"] > 0]
+    return {"avail": len(avail), "starts": len(starts), "subs": len(subs),
+            "min_start": round(sum(g["mi"] for g in starts), 1), "n60_start": sum(1 for g in starts if g["mi"] >= 60),
+            "min_sub": round(sum(g["mi"] for g in subs), 1)}
+
+
+def setpiece_uplift(rounds):
+    """Within-player effect of being first-choice corner taker (on xA per 90) and direct free-kick
+    taker (on xG per 90): the same players compared in rounds with and without the role."""
+    res = {}
+    for role, stat in (("corner", "xa"), ("fk", "xg")):
+        diffs, weights = [], []
+        for gws in rounds.values():
+            on = [g for g in gws.values() if g["mi"] >= 45 and g[role] == 1]
+            off = [g for g in gws.values() if g["mi"] >= 45 and g[role] != 1]
+            if len(on) >= 3 and len(off) >= 3:
+                r_on = sum(g[stat] for g in on) / sum(g["mi"] for g in on) * 90
+                r_off = sum(g[stat] for g in off) / sum(g["mi"] for g in off) * 90
+                w = min(len(on), len(off))
+                diffs.append((r_on - r_off) * w)
+                weights.append(w)
+        res[role] = {"uplift90": round(sum(diffs) / sum(weights), 4) if weights else 0.0, "players": len(weights)}
+    return res
+
+
+def older_season():
+    """2024/25 season totals per player code: xG, xA, bonus and minutes. Minutes are not in the file,
+    so they are recovered from expected goals conceded and its per-90 value (both FPL's own)."""
+    players = {p["player_id"]: p for p in _csv(f"{CORE}/{OLDER}/players/players.csv")}
+    last = {}
+    for r in _csv(f"{CORE}/{OLDER}/playerstats/playerstats.csv"):
+        if r["id"] in players and int(_f(r["gw"])) >= int(_f(last.get(r["id"], {}).get("gw", 0))):
+            last[r["id"]] = r
+    out = {}
+    for pid, r in last.items():
+        xgc, xgc90 = _f(r.get("expected_goals_conceded")), _f(r.get("expected_goals_conceded_per_90"))
+        mi = xgc / xgc90 * 90 if xgc90 > 0 else 0.0
+        if mi < 90:
+            continue
+        p = players[pid]
+        out[p["player_code"]] = {"team": p.get("team_code"), "pos": p.get("position"), "mi": round(mi),
+                                 "xg": _f(r.get("expected_goals")), "xa": _f(r.get("expected_assists")), "bo": _f(r.get("bonus")),
+                                 "pens": 0}
+    code_of = {pid: p["player_code"] for pid, p in players.items()}
+    for gw in range(1, 39):
+        for m in _csv(f"{CORE}/{OLDER}/playermatchstats/GW{gw}/playermatchstats.csv"):
+            if _kind(m.get("match_id")) not in ("prem", ""):
+                continue
+            c = code_of.get(m.get("player_id"))
+            if c in out:
+                out[c]["pens"] += int(_f(m.get("penalties_scored")) + _f(m.get("penalties_missed")))
+    return out
 
 
 def build_last_season():
@@ -153,16 +239,27 @@ def build_last_season():
         if after and normal:
             rot[code] = {"after": sum(after), "n_after": len(after), "normal": sum(normal), "n_normal": len(normal)}
 
+    rounds = season_rounds(LAST, players)
+    for code, gws in rounds.items():
+        if code in out:
+            out[code]["min"] = minutes_summary(gws)
+            mins = sum(g["mi"] for g in gws.values()) or 1
+            out[code]["corner_share"] = round(sum(g["mi"] for g in gws.values() if g["corner"] == 1) / mins, 3)
+            out[code]["fk_share"] = round(sum(g["mi"] for g in gws.values() if g["fk"] == 1) / mins, 3)
+    uplift = setpiece_uplift(rounds)
+    older = older_season()
+
     teams_xg = [(m["home"], m["away"], 1, m["xgh"]) for m in prem if m["finished"]] + \
                [(m["away"], m["home"], 0, m["xga"]) for m in prem if m["finished"]]
     pens_total = sum(p["pens"] for p in out.values())
     data = {"version": CACHE_VERSION, "season": LAST, "players": out, "team_matches": teams_xg,
+            "setpiece": uplift, "older": older, "older_season": OLDER,
             "rotation": rot, "pens_per_team_match": round(pens_total / max(1, len(teams_xg)), 4)}
     os.makedirs(os.path.dirname(CACHE), exist_ok=True)
     with open(CACHE, "w", encoding="utf-8", newline="\n") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
     print(f"  history: cached {len(out)} players, {len(teams_xg) // 2} matches, {len(rot)} rotation records, "
-          f"{data['pens_per_team_match']} pens per team-match", flush=True)
+          f"{data['pens_per_team_match']} pens per team-match, set pieces {uplift}, {len(older)} players from {OLDER}", flush=True)
     return data
 
 
@@ -188,4 +285,6 @@ def this_season(upto_gw):
             n = int(_f(r.get("penalties_scored")) + _f(r.get("penalties_missed")))
             if c and n:
                 pens[c][gw] = pens[c].get(gw, 0) + n
-    return {"euro": euro, "pens": pens}
+    core_players = {p["player_id"]: p for p in _csv(f"{CORE}/{THIS}/players.csv")}
+    rounds = season_rounds(THIS, core_players)
+    return {"euro": euro, "pens": pens, "rounds": rounds}

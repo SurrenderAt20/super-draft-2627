@@ -88,7 +88,7 @@ function bestXI(squad, j) {
 const xiOver = (squad, h) => Array.from({ length: h }, (_, j) => bestXI(squad, j).total).reduce((a, b) => a + b, 0);
 
 function subnav(active) {
-  const items = [["", "Spillerdata"], ["prognose", "Prognose"], ["waivers", "Waivers"], ["hold", "Mit hold"]];
+  const items = [["", "Spillerdata"], ["prognose", "Prognose"], ["waivers", "Waivers"], ["hold", "Mit hold"], ["noejagtighed", "Nøjagtighed"]];
   return `<nav class="subnav" aria-label="Avanceret">${items.map(([k, l]) => `<a href="#avanceret${k ? "/" + k : ""}"${k === active ? ' aria-current="page"' : ""}>${l}</a>`).join("")}</nav>`;
 }
 
@@ -345,6 +345,60 @@ function drawWaivers() {
     playerSheet(Number(el.dataset.pid));
   }));
   bindTips(app.querySelector("#wv-list"));
+}
+
+// ---------------------------------------------------------------- Nøjagtighed
+
+function renderAccuracy() {
+  const S = ADV.scorecard;
+  const pc = (x) => `${Math.round(x * 1000) / 10}`.replace(".", ",") + "%";
+  const pp = (x) => `${x >= 0 ? "+" : "−"}${num(Math.abs(x) * 100, 1)} pp`;
+  if (!S) {
+    app.innerHTML = `${advHead()}${subnav("noejagtighed")}<p class="lede">Rapporten kræver mindst fire spillede runder.</p>`;
+    return;
+  }
+  const r = S.ranking, sr = S.single_round, cs = S.clean_sheets, F = D.forecast?.calibration;
+  const rounds = S.rounds;
+  const verdict = (d) => d.lo > 0 ? `<span class="delta-up">Sikkert bedre</span>` : d.hi < 0 ? `<span class="delta-down">Sikkert dårligere</span>` : `<span class="muted">Ikke sikkert endnu</span>`;
+  const calRows = (bins) => bins.map((b) => `<tr><td class="l">${Math.round(b.lo * 100)}–${Math.round(b.hi * 100)}%</td><td>${pc(b.pred)}</td><td class="strong">${pc(b.obs)}</td><td class="muted">${b.n}</td>
+      <td class="l"><span class="calbar"><i class="p" style="left:${b.pred * 100}%"></i><i class="o" style="left:${b.obs * 100}%"></i></span></td></tr>`).join("");
+
+  app.innerHTML = `
+    ${advHead()}
+    ${subnav("noejagtighed")}
+    <p class="lede">Kan modellen noget? Hver test forudsiger en runde kun ud fra runderne før og sammenligner med, hvad der skete. Alle modeller testes på præcis de samme spillere og runder (runde ${rounds[0]}–${rounds[rounds.length - 1]}). Skadesstatus er den, FPL viste efter runden før.</p>
+
+    <div class="recs" style="margin-top:24px">
+      ${r ? panel(`<span class="v">${pc(r.new.acc)}</span><span class="t">Rigtige sammenligninger</span><span class="d">Når modellen siger, at spiller A får flere point end B i runde ${r.from + 1}–${r.to}. 90%-interval: ${pc(r.new.lo)}–${pc(r.new.hi)}. Et gæt giver 50%.</span>`, "rec") : ""}
+      ${r ? panel(`<span class="v">${pp(r.new_vs_form.diff)}</span><span class="t">Bedre end formsnit</span><span class="d">90%-interval ${pp(r.new_vs_form.lo)} til ${pp(r.new_vs_form.hi)}. ${r.new_vs_form.lo > 0 ? "Forskellen er statistisk sikker." : "Ikke sikker endnu."}</span>`, "rec") : ""}
+      ${F ? panel(`<span class="v">${F.fav_won} af ${F.fav_n}</span><span class="t">H2H-favoritten vandt</span><span class="d">${pc(F.fav_won / F.fav_n)} af ligaens kampe i testen.</span>`, "rec") : ""}
+    </div>
+
+    <section class="sec">
+      <div class="sec-head"><div><h2>Modellerne side om side</h2><p class="lede">Formsnit er point i de seneste fire runder. Gammel er modellen før arbejdet med minutter, 2024/25 og dødbolde. Ny er den nuværende.</p></div></div>
+      <div class="panel"><div class="scroll"><table class="advt"><thead><tr><th class="l">Mål</th><th>Formsnit</th><th>Gammel</th><th>Ny</th><th class="l">Ny mod gammel</th></tr></thead><tbody>
+        ${r ? `<tr><td class="l"><b>Rigtige sammenligninger</b><br><span class="small muted">højere er bedre</span></td><td>${pc(r.form.acc)}</td><td>${pc(r.old.acc)}</td><td class="pts">${pc(r.new.acc)}</td><td class="l">${pp(r.new_vs_old.diff)}, ${verdict(r.new_vs_old)}</td></tr>` : ""}
+        <tr><td class="l"><b>Pointfejl per spiller per runde</b><br><span class="small muted">lavere er bedre</span></td><td>${num(sr.form.pts_mae, 2)}</td><td>${num(sr.old.pts_mae, 2)}</td><td class="pts">${num(sr.new.pts_mae, 2)}</td><td class="l muted">Samme ${sr.new.n} spiller-runder</td></tr>
+        <tr><td class="l"><b>Chance for 60+ minutter (Brier)</b><br><span class="small muted">lavere er bedre</span></td><td>–</td><td>${num(sr.old.brier60, 3)}</td><td class="pts">${num(sr.new.brier60, 3)}</td><td class="l muted">Kvaliteten af sandsynlighederne</td></tr>
+        <tr><td class="l"><b>Minutfejl</b><br><span class="small muted">lavere er bedre</span></td><td>–</td><td>${num(sr.old.min_mae, 1)}</td><td class="pts">${num(sr.new.min_mae, 1)}</td><td class="l muted">Straffer forsigtige gæt som 70 minutter</td></tr>
+        <tr><td class="l"><b>Skævhed i point</b><br><span class="small muted">0 er bedst</span></td><td>${signed(sr.form.pts_bias, 2)}</td><td>${signed(sr.old.pts_bias, 2)}</td><td class="pts">${signed(sr.new.pts_bias, 2)}</td><td class="l muted">Minus: rammer for lavt</td></tr>
+      </tbody></table></div></div>
+    </section>
+
+    <section class="sec">
+      <div class="sec-head"><div><h2>Holder sandsynlighederne?</h2><p class="lede">Når modellen giver en bestemt chance for 60+ minutter, hvor ofte skete det så? Perfekt kalibreret ligger de to prikker oven i hinanden.</p></div></div>
+      <div class="panel"><div class="scroll"><table class="advt"><thead><tr><th class="l">Modellens chance</th><th>Forudsagt</th><th>Skete</th><th>Antal</th><th class="l"><span class="key-dot p"></span>forudsagt <span class="key-dot o"></span>skete</th></tr></thead><tbody>${calRows(sr.new.calibration60)}</tbody></table></div></div>
+    </section>
+
+    ${cs ? `<section class="sec">
+      <div class="sec-head"><div><h2>Clean sheets</h2><p class="lede">Brier ${num(cs.brier, 3)} mod ${num(cs.brier_flat, 3)} for blot at gætte gennemsnittet (${pc(cs.rate)}) for alle, på ${cs.n} holdkampe. Forskellen er lille: med så få kampe kan modellen endnu ikke skelne meget mellem holdenes clean sheet-chancer.</p></div></div>
+      <div class="panel"><div class="scroll"><table class="advt"><thead><tr><th class="l">Modellens chance</th><th>Forudsagt</th><th>Skete</th><th>Antal</th><th class="l"></th></tr></thead><tbody>${calRows(cs.calibration)}</tbody></table></div></div>
+    </section>` : ""}
+
+    <section class="sec"><div class="panel model-note"><h3>Sådan læser du det</h3>
+      <p>Et 90%-interval er lavet ved at trække spillerne tilfældigt om 300 gange. Ligger hele intervallet over 0, er forbedringen ikke bare held. Med kun ${rounds.length + 2} spillede runder er intervallerne brede, og de bliver smallere hen over sæsonen. Rapporten opdateres automatisk.</p>
+      <p class="small muted">Parametrene i minutmodellen er valgt på de samme runder, de testes på (et lille gitter af værdier), så forbedringen af minutterne kan være lidt for optimistisk.</p></div></section>`;
+  bindTips(app);
 }
 
 // ---------------------------------------------------------------- Mit hold

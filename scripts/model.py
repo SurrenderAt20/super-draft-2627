@@ -17,6 +17,10 @@ Extras (each can be switched off, so the backtest can show what it adds):
     pens    xG split into open play (npxG) and penalties; the first-choice taker gets the team's penalties
     rot     minutes after a European match, scaled by the measured effect (close to none for regulars)
     odds    bookmakers' implied expected goals blended into each match, with a weight measured on past rounds
+    mins    availability-aware minutes: rounds a player was injured/suspended don't count as benched;
+            split into P(start), minutes when starting, and P(coming on); last season fills thin data
+    older   2024/25 as extra history for xG, xA and bonus at half weight (no DefCon that season)
+    setp    first-choice corner / direct free-kick taker, with effects measured within players in 2025/26
 """
 
 import math
@@ -37,7 +41,12 @@ MOVED = 0.6          # weight kept for last season when a player has changed clu
 TEAM_REGRESS = 0.7   # last season's team ratings pulled 30% toward average
 PROMOTED = -0.2      # starting attack and defence for teams not in last season's league
 POS_NAME = {"Goalkeeper": 1, "Defender": 2, "Midfielder": 3, "Forward": 4}
-ALL = {"prior": True, "pens": True, "rot": True, "odds": True}
+ALL = {"prior": True, "pens": True, "rot": True, "odds": True, "mins": True, "older": True, "setp": True}
+OLD_MODEL = {"prior": True, "pens": True, "rot": True, "odds": True}   # the model before the minutes/history/set-piece work
+UNAVAILABLE = {"i", "s", "u", "n"}
+OLDER_W = 0.5        # 2024/25 counts half as much as 2025/26
+MIN_DEFAULT = {"p_start": 0.5, "e_start": 84.0, "p60s": 0.93, "p_sub": 0.35, "e_sub": 20.0}
+MIN_K = 1.0   # chosen from a small grid (0.5-3) on rounds 3-6 by Brier score for 60+ minutes
 
 
 def pois_floor_div(lam, n, kmax=25):
@@ -164,7 +173,7 @@ def lam(S, att, dfn, home):
 
 # ---------------------------------------------------------------- player projection
 
-def player_rates(live, gws, pos_of, ctx=None, use_prior=False, use_pens=False):
+def player_rates(live, gws, pos_of, ctx=None, use_prior=False, use_pens=False, use_older=False, use_setp=False):
     """Season-to-date per-90 rates per player, shrunk toward a prior: the position average,
     or (use_prior) a blend of last season's own rates and the position average."""
     ctx = ctx or {}
@@ -204,11 +213,26 @@ def player_rates(live, gws, pos_of, ctx=None, use_prior=False, use_pens=False):
     for pid, pos in pos_of.items():
         t = tot.get(pid, {"mi": 0, "xg": 0.0, "xa": 0.0, "sv": 0, "bo": 0, "yc": 0, "dc_apps": 0, "dc_hits": 0})
         pr = dict(prior[pos])
-        L = last.get(ctx.get("code_of", {}).get(pid)) if last else None
+        code = ctx.get("code_of", {}).get(pid)
+        L = last.get(code) if last else None
+        O = ctx.get("last", {}).get("older", {}).get(code) if (use_prior and use_older) else None
+        if O and O["mi"] >= 300:
+            # fold 2024/25 into last season for xG, xA and bonus, at half weight; DefCon only exists from 2025/26
+            base = L or {"mi": 0, "xg": 0.0, "xa": 0.0, "sv": 0, "bo": 0, "yc": 0, "pens": 0, "team": O.get("team")}
+            oxg = max(0.0, O["xg"] - (PEN_XG * O.get("pens", 0) if use_pens else 0.0))
+            mix_mi = base["mi"] + OLDER_W * O["mi"]
+            L = dict(base)
+            L["xg"] = base["xg"] - (PEN_XG * base.get("pens", 0) if use_pens else 0.0) + OLDER_W * oxg
+            L["xa"] = base["xa"] + OLDER_W * O["xa"]
+            L["bo"] = base["bo"] + OLDER_W * O["bo"]
+            # saves and cards: 2025/26 only, scaled to the combined minutes so the rate is unchanged
+            scale = mix_mi / base["mi"] if base["mi"] else 0.0
+            L["sv"], L["yc"] = base["sv"] * scale, base["yc"] * scale
+            L["mi"], L["pens"], L["_np"] = mix_mi, 0, True
         if L and L["mi"] >= 300:
             moved = MOVED if str(L.get("team")) != str(ctx["team_code_of"].get(pid)) else 1.0
             w = L["mi"] / (L["mi"] + K_LAST_MIN) * moved
-            lxg = max(0.0, L["xg"] - (PEN_XG * L.get("pens", 0) if use_pens else 0.0))
+            lxg = L["xg"] if L.get("_np") else max(0.0, L["xg"] - (PEN_XG * L.get("pens", 0) if use_pens else 0.0))
             last_r = {"xg": lxg, "xa": L["xa"], "sv": L["sv"], "bo": L["bo"], "yc": L["yc"]}
             for k in ("xg", "xa", "sv", "bo", "yc"):
                 pr[k] = w * last_r[k] / L["mi"] * 90 + (1 - w) * pr[k]
@@ -217,6 +241,13 @@ def player_rates(live, gws, pos_of, ctx=None, use_prior=False, use_pens=False):
                 pr["dc"] = wd * L["dc_hits"] / L["dc_apps"] + (1 - wd) * pr["dc"]
         r = {k: (t[k] + pr[k] * K_MIN / 90) / ((t["mi"] + K_MIN) / 90) for k in ("xg", "xa", "sv", "bo", "yc")}
         r["dc"] = (t["dc_hits"] + pr["dc"] * K_APPS) / (t["dc_apps"] + K_APPS)
+        if use_setp and ctx.get("setp_now"):
+            # the rates already contain the set-piece role a player had; adjust only for a change of role
+            now_c, now_f = ctx["setp_now"].get(pid, (None, None))
+            share = ctx.get("setp_share", {}).get(pid, (0.0, 0.0))
+            up = ctx.get("last", {}).get("setpiece", {})
+            r["xa"] = max(0.0, r["xa"] + up.get("corner", {}).get("uplift90", 0.0) * ((now_c == 1) - share[0]))
+            r["xg"] = max(0.0, r["xg"] + up.get("fk", {}).get("uplift90", 0.0) * ((now_f == 1) - share[1]))
         rates[pid] = r
     return rates
 
@@ -237,6 +268,61 @@ def minutes_profile(live, gws):
             "p60": sum(wi for wi, m in zip(w, mins) if m >= 60) / tw,
             "pplay": sum(wi for wi, m in zip(w, mins) if m > 0) / tw,
         }
+    return prof
+
+
+def minutes_profile2(live, gws, pos_of, team_of, fixtures, ctx):
+    """P(start), minutes when starting, P(60+ | start), P(comes on) and minutes as a sub, from the
+    rounds the player was available (last six, recent weighted most). Rounds where FPL had him
+    injured/suspended/unavailable and he did not play are left out, so a player returning from
+    injury is judged on his pattern before it. Last season fills in when data is thin."""
+    played = {(f["event"], t) for f in fixtures for t in (f["team_h"], f["team_a"])}
+    rounds = ctx.get("rounds_now", {})
+    last = ctx.get("last", {}).get("players", {})
+    prof = {}
+    for pid in pos_of:
+        code = ctx["code_of"].get(pid)
+        team = team_of.get(pid)
+        rows = []
+        for gw in gws:
+            if (gw, team) not in played:
+                continue
+            st = live[gw].get(pid, {})
+            mi, s = st.get("minutes", 0), st.get("starts", 0)
+            status = rounds.get(code, {}).get(gw, {}).get("status", "a")
+            if mi == 0 and status in UNAVAILABLE:
+                continue
+            rows.append((mi, s))
+        rows = rows[-6:]
+        w = list(range(1, len(rows) + 1))
+        L = last.get(code, {}).get("min") if last.get(code) and str(last[code].get("team")) == str(ctx["team_code_of"].get(pid)) else None
+        pr = dict(MIN_DEFAULT)
+        if L and L["avail"] >= 5:
+            if L["avail"]:
+                pr["p_start"] = L["starts"] / L["avail"]
+            if L["starts"]:
+                pr["e_start"] = L["min_start"] / L["starts"]
+                pr["p60s"] = L["n60_start"] / L["starts"]
+            non = L["avail"] - L["starts"]
+            if non > 0:
+                pr["p_sub"] = L["subs"] / non
+            if L["subs"]:
+                pr["e_sub"] = L["min_sub"] / L["subs"]
+        k = MIN_K   # how many recent rounds the prior counts as
+        sw = sum(w)
+        start_w = sum(wi for wi, (mi, s) in zip(w, rows) if s >= 1)
+        p_start = (start_w + k * pr["p_start"]) / (sw + k)
+        st_rows = [mi for mi, s in rows if s >= 1]
+        e_start = (sum(st_rows) + 2 * pr["e_start"]) / (len(st_rows) + 2)
+        p60s = (sum(1 for mi in st_rows if mi >= 60) + 2 * pr["p60s"]) / (len(st_rows) + 2)
+        non = [mi for mi, s in rows if s < 1]
+        p_sub = (sum(1 for mi in non if mi > 0) + 2 * pr["p_sub"]) / (len(non) + 2)
+        subs = [mi for mi in non if mi > 0]
+        e_sub = (sum(subs) + 2 * pr["e_sub"]) / (len(subs) + 2)
+        prof[pid] = {"emin": p_start * e_start + (1 - p_start) * p_sub * e_sub,
+                     "p60": p_start * p60s,
+                     "pplay": p_start + (1 - p_start) * p_sub,
+                     "p_start": round(p_start, 3)}
     return prof
 
 
@@ -270,10 +356,10 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
     for f in fixtures:
         for t in (f["team_h"], f["team_a"]):
             fx_idx.setdefault((f["event"], t), []).append(f)
-    rates = player_rates(live, gws_known, pos_of, ctx, use.get("prior"), use.get("pens"))
+    rates = player_rates(live, gws_known, pos_of, ctx, use.get("prior"), use.get("pens"), use.get("older"), use.get("setp"))
     pen_rate = ctx.get("last", {}).get("pens_per_team_match", 0.12)
     pen_share = {1: 1.0, 2: 0.15}
-    prof = minutes_profile(live, gws_known)
+    prof = minutes_profile2(live, gws_known, pos_of, team_of, fixtures, ctx) if use.get("mins") else minutes_profile(live, gws_known)
     out = {}
     detail = {}
     for pid, pos in pos_of.items():
@@ -282,8 +368,13 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
         r = rates[pid]
         row = []
         for k, gw in enumerate(targets):
-            # the backtest must not see today's injury news for past rounds
-            a = availability(elements[pid], k) if elements and avail else 1.0
+            # the backtest must not see today's injury news for past rounds: "hist" uses the status
+            # FPL showed after the previous round, which was known before this one
+            if avail == "hist":
+                prev = ctx.get("rounds_now", {}).get(ctx["code_of"].get(pid), {}).get(gw - 1)
+                a = availability({"status": prev["status"], "chance_of_playing_next_round": prev.get("chance")}, 0) if prev else 1.0
+            else:
+                a = availability(elements[pid], k) if elements and avail else 1.0
             xp = 0.0
             for f in fx_idx.get((gw, team), []):
                 home = 1 if f["team_h"] == team else 0
@@ -315,7 +406,7 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
                 pts += r["bo"] * share * (0.5 + 0.5 * m_att) - r["yc"] * share
                 xp += pts
                 if k == 0 and pid not in detail:
-                    detail[pid] = {"emin": round(emin), "p60": round(p60, 2), "xg": round(xg, 2), "xa": round(xa, 2),
+                    detail[pid] = {"emin": round(emin), "p60": round(p60, 2), "p_start": mp.get("p_start"), "xg": round(xg, 2), "xa": round(xa, 2),
                                    "cs": round(math.exp(-la_), 2), "dc": round(r["dc"], 2)}
             row.append(round(xp, 2))
         out[pid] = row
@@ -330,7 +421,7 @@ def backtest(live, fixtures, gws, pos_of, team_of, actual, elements=None, ctx=No
         if i < 2:
             continue
         known = gws[:i]
-        pred, _, _ = project(live, fixtures, known, [gw], pos_of, team_of, elements, None, ctx, use, avail=False)
+        pred, _, _ = project(live, fixtures, known, [gw], pos_of, team_of, elements, None, ctx, use, avail="hist")
         last = known[-len(RECENT_W):]
         w = RECENT_W[-len(last):]
         for pid in pos_of:
@@ -358,7 +449,7 @@ def rank_test(live, fixtures, gws, pos_of, team_of, elements, ctx, use, start):
     This is closer to a transfer decision than the error of a single round."""
     known = [g for g in gws if g < start]
     tg = [g for g in gws if g >= start]
-    pred, _, _ = project(live, fixtures, known, tg, pos_of, team_of, elements, None, ctx, use, avail=False)
+    pred, _, _ = project(live, fixtures, known, tg, pos_of, team_of, elements, None, ctx, use, avail="hist")
     pl = [pid for pid in pos_of if sum(live[g].get(pid, {}).get("minutes", 0) for g in tg) >= 45 * len(tg)]
     if len(pl) < 40:
         return None
@@ -433,7 +524,20 @@ def context(boot, gws, fixtures, last, now):
                 h = euro_before(kick, tcode.get(t), now["euro"])
                 if h is not None:
                     euro_flag[(t, f["id"])] = round(h)
+    rounds_now = (now or {}).get("rounds", {})
+    setp_now = {e["id"]: (e.get("corners_and_indirect_freekicks_order"), e.get("direct_freekicks_order")) for e in boot["elements"]}
+    setp_share = {}
+    for pid, c in code_of.items():
+        rs = rounds_now.get(c, {})
+        mins = sum(g["mi"] for g in rs.values())
+        cur = (sum(g["mi"] for g in rs.values() if g["corner"] == 1) / mins, sum(g["mi"] for g in rs.values() if g["fk"] == 1) / mins) if mins else (0.0, 0.0)
+        L = (last or {}).get("players", {}).get(c)
+        lm = L["mi"] if L else 0
+        lc, lf = (L.get("corner_share", 0.0), L.get("fk_share", 0.0)) if L else (0.0, 0.0)
+        tot = mins + lm
+        setp_share[pid] = ((cur[0] * mins + lc * lm) / tot, (cur[1] * mins + lf * lm) / tot) if tot else (0.0, 0.0)
     return {"code_of": code_of, "team_code_of": team_code_of, "last": last or {}, "team_prior": team_prior,
+            "rounds_now": rounds_now, "setp_now": setp_now, "setp_share": setp_share,
             "pens_now": (now or {}).get("pens", {}), "rot_league": rot_league, "rot_factor": rot_factor,
             "euro_flag": euro_flag}
 
@@ -538,6 +642,8 @@ def run(boot, live, gws, fixtures, next_gw, horizon=6, last=None, now=None, odds
         bt["rank_base"] = rank_test(live, fixtures, gws, pos_of, team_of, elements, ctx, {}, start)
         print(f"  model: rank test {bt['rank']} vs without extras {bt['rank_base']}", flush=True)
     print(f"  model: rotation factor after Europe (league) {ctx['rot_league']:.3f}, {len(ctx['euro_flag'])} flagged team-fixtures", flush=True)
+    import evaluate
+    scorecard = evaluate.scorecard(live, fixtures, gws, pos_of, team_of, elements, ctx) if len(gws) >= 4 else None
 
     pens_taker = {e["id"]: e.get("penalties_order") for e in boot["elements"] if e.get("penalties_order") in (1, 2)}
     special = []
@@ -554,7 +660,7 @@ def run(boot, live, gws, fixtures, next_gw, horizon=6, last=None, now=None, odds
     unscheduled = sum(1 for f in fixtures if not f.get("event"))
     internal = {"live": live, "fixtures": fixtures, "pos_of": pos_of, "team_of": team_of, "elements": elements,
                 "ctx": ctx, "proj_long": proj_long, "targets": targets_all, "gws": gws}
-    return {"_internal": internal, "special_rounds": special, "unscheduled": unscheduled,
+    return {"_internal": internal, "scorecard": scorecard, "special_rounds": special, "unscheduled": unscheduled,
             "xpt": xpt, "proj": {"gws": targets, "by_player": proj, "detail": detail, "pens": pens_taker},
             "fixtures": fix, "backtest": bt, "rules_mismatch": wrong,
             "strength": {"home": round(S["home"], 3), "att": {t: round(v, 3) for t, v in S["att"].items()},

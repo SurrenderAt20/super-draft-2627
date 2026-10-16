@@ -99,10 +99,12 @@ def penalty_order(boot):
     except Exception as e:
         print(f"  note: classic bootstrap unavailable ({e}); no penalty takers this run", flush=True)
         return 0
-    order = {x["code"]: x.get("penalties_order") for x in classic["elements"]}
+    by_code = {x["code"]: x for x in classic["elements"]}
     n = 0
     for e in boot["elements"]:
-        e["penalties_order"] = order.get(e["code"])
+        c = by_code.get(e["code"], {})
+        for k in ("penalties_order", "corners_and_indirect_freekicks_order", "direct_freekicks_order"):
+            e[k] = c.get(k)
         n += e["penalties_order"] == 1
     return n
 
@@ -161,7 +163,7 @@ def build(boot, gws, fetch, owners, entry_to_le, next_gw=None):
     for p in players:
         p["team"] = next((e["team"] for e in boot["elements"] if e["id"] == p["id"]), None)
     return {"cols": COLS, "gws": list(gws), "players": players, "by_gw": by_gw, "teams": teams,
-            "proj": m["proj"], "fixtures": m["fixtures"], "backtest": m["backtest"], "strength": m["strength"],
+            "proj": m["proj"], "fixtures": m["fixtures"], "backtest": m["backtest"], "strength": m["strength"], "scorecard": m["scorecard"],
             "_internal": m["_internal"], "special_rounds": m["special_rounds"], "unscheduled": m["unscheduled"]}
 
 

@@ -52,7 +52,7 @@ def calibrate(live, fixtures, gws, pos_of, team_of, elements, ctx, snapshots, ma
     for i, gw in enumerate(gws):
         if i < 2:
             continue
-        pred, _, _ = model.project(live, fixtures, gws[:i], [gw], pos_of, team_of, elements, None, ctx, model.ALL, avail=False)
+        pred, _, _ = model.project(live, fixtures, gws[:i], [gw], pos_of, team_of, elements, None, ctx, model.ALL, avail="hist")
         snap = snapshots[gw]
         exp = {}
         for le, t in snap["teams"].items():
