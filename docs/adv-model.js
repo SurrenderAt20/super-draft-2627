@@ -100,7 +100,14 @@ function modelNote() {
   const b = ADV.backtest;
   if (!b) return "";
   const r = b.rank, r0 = b.rank_base;
-  const rank = r && r0 ? `<p>Det vigtigste for transfers er, om modellen rangerer spillerne rigtigt over flere runder. Forudsagt runde ${r.from + 1}–${r.to} ud fra runde 1–${r.from}: sammenhæng <b>${num(r.corr, 2)}</b> med de faktiske point, og <b>${r.top30} af modellens top 30</b> var blandt de 30 bedste. Uden sidste sæson og straffeskytter var det ${num(r0.corr, 2)} og ${r0.top30} af 30.</p>` : "";
+  const pc = (x) => `${Math.round(x * 100)}%`;
+  const acc = r && r.pair_acc != null ? `<div class="acc">
+      <div class="acc-big"><b>${pc(r.pair_acc)}</b><span>rigtige sammenligninger</span></div>
+      <p>Når modellen siger, at spiller A scorer flere point end spiller B i de kommende runder, havde den ret i <b>${pc(r.pair_acc)}</b> af tilfældene (${r.players} spillere, runde ${r.from + 1}–${r.to} forudsagt kun ud fra runde 1–${r.from}). Et rent gæt giver 50%, og point i de seneste runder alene ${pc(r.pair_acc_form)}.</p>
+      <ul class="acc-buckets">${r.buckets.map((b) => `<li><span>Forudsagt forskel ${b.hi ? `${num(b.lo, 1)}–${num(b.hi, 1)}` : `over ${num(b.lo, 1)}`} point per runde</span><b>${b.acc != null ? pc(b.acc) : "–"}</b></li>`).join("")}</ul>
+      <p class="small muted">Jo større forskel modellen ser, jo mere kan du stole på den. Under et halvt point per runde er det næsten plat eller krone.</p>
+    </div>` : "";
+  const rank = r && r0 ? `${acc}<p>Sammenhængen mellem forudsagte og faktiske point var <b>${num(r.corr, 2)}</b>, og <b>${r.top30} af modellens top 30</b> var blandt de 30 bedste. Uden sidste sæson og straffeskytter var det ${num(r0.corr, 2)} og ${r0.top30} af 30.</p>` : "";
   return `<div class="panel model-note">
     <h3>Hvor godt rammer modellen?</h3>
     ${rank}
@@ -434,7 +441,7 @@ function drawHold(le) {
     </section>
 
     <section class="sec">
-      <div class="sec-head"><div><h2>Drop og hent</h2><p class="lede">Gevinsten er ændringen i din bedste startopstillings forventede point over ${h === 1 ? "næste runde" : `de næste ${h} runder`}. Tre alternativer per spiller, så du kan stille flere waiver-ønsker op til samme drop. Sæt det mest eftertragtede ønske øverst: et vundet ønske sender dig bagerst i waiver-køen.</p></div></div>
+      <div class="sec-head"><div><h2>Drop og hent</h2><p class="lede">Gevinsten er ændringen i din bedste startopstillings forventede point over ${h === 1 ? "næste runde" : `de næste ${h} runder`}. Tre alternativer per spiller, så du kan stille flere waiver-ønsker op til samme drop. Sæt det mest eftertragtede ønske øverst: et vundet ønske sender dig bagerst i waiver-køen.${ADV.backtest?.rank?.buckets ? ` Klar opgradering betyder mindst 0,6 point per runde. I testen havde modellen ret i ${Math.round(ADV.backtest.rank.buckets[2].acc * 100)}% af sammenligningerne ved forskelle over 1 point per runde.` : ""}</p></div></div>
       ${swaps.length ? `<div class="swaps">${swaps.map((s) => {
         const [cls, label] = bucket(s.adds[0].gain / h);
         return `<div class="panel swap ${cls}">

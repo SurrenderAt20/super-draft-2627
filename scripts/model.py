@@ -265,6 +265,10 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
             past[a]["for"].append(lam(S, a, h, 0)); past[a]["against"].append(lam(S, h, a, 1))
     avg = {t: {k: (sum(v) / len(v) if v else math.exp(S["mu"])) for k, v in d.items()} for t, d in past.items()}
 
+    fx_idx = {}
+    for f in fixtures:
+        for t in (f["team_h"], f["team_a"]):
+            fx_idx.setdefault((f["event"], t), []).append(f)
     rates = player_rates(live, gws_known, pos_of, ctx, use.get("prior"), use.get("pens"))
     pen_rate = ctx.get("last", {}).get("pens_per_team_match", 0.12)
     pen_share = {1: 1.0, 2: 0.15}
@@ -280,7 +284,7 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
             # the backtest must not see today's injury news for past rounds
             a = availability(elements[pid], k) if elements and avail else 1.0
             xp = 0.0
-            for f in (f for f in fixtures if f["event"] == gw and team in (f["team_h"], f["team_a"])):
+            for f in fx_idx.get((gw, team), []):
                 home = 1 if f["team_h"] == team else 0
                 opp = f["team_a"] if home else f["team_h"]
                 lf, la_ = lam(S, team, opp, home), lam(S, opp, team, 1 - home)
@@ -356,7 +360,29 @@ def rank_test(live, fixtures, gws, pos_of, team_of, elements, ctx, use, start):
     a = np.array([sum(live[g].get(pid, {}).get("total_points", 0) for g in tg) for pid in pl])
     top = set(sorted(pl, key=lambda x: -sum(pred[x]))[:30])
     best = set(sorted(pl, key=lambda x: -sum(live[g].get(x, {}).get("total_points", 0) for g in tg))[:30])
-    return {"from": known[-1], "to": tg[-1], "corr": round(float(np.corrcoef(p, a)[0, 1]), 2), "top30": len(top & best)}
+
+    # pairwise accuracy: when the model says A beats B over these rounds, how often is it right?
+    # 50% is a coin flip. Split by how big a difference the model predicted (per round).
+    pos = np.array([pos_of[pid] for pid in pl])
+    form = np.array([sum(live[g].get(pid, {}).get("total_points", 0) for g in known) for pid in pl])
+    dp, da, df = p[:, None] - p[None, :], a[:, None] - a[None, :], form[:, None] - form[None, :]
+    iu = np.triu_indices(len(pl), 1)
+    dp, da, df = dp[iu], da[iu], df[iu]
+    same = (pos[:, None] == pos[None, :])[iu]
+    valid = da != 0
+    def acc(mask):
+        m = valid & mask & (dp != 0)
+        return (round(float(np.mean(np.sign(dp[m]) == np.sign(da[m]))), 3), int(m.sum())) if m.any() else (None, 0)
+    gap = np.abs(dp) / len(tg)
+    buckets = []
+    for lo, hi in ((0, 0.5), (0.5, 1.0), (1.0, 99)):
+        a_, n_ = acc((gap >= lo) & (gap < hi))
+        buckets.append({"lo": lo, "hi": hi if hi < 99 else None, "acc": a_, "n": n_})
+    mf = valid & (df != 0)
+    return {"from": known[-1], "to": tg[-1], "corr": round(float(np.corrcoef(p, a)[0, 1]), 2), "top30": len(top & best),
+            "players": len(pl), "pair_acc": acc(np.ones_like(valid))[0], "pair_acc_pos": acc(same)[0],
+            "pair_acc_form": round(float(np.mean(np.sign(df[mf]) == np.sign(da[mf]))), 3) if mf.any() else None,
+            "buckets": buckets}
 
 
 def context(boot, gws, fixtures, last, now):
@@ -425,9 +451,11 @@ def run(boot, live, gws, fixtures, next_gw, horizon=6, last=None, now=None):
 
     xpt = {gw: {pid: past_xp(st, pos_of[pid]) for pid, st in live[gw].items() if st.get("minutes")} for gw in gws}
 
-    targets = [g for g in range(next_gw, min(39, next_gw + horizon))] if next_gw else []
+    targets_all = list(range(next_gw, 39)) if next_gw else []
+    targets = targets_all[:horizon]
     ctx = context(boot, gws, fixtures, last, now)
-    proj, detail, S = project(live, fixtures, gws, targets, pos_of, team_of, elements, teams, ctx, ALL)
+    proj_long, detail, S = project(live, fixtures, gws, targets_all, pos_of, team_of, elements, teams, ctx, ALL)
+    proj = {pid: v[:horizon] for pid, v in proj_long.items()}
 
     fix = {}
     for t in teams:
@@ -459,7 +487,22 @@ def run(boot, live, gws, fixtures, next_gw, horizon=6, last=None, now=None):
     print(f"  model: rotation factor after Europe (league) {ctx['rot_league']:.3f}, {len(ctx['euro_flag'])} flagged team-fixtures", flush=True)
 
     pens_taker = {e["id"]: e.get("penalties_order") for e in boot["elements"] if e.get("penalties_order") in (1, 2)}
-    return {"xpt": xpt, "proj": {"gws": targets, "by_player": proj, "detail": detail, "pens": pens_taker},
+    special = []
+    for gw in targets_all:
+        count = {t: 0 for t in teams}
+        for f in fixtures:
+            if f["event"] == gw:
+                count[f["team_h"]] += 1
+                count[f["team_a"]] += 1
+        dbl = [t for t, c in count.items() if c > 1]
+        blank = [t for t, c in count.items() if c == 0]
+        if dbl or blank:
+            special.append({"gw": gw, "double": dbl, "blank": blank})
+    unscheduled = sum(1 for f in fixtures if not f.get("event"))
+    internal = {"live": live, "fixtures": fixtures, "pos_of": pos_of, "team_of": team_of, "elements": elements,
+                "ctx": ctx, "proj_long": proj_long, "targets": targets_all, "gws": gws}
+    return {"_internal": internal, "special_rounds": special, "unscheduled": unscheduled,
+            "xpt": xpt, "proj": {"gws": targets, "by_player": proj, "detail": detail, "pens": pens_taker},
             "fixtures": fix, "backtest": bt, "rules_mismatch": wrong,
             "strength": {"home": round(S["home"], 3), "att": {t: round(v, 3) for t, v in S["att"].items()},
                          "def": {t: round(v, 3) for t, v in S["def"].items()}}}

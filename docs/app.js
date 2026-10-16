@@ -354,6 +354,48 @@ function divergeBg(v, span) {
 
 const dotStyle = (c, glow) => `style="background:${c};box-shadow:0 0 0 3px ${glow}"`;
 
+// ---------------------------------------------------------------- forecasts (public)
+
+const pc = (x) => `${Math.round(x * 100)}%`;
+
+function calibText(F) {
+  const c = F.calibration;
+  return c && c.fav_n ? `I testen på runde ${c.rounds[0]}–${c.rounds[c.rounds.length - 1]}, hvor hver runde blev forudsagt kun ud fra runderne før, vandt favoritten ${c.fav_won} af ${c.fav_n} kampe (${pc(c.fav_won / c.fav_n)}).` : "";
+}
+
+function oddsCards(F) {
+  return `<div class="odds-list">${F.next_round.map((m) => {
+    const tip = `<b>${esc(mgr(m.a))} mod ${esc(mgr(m.b))}</b>Forventet score ${num(m.ea, 1)} mod ${num(m.eb, 1)}, ud fra hvert holds bedste startopstilling i modellen.<br>Simuleret ${F.sims.toLocaleString("da-DK")} gange med den spredning, holdscorerne faktisk har haft (±${num(F.calibration.sd, 0)} point).<br>${calibText(F)}`;
+    return `<div class="panel spot odds" data-tip="${esc(tip)}">
+      <div class="o-side"><b>${esc(mgr(m.a))}</b><span>${esc(team(m.a))}</span><span class="o-exp">${num(m.ea, 0)} forventet</span></div>
+      <div class="o-mid">
+        <div class="o-pcts"><b class="${m.pa >= m.pb ? "fav" : ""}">${pc(m.pa)}</b><span>Uafgjort ${pc(m.pd)}</span><b class="${m.pb > m.pa ? "fav" : ""}">${pc(m.pb)}</b></div>
+        <div class="o-bar" aria-hidden="true"><i class="a" style="width:${m.pa * 100}%"></i><i class="d" style="width:${m.pd * 100}%"></i><i class="b" style="width:${m.pb * 100}%"></i></div>
+      </div>
+      <div class="o-side r"><b>${esc(mgr(m.b))}</b><span>${esc(team(m.b))}</span><span class="o-exp">${num(m.eb, 0)} forventet</span></div>
+    </div>`;
+  }).join("")}</div>`;
+}
+
+function seasonForecast(F) {
+  const n = F.season.length;
+  const rows = F.season;
+  const special = F.special_rounds?.length
+    ? `<p class="small" style="margin-top:12px">${F.special_rounds.map((r) => `Runde ${r.gw}: ${r.double.length ? `dobbeltkamp for ${r.double.join(", ")}` : ""}${r.double.length && r.blank.length ? "; " : ""}${r.blank.length ? `ingen kamp for ${r.blank.join(", ")}` : ""}`).join(". ")}.</p>` : "";
+  return `<section class="sec">
+    <div class="sec-head"><div><h2>Sæsonprognose</h2><p class="lede">Resten af sæsonen simuleret ${F.sims.toLocaleString("da-DK")} gange ud fra holdenes forventede point og H2H-programmet.</p></div></div>
+    <div class="panel"><div class="scroll"><table data-keep="0,1,4,6"><thead><tr><th>#</th><th class="l">Hold</th><th>Forv. placering</th><th>Forv. point</th><th>Vinder ligaen</th><th>Top 3</th><th>Sidst</th></tr></thead><tbody>
+      ${rows.map((r, i) => `<tr><td class="rank">${rank(i + 1)}</td><td class="l">${who(r.le)}</td><td>${num(r.exp_rank, 1)}</td><td>${num(r.exp_pts, 0)}</td><td class="pts">${pc(r.p_first)}</td><td>${pc(r.p_top3)}</td><td class="${r.p_last >= 0.15 ? "delta-down" : ""}">${pc(r.p_last)}</td></tr>`).join("")}
+    </tbody></table></div></div>
+    <h3 style="margin-top:28px">Chance for hver placering</h3>
+    <div class="panel" style="margin-top:12px"><div class="scroll matrix"><table class="posgrid"><thead><tr><th class="l">Hold</th>${Array.from({ length: n }, (_, i) => `<th>${i + 1}.</th>`).join("")}</tr></thead><tbody>
+      ${rows.map((r) => `<tr><td class="l">${who(r.le)}</td>${r.dist.map((p, i) => `<td class="cell" style="background:rgba(167,139,250,${(Math.min(1, p / 0.4) * 0.55).toFixed(3)})" data-tip="${esc(`<b>${esc(mgr(r.le))}</b>${i + 1}. plads: ${pc(p)}`)}">${p >= 0.005 ? pc(p) : ""}</td>`).join("")}</tr>`).join("")}
+    </tbody></table></div></div>
+    ${special}
+    <p class="small muted" style="margin-top:12px;max-width:72ch">${calibText(F)} Hvert hold stilles op med sin bedste startopstilling ifølge modellen. Holdene antages at beholde deres trupper, men waivers og byttehandler ændrer dem, så hver simulation giver hvert hold en varig afvigelse på ±${num(F.drift_sd, 0)} point per runde. Den afvigelse er en antagelse, ikke målt.</p>
+  </section>`;
+}
+
 // ---------------------------------------------------------------- view: stilling
 
 let tableMode = "h2h";
@@ -383,9 +425,15 @@ async function viewStilling() {
       ${matchCards(snap.matches)}</section>`;
   }
 
+  const F = D.forecast;
+  const odds = F && F.next_round?.length && F.next_gw === D.next_round?.gw;
   const nextRound = D.next_round && D.next_round.matches.length && !D.live
-    ? `<section class="sec"><div class="sec-head"><div><h2>Næste runde</h2><p class="lede">Kampene i runde ${D.next_round.gw}.</p></div></div>${matchCards(D.next_round.matches, { pending: true })}</section>`
+    ? `<section class="sec"><div class="sec-head"><div><h2>Næste runde</h2><p class="lede">${odds
+        ? `Kampene i runde ${D.next_round.gw} med vinderchancer. Tryk på en kamp for at se, hvordan chancen er regnet.`
+        : `Kampene i runde ${D.next_round.gw}.`}</p></div></div>
+      ${odds ? oddsCards(F) : matchCards(D.next_round.matches, { pending: true })}</section>`
     : "";
+  const seasonSec = F?.season?.length ? seasonForecast(F) : "";
 
   app.innerHTML = `${hero}
     <section class="sec">
@@ -401,7 +449,8 @@ async function viewStilling() {
       <div class="panel"><div class="scroll" id="table-box"></div></div>
       <div class="legend" id="table-legend"></div>
     </section>
-    ${nextRound}`;
+    ${nextRound}
+    ${seasonSec}`;
 
   const sw = app.querySelector(".switch");
   const draw = () => {
@@ -480,7 +529,8 @@ function viewBundpokal() {
         const gap = i === 0 ? "" : ` (${lead.total - r.total} efter)`;
         const rk = current.group_ranks?.[r.le];
         const tipTxt = `<b>${esc(mgr(r.le))}</b><br>${Object.entries(r.by_gw).map(([g, v]) => `Runde ${g}: ${v}`).join("<br>") || "Ingen runder spillet endnu"}${rk ? `<br>${rk}. plads ved låsning` : ""}`;
-        return `<li data-tip="${esc(tipTxt)}"><span class="pos">${i + 1}</span>${who(r.le)}<span class="pts" aria-label="${r.total} point${gap}">${r.total}</span><span class="bar"><i style="width:${Math.max(2, (r.total / max) * 100)}%"></i></span></li>`;
+        const pw = D.forecast?.trophy?.block === current.id ? D.forecast.trophy.p_win[r.le] : null;
+        return `<li data-tip="${esc(tipTxt + (pw != null ? `<br>Chance for at vinde blokken: ${pc(pw)}` : ""))}"><span class="pos">${i + 1}</span>${who(r.le)}<span class="pts" aria-label="${r.total} point${gap}">${r.total}</span><span class="bar"><i style="width:${Math.max(2, (r.total / max) * 100)}%"></i></span>${pw != null ? `<span class="p-win">${pc(pw)} chance for at vinde</span>` : ""}</li>`;
       }).join("")}</ol>
     </div>`;
   }

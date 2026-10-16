@@ -19,6 +19,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
 import advanced
+import forecast
 
 API = "https://draft.premierleague.com/api"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -551,6 +552,27 @@ def main():
 
     season = season_stats(ctx, snapshots, details, game, transactions)
 
+    # the projection model runs every time: its public part (H2H chances, season simulation)
+    # goes into current.json; the player-level part is encrypted below when ADV_PASSWORD is set
+    adv = advanced.build(boot, sorted(snapshots), fetch, owners, entry_to_le, game.get("next_event"))
+    I = adv.pop("_internal")
+    squads = defaultdict(list)
+    for pid, owner in owners.items():
+        if owner in entry_to_le:
+            squads[entry_to_le[owner]].append(pid)
+    schedule = [{"event": m["event"], "a": m["a"], "b": m["b"]} for m in matches if not m["finished"] and m["event"] in I["targets"]]
+    standings_now = {s["league_entry"]: {"pts": s["total"], "pf": s["points_for"]} for s in details["standings"]}
+    calib = forecast.calibrate(I["live"], I["fixtures"], I["gws"], I["pos_of"], I["team_of"], I["elements"], I["ctx"],
+                               snapshots, finished_matches)
+    played = lambda le, a, b: sum(snapshots[g]["teams"][le]["score"] for g in range(a, b + 1) if g in snapshots)
+    fc = forecast.run(I["proj_long"], I["targets"], I["pos_of"], dict(squads), schedule, standings_now, calib, blocks, played)
+    short = {t["id"]: t["short_name"] for t in boot["teams"]}
+    fc["special_rounds"] = [{"gw": r["gw"], "double": [short[x] for x in r["double"]], "blank": [short[x] for x in r["blank"]]}
+                            for r in adv.pop("special_rounds")]
+    fc["unscheduled"] = adv.pop("unscheduled")
+    print(f"  forecast: favourite won {calib['fav_won']} of {calib['fav_n']} past matches, team score bias {calib['bias']:.1f}, spread {calib['sd']:.1f}", flush=True)
+
+
     cur = game["current_event"]
     nxt = game.get("next_event")
     live_gw = cur if cur and not game.get("current_event_finished") else None
@@ -572,13 +594,13 @@ def main():
         "live": {"gw": live_gw, "matches": live_matches} if live_gw else None,
         "next_round": {"gw": nxt, "matches": next_matches} if nxt else None,
         "blocks": blocks,
+        "forecast": fc,
         "most_moved": player_moves(choices, transactions, entry_to_le, boot, owners),
         **season,
     }
     # password-protected advanced player data (encrypted; skipped without ADV_PASSWORD)
     adv_path = os.path.join(DATA, "adv.enc.json")
     if os.environ.get("ADV_PASSWORD"):
-        adv = advanced.build(boot, sorted(snapshots), fetch, owners, entry_to_le, game.get("next_event"))
         adv["managers"] = {le: e["manager"] for le, e in entries.items()}
         adv["teams_of"] = {le: e["team"] for le, e in entries.items()}
         adv["entry_ids"] = {le: e["entry_id"] for le, e in entries.items()}

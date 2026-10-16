@@ -160,7 +160,8 @@ def build(boot, gws, fetch, owners, entry_to_le, next_gw=None):
     for p in players:
         p["team"] = next((e["team"] for e in boot["elements"] if e["id"] == p["id"]), None)
     return {"cols": COLS, "gws": list(gws), "players": players, "by_gw": by_gw, "teams": teams,
-            "proj": m["proj"], "fixtures": m["fixtures"], "backtest": m["backtest"], "strength": m["strength"]}
+            "proj": m["proj"], "fixtures": m["fixtures"], "backtest": m["backtest"], "strength": m["strength"],
+            "_internal": m["_internal"], "special_rounds": m["special_rounds"], "unscheduled": m["unscheduled"]}
 
 
 def encrypt(plain, password):
