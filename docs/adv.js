@@ -16,9 +16,17 @@ async function advDecrypt(password) {
   const key = await crypto.subtle.deriveKey(
     { name: "PBKDF2", hash: "SHA-256", salt: b64(enc.salt), iterations: enc.iter },
     base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
-  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(enc.iv) }, key, b64(enc.data));
-  const stream = new Blob([plain]).stream().pipeThrough(new DecompressionStream("gzip"));
-  return JSON.parse(await new Response(stream).text());
+  let plain;
+  try {
+    plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(enc.iv) }, key, b64(enc.data));
+  } catch {
+    throw new Error("wrong-password");   // AES-GCM rejects the data when the key is wrong
+  }
+  if (enc.v === 1) {
+    const stream = new Blob([plain]).stream().pipeThrough(new DecompressionStream("gzip"));
+    return JSON.parse(await new Response(stream).text());
+  }
+  return JSON.parse(new TextDecoder().decode(plain));
 }
 
 const store = {
@@ -121,7 +129,7 @@ function renderLock(error) {
     <h1>Avanceret spillerdata</h1>
     <p class="lede">Minutter, underliggende tal og roller for alle spillere, for hele sæsonen eller runde for runde. Til waivers og byttehandler.</p>
     <form class="panel lock" id="lock-form" autocomplete="on">
-      <svg class="lock-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <svg class="lock-ic" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
       <label for="adv-pw">Kodeord</label>
       <div class="lock-row">
         <input id="adv-pw" name="password" type="password" autocomplete="current-password" required>
@@ -143,8 +151,11 @@ function renderLock(error) {
       store.set(input.value);
       renderData();
       enhance(app);
-    } catch {
-      renderLock("Forkert kodeord. Prøv igen.");
+    } catch (err) {
+      console.error(err);
+      renderLock(err.message === "wrong-password"
+        ? "Forkert kodeord. Prøv igen."
+        : "Data kunne ikke åbnes i denne browser. Genindlæs siden, eller prøv en opdateret browser.");
     }
   });
 }

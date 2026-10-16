@@ -3,14 +3,13 @@
 Per player and gameweek: official FPL numbers (event/{gw}/live) joined with
 FPL-Core-Insights match stats (shots, box touches, chances created ...).
 
-The result is gzipped and encrypted with AES-256-GCM. The key is derived from
+The result is encrypted with AES-256-GCM. The key is derived from
 the password in the ADV_PASSWORD environment variable (PBKDF2-SHA256), so the
 public repo only ever contains ciphertext. Without the variable nothing is written.
 """
 
 import base64
 import csv
-import gzip
 import hashlib
 import io
 import json
@@ -117,12 +116,13 @@ def build(boot, gws, fetch, owners, entry_to_le):
 def encrypt(plain, password):
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-    data = gzip.compress(json.dumps(plain, ensure_ascii=False, separators=(",", ":")).encode("utf-8"), mtime=0)
+    # plain JSON (not gzipped): every browser can read it without DecompressionStream
+    data = json.dumps(plain, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     salt, iv = os.urandom(16), os.urandom(12)
     key = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, ITERATIONS, dklen=32)
     ct = AESGCM(key).encrypt(iv, data, None)
     b64 = lambda b: base64.b64encode(b).decode("ascii")
-    return {"v": 1, "kdf": "PBKDF2-SHA256", "iter": ITERATIONS, "salt": b64(salt), "iv": b64(iv), "data": b64(ct)}
+    return {"v": 2, "kdf": "PBKDF2-SHA256", "iter": ITERATIONS, "salt": b64(salt), "iv": b64(iv), "data": b64(ct)}
 
 
 def decrypts(enc, password):
