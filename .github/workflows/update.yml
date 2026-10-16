@@ -20,8 +20,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install encryption library
-        run: pip install --quiet cryptography==48.0.0
+      - name: Install libraries
+        run: pip install --quiet cryptography==48.0.0 numpy==2.3.2
       - name: Build data
         env:
           ADV_PASSWORD: ${{ secrets.ADV_PASSWORD }}

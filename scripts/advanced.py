@@ -16,6 +16,8 @@ import json
 import os
 import urllib.request
 
+import model
+
 CORE = "https://raw.githubusercontent.com/olbauday/FPL-Core-Insights/main/data/2026-2027"
 ITERATIONS = 250_000
 
@@ -33,7 +35,21 @@ CORE_STATS = [
     ("cc", "chances_created"), ("crs", "accurate_crosses"), ("aer", "aerial_duels_won"), ("tkw", "tackles_won"),
     ("int", "interceptions"), ("clr", "clearances"), ("gp", "goals_prevented"),
 ]
-COLS = [k for k, _ in FPL_STATS] + [k for k, _ in CORE_STATS]
+# xpt: expected points for the round (see model.past_xp), computed here rather than read
+COLS = [k for k, _ in FPL_STATS] + [k for k, _ in CORE_STATS] + ["xpt"]
+FIXTURES_URL = "https://fantasy.premierleague.com/api/fixtures/"
+
+
+def classic_fixtures():
+    """The whole season's fixtures. The Draft API only lists the next three rounds; classic FPL
+    lists all 380 with the same team ids. Falls back to the Draft list if classic is unreachable."""
+    req = urllib.request.Request(FIXTURES_URL, headers={"User-Agent": "Mozilla/5.0 (super-draft-league-site)"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.load(r)
+    except Exception as e:
+        print(f"  note: classic fixtures unavailable ({e}); using the Draft list", flush=True)
+        return None
 
 
 def _csv(url):
@@ -71,7 +87,7 @@ def core_by_gameweek(gw, code_to_id):
     return out
 
 
-def build(boot, gws, fetch, owners, entry_to_le):
+def build(boot, gws, fetch, owners, entry_to_le, next_gw=None):
     """Plain (unencrypted) advanced data: player info plus one row of stats per player per gameweek."""
     clubs = {t["id"]: t["short_name"] for t in boot["teams"]}
     pos = {t["id"]: t["singular_name_short"] for t in boot["element_types"]}
@@ -95,9 +111,17 @@ def build(boot, gws, fetch, owners, entry_to_le):
             "chance": e.get("chance_of_playing_next_round"),
         })
 
+    live_raw = {gw: {int(k): v["stats"] for k, v in fetch(f"event/{gw}/live")["elements"].items()} for gw in gws}
+    fixtures = classic_fixtures()
+    if fixtures is None:
+        fixtures = [f for fx in (boot.get("fixtures") or {}).values() for f in fx]
+        for gw in gws:   # past rounds from the live endpoint, which lists its own fixtures
+            fixtures += fetch(f"event/{gw}/live").get("fixtures", [])
+    m = model.run(boot, live_raw, list(gws), fixtures, next_gw)
+
     by_gw = {}
     for gw in gws:
-        live = fetch(f"event/{gw}/live")["elements"]
+        live = {str(k): {"stats": v} for k, v in live_raw[gw].items()}
         core = core_by_gameweek(gw, code_to_id)
         rows = {}
         for sid, v in live.items():
@@ -105,12 +129,16 @@ def build(boot, gws, fetch, owners, entry_to_le):
             pid = int(sid)
             if not st.get("minutes"):
                 continue
-            vals = [_num(st.get(name)) for _, name in FPL_STATS] + core.get(pid, [0.0] * len(CORE_STATS))
+            vals = [_num(st.get(name)) for _, name in FPL_STATS] + core.get(pid, [0.0] * len(CORE_STATS)) + [m["xpt"][gw].get(pid, 0.0)]
             rows[pid] = [round(x, 2) if x % 1 else int(x) for x in vals]
         by_gw[str(gw)] = rows
         print(f"  advanced: GW{gw} {len(rows)} players, {len(core)} with match stats", flush=True)
 
-    return {"cols": COLS, "gws": list(gws), "players": players, "by_gw": by_gw}
+    teams = {t["id"]: {"short": t["short_name"], "name": t["name"]} for t in boot["teams"]}
+    for p in players:
+        p["team"] = next((e["team"] for e in boot["elements"] if e["id"] == p["id"]), None)
+    return {"cols": COLS, "gws": list(gws), "players": players, "by_gw": by_gw, "teams": teams,
+            "proj": m["proj"], "fixtures": m["fixtures"], "backtest": m["backtest"], "strength": m["strength"]}
 
 
 def encrypt(plain, password):

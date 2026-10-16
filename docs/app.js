@@ -121,6 +121,23 @@ const io = "IntersectionObserver" in window ? new IntersectionObserver((entries)
   });
 }, { rootMargin: "0px 0px -6% 0px", threshold: 0.06 }) : null;
 
+// safety net: after any scroll, reveal whatever is on screen even if the observer missed a jump
+let revealTick = 0;
+document.addEventListener("scroll", () => {
+  if (revealTick) return;
+  revealTick = requestAnimationFrame(() => {
+    revealTick = 0;
+    document.querySelectorAll(".reveal:not(.in)").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < innerHeight && r.bottom > 0) {
+        el.classList.add("in");
+        io?.unobserve(el);
+        el.querySelectorAll(COUNT_SEL).forEach(countUp);
+      }
+    });
+  });
+}, { passive: true });
+
 function enhance(root) {
   if (REDUCED || !io) return;
   const seen = new Map();

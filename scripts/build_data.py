@@ -578,8 +578,13 @@ def main():
     # password-protected advanced player data (encrypted; skipped without ADV_PASSWORD)
     adv_path = os.path.join(DATA, "adv.enc.json")
     if os.environ.get("ADV_PASSWORD"):
-        adv = advanced.build(boot, sorted(snapshots), fetch, owners, entry_to_le)
+        adv = advanced.build(boot, sorted(snapshots), fetch, owners, entry_to_le, game.get("next_event"))
         adv["managers"] = {le: e["manager"] for le, e in entries.items()}
+        adv["teams_of"] = {le: e["team"] for le, e in entries.items()}
+        adv["entry_ids"] = {le: e["entry_id"] for le, e in entries.items()}
+        adv["game"] = {"next": game.get("next_event"), "waivers_processed": game.get("waivers_processed"),
+                       "next_waivers": ev.get(game.get("next_event"), {}).get("waivers_time"),
+                       "next_deadline": ev.get(game.get("next_event"), {}).get("deadline_time")}
         if advanced.write(adv_path, adv, read_json, write_json):
             changed.append(adv_path)
 

@@ -44,6 +44,7 @@ const COLDEF = {
   apps: { label: "Kampe", tip: "Runder med minutter", fixed: true },
   share: { label: "Min-andel", tip: "Andel af mulige minutter i perioden", fixed: true, pct: true },
   pt: { label: "Point", tip: "FPL-point" },
+  xpt: { label: "xP", dec: 1, tip: "Forventede point: mål, assists og clean sheets erstattet af xG, xA og clean sheet-chancen. Minutter, DefCon, redninger og bonus som de skete." },
   g: { label: "Mål" }, a: { label: "Assist" },
   xg: { label: "xG", dec: 2, tip: "Forventede mål" }, xa: { label: "xA", dec: 2, tip: "Forventede assists" },
   xgi: { label: "xGI", dec: 2, tip: "Forventet målinvolvering (xG + xA)" },
@@ -63,10 +64,10 @@ const COLDEF = {
 
 // m: shown on phones; first column of each category is the default sort
 const CATS = {
-  overblik: { label: "Overblik", cols: ["pt", "mi", "st", "g", "a", "xgi", "dc", "cs"], m: ["pt", "mi"], pos: "ALL" },
+  overblik: { label: "Overblik", cols: ["pt", "xpt", "mi", "st", "g", "a", "xgi", "dc", "cs"], m: ["pt", "xpt"], pos: "ALL" },
   angreb: { label: "Angreb", cols: ["xgi", "mi", "g", "a", "xg", "xa", "over", "sh", "sot", "box", "cc"], m: ["xgi", "mi"], pos: "ALL" },
   forsvar: { label: "Forsvar", cols: ["dc", "mi", "cs", "gc", "xgc", "tkw", "int", "clr", "aer", "crs", "xgi"], m: ["dc", "mi"], pos: "DEF" },
-  maal: { label: "Målmænd", cols: ["pt", "mi", "sv", "gp", "cs", "gc", "xgc", "bo"], m: ["sv", "mi"], pos: "GKP" },
+  maal: { label: "Målmænd", cols: ["pt", "xpt", "mi", "sv", "gp", "cs", "gc", "xgc", "bo"], m: ["pt", "xpt"], pos: "GKP" },
   minutter: { label: "Minutter", cols: ["mi", "share", "st", "apps", "pt"], m: ["mi", "share"], pos: "ALL" },
 };
 
@@ -113,7 +114,24 @@ function fmt(key, v) {
 
 // ---------------------------------------------------------------- view
 
-async function viewAvanceret() {
+let ADV_SUB = "";
+
+function advHead() {
+  return `<div class="adv-head"><h1>Avanceret spillerdata</h1><button class="ghost" id="adv-lock" type="button">Lås igen</button></div>`;
+}
+document.addEventListener("click", (e) => {
+  if (e.target.closest("#adv-lock")) { ADV = null; store.clear(); renderLock(); }
+});
+
+function renderSection() {
+  if (ADV_SUB === "prognose") return renderPrognose();
+  if (ADV_SUB === "waivers") return renderWaivers();
+  if (ADV_SUB === "hold") return renderHold();
+  renderData();
+}
+
+async function viewAvanceret(arg) {
+  ADV_SUB = arg || "";
   if (!ADV) {
     const saved = store.get();
     if (saved) {
@@ -121,7 +139,7 @@ async function viewAvanceret() {
     }
   }
   if (!ADV) return renderLock();
-  renderData();
+  renderSection();
 }
 
 function renderLock(error) {
@@ -149,7 +167,7 @@ function renderLock(error) {
     try {
       ADV = await advDecrypt(input.value);
       store.set(input.value);
-      renderData();
+      renderSection();
       enhance(app);
     } catch (err) {
       console.error(err);
@@ -168,10 +186,8 @@ function renderData() {
   const managers = Object.entries(ADV.managers).sort((a, b) => a[1].localeCompare(b[1], "da"));
 
   app.innerHTML = `
-    <div class="adv-head">
-      <h1>Avanceret spillerdata</h1>
-      <button class="ghost" id="adv-lock" type="button">Lås igen</button>
-    </div>
+    ${advHead()}
+    ${subnav("")}
     <p class="lede">Data til og med runde ${latest}. Tryk på en spiller for tallene runde for runde.</p>
 
     <div class="panel adv-controls">
@@ -210,7 +226,6 @@ function renderData() {
   $("#adv-min").value = ADV_STATE.minMin;
   $("#adv-q").value = ADV_STATE.q;
 
-  $("#adv-lock").addEventListener("click", () => { ADV = null; store.clear(); renderLock(); });
   $("#adv-cat").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
     ADV_STATE.cat = b.dataset.cat;
     ADV_STATE.pos = CATS[b.dataset.cat].pos;
@@ -327,7 +342,11 @@ function playerSheet(pid) {
   openSheet(`<b>${esc(p.full || p.name)}</b>
     <span class="sheet-sub">${esc(p.pos)}, ${esc(p.club)}. Ejer: ${ownerHtml(p)}</span>${news}
     <div class="scroll sheet-table"><table><thead><tr><th class="l">Runde</th>${cols.map((k) => `<th>${COLDEF[k].label}</th>`).join("")}</tr></thead>
-    <tbody>${rows}<tr class="sep"><td class="l"><b>I alt</b></td>${cols.map((k) => `<td><b>${fmtPlain(k, tot[k])}</b></td>`).join("")}</tr></tbody></table></div>`);
+    <tbody>${rows}<tr class="sep"><td class="l"><b>I alt</b></td>${cols.map((k) => `<td><b>${fmtPlain(k, tot[k])}</b></td>`).join("")}</tr></tbody></table></div>
+    ${ADV.proj?.gws?.length ? `<h4 class="sheet-h">Prognose</h4><div class="scroll sheet-table"><table><thead><tr>${ADV.proj.gws.map((g) => `<th>R${g}</th>`).join("")}</tr></thead><tbody><tr>${ADV.proj.gws.map((g, j) => {
+      const f = (ADV.fixtures[p.team] || []).filter((f) => f.gw === g).map((f) => `${ADV.teams[f.opp]?.short ?? ""}${f.home ? "" : " u"}`).join("+") || "–";
+      return `<td><b>${num(ADV.proj.by_player[pid]?.[j] ?? 0, 1)}</b><br><span class="small muted">${f}</span></td>`;
+    }).join("")}</tr></tbody></table></div>` : ""}`);
 }
 
 function fmtPlain(k, v) {
