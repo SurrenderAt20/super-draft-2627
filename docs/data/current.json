@@ -929,6 +929,37 @@
    ]
   },
   {
+   "id": 637,
+   "name": "Maitland-Niles",
+   "club": "EVE",
+   "pos": "DEF",
+   "pts": 25,
+   "ins": 2,
+   "outs": 1,
+   "moves": 3,
+   "managers": 2,
+   "owner": 1850,
+   "history": [
+    {
+     "gw": 5,
+     "type": "in",
+     "le": 239612,
+     "kind": "free"
+    },
+    {
+     "gw": 6,
+     "type": "out",
+     "le": 239612
+    },
+    {
+     "gw": 7,
+     "type": "in",
+     "le": 1850,
+     "kind": "free"
+    }
+   ]
+  },
+  {
    "id": 114,
    "name": "Boscagli",
    "club": "BHA",
@@ -1088,41 +1119,6 @@
      "gw": 4,
      "type": "out",
      "le": 294024
-    }
-   ]
-  },
-  {
-   "id": 541,
-   "name": "Meunier",
-   "club": "SUN",
-   "pos": "DEF",
-   "pts": 15,
-   "ins": 1,
-   "outs": 2,
-   "moves": 3,
-   "managers": 2,
-   "owner": null,
-   "history": [
-    {
-     "gw": 0,
-     "type": "draft",
-     "le": 50414
-    },
-    {
-     "gw": 1,
-     "type": "out",
-     "le": 50414
-    },
-    {
-     "gw": 6,
-     "type": "in",
-     "le": 239612,
-     "kind": "free"
-    },
-    {
-     "gw": 7,
-     "type": "out",
-     "le": 239612
     }
    ]
   }
@@ -2840,7 +2836,7 @@
    "share": 0.25,
    "claims_won": 12,
    "claims_lost": 28,
-   "free_agents": 5
+   "free_agents": 6
   },
   {
    "le": 33708,
@@ -3086,5 +3082,5 @@
    "best_player": 1
   }
  },
- "updated": "2026-10-16T12:12+00:00"
+ "updated": "2026-10-16T12:41+00:00"
 }

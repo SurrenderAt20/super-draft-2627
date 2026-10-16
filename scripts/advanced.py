@@ -16,6 +16,7 @@ import json
 import os
 import urllib.request
 
+import history
 import model
 
 CORE = "https://raw.githubusercontent.com/olbauday/FPL-Core-Insights/main/data/2026-2027"
@@ -87,6 +88,24 @@ def core_by_gameweek(gw, code_to_id):
     return out
 
 
+def penalty_order(boot):
+    """Penalty takers from classic FPL. The Draft API has the field, but it is empty for every player."""
+    req = urllib.request.Request("https://fantasy.premierleague.com/api/bootstrap-static/",
+                                 headers={"User-Agent": "Mozilla/5.0 (super-draft-league-site)"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            classic = json.load(r)
+    except Exception as e:
+        print(f"  note: classic bootstrap unavailable ({e}); no penalty takers this run", flush=True)
+        return 0
+    order = {x["code"]: x.get("penalties_order") for x in classic["elements"]}
+    n = 0
+    for e in boot["elements"]:
+        e["penalties_order"] = order.get(e["code"])
+        n += e["penalties_order"] == 1
+    return n
+
+
 def build(boot, gws, fetch, owners, entry_to_le, next_gw=None):
     """Plain (unencrypted) advanced data: player info plus one row of stats per player per gameweek."""
     clubs = {t["id"]: t["short_name"] for t in boot["teams"]}
@@ -117,7 +136,10 @@ def build(boot, gws, fetch, owners, entry_to_le, next_gw=None):
         fixtures = [f for fx in (boot.get("fixtures") or {}).values() for f in fx]
         for gw in gws:   # past rounds from the live endpoint, which lists its own fixtures
             fixtures += fetch(f"event/{gw}/live").get("fixtures", [])
-    m = model.run(boot, live_raw, list(gws), fixtures, next_gw)
+    print(f"  advanced: {penalty_order(boot)} first-choice penalty takers", flush=True)
+    last = history.last_season()
+    now = history.this_season(max(gws) if gws else 1)
+    m = model.run(boot, live_raw, list(gws), fixtures, next_gw, last=last, now=now)
 
     by_gw = {}
     for gw in gws:

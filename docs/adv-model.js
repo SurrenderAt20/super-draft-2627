@@ -25,7 +25,8 @@ function fixChips(p, n, mode) {
     const good = mode === "def" || ["GKP", "DEF"].includes(p.pos) ? Math.exp(-f.ga) : f.gf;
     const scale = mode === "def" || ["GKP", "DEF"].includes(p.pos) ? [0.15, 0.45] : [0.9, 2.0];
     const t = Math.max(0, Math.min(1, (good - scale[0]) / (scale[1] - scale[0])));
-    return `<i class="fxc" style="--t:${t.toFixed(2)}" title="Runde ${f.gw}: ${teamShort(f.opp)} ${f.home ? "hjemme" : "ude"}">${teamShort(f.opp)}${f.home ? "" : "<small>u</small>"}</i>`;
+    const eu = f.euro_h != null ? `, ${Math.round(f.euro_h / 24)} dage efter europæisk kamp` : "";
+    return `<i class="fxc${f.euro_h != null ? " eu" : ""}" style="--t:${t.toFixed(2)}" title="Runde ${f.gw}: ${teamShort(f.opp)} ${f.home ? "hjemme" : "ude"}${eu}">${teamShort(f.opp)}${f.home ? "" : "<small>u</small>"}</i>`;
   }).join("")}</span>`;
 }
 
@@ -61,6 +62,8 @@ function reasonFor(p) {
     if (easy) bits.push("let program");
     if (hard) bits.push("svært program");
   }
+  const pen = ADV.proj.pens?.[p.id];
+  if (pen === 1) bits.push("første straffeskytte");
   if (p.status === "d") bits.push(`tvivlsom: ${p.news || "ukendt"}`);
   return bits.join(", ");
 }
@@ -96,10 +99,13 @@ function horizonSelect(id, value) {
 function modelNote() {
   const b = ADV.backtest;
   if (!b) return "";
+  const r = b.rank, r0 = b.rank_base;
+  const rank = r && r0 ? `<p>Det vigtigste for transfers er, om modellen rangerer spillerne rigtigt over flere runder. Forudsagt runde ${r.from + 1}–${r.to} ud fra runde 1–${r.from}: sammenhæng <b>${num(r.corr, 2)}</b> med de faktiske point, og <b>${r.top30} af modellens top 30</b> var blandt de 30 bedste. Uden sidste sæson og straffeskytter var det ${num(r0.corr, 2)} og ${r0.top30} af 30.</p>` : "";
   return `<div class="panel model-note">
     <h3>Hvor godt rammer modellen?</h3>
-    <p>Testet på runde ${b.gws[0]}–${b.gws[b.gws.length - 1]}, hvor hver runde blev forudsagt kun ud fra runderne før: i snit <b>${num(b.mae, 2)} point</b> ved siden af per spiller per runde. Et simpelt formsnit ramte ${num(b.mae_form, 2)} ved siden af. Sammenhængen mellem forudsagt og faktisk er ${num(b.corr, 2)} (1 er perfekt).</p>
-    <p class="small muted">Point i én runde er meget tilfældige, så brug tallene til at sammenligne spillere over flere runder, ikke som en garanti. Modellen ser minutter, ikke træningsnyheder: en spiller på vej tilbage fra skade er undervurderet, indtil han spiller igen.</p>
+    ${rank}
+    <p>Runde for runde, testet på runde ${b.gws[0]}–${b.gws[b.gws.length - 1]} hvor hver runde blev forudsagt kun ud fra runderne før: i snit <b>${num(b.mae, 2)} point</b> ved siden af per spiller. Et simpelt formsnit ramte ${num(b.mae_form, 2)} ved siden af.</p>
+    <p class="small muted">Modellen bygger på xG, xA, minutter, modstandernes styrke, sidste sæson (2025/26, den første sæson med DefCon) og hvem der tager straffe. Point i én runde er meget tilfældige, så brug tallene til at sammenligne spillere over flere runder. Modellen ser minutter, ikke træningsnyheder: en spiller på vej tilbage fra skade er undervurderet, indtil han spiller igen. Faste startere mister ifølge sidste sæsons data næsten ingen minutter efter europæiske kampe, så det flag er til information.</p>
   </div>`;
 }
 
@@ -199,7 +205,7 @@ function renderPrognose() {
     </section>
 
     <section class="sec">
-      <div class="sec-head"><div><h2>Kampprogram</h2><p class="lede">Hvert holds næste ${fut.length} kampe. Angreb: forventede mål for holdet. Forsvar: chancen for clean sheet.</p></div>
+      <div class="sec-head"><div><h2>Kampprogram</h2><p class="lede">Hvert holds næste ${fut.length} kampe. Angreb: forventede mål for holdet. Forsvar: chancen for clean sheet. En lilla prik betyder europæisk kamp få dage før.</p></div>
         <div class="seg" id="fx-mode" role="group" aria-label="Visning"><button type="button" data-m="att">Angreb</button><button type="button" data-m="def">Forsvar</button></div></div>
       <div class="panel"><div class="scroll matrix" id="fx-box"></div></div>
     </section>
@@ -271,7 +277,7 @@ function drawFixtures() {
         const v = score(f);
         const k = Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
         const label = def ? `${Math.round(v * 100)}%` : num(v, 1);
-        return `<span class="fxcell" style="--t:${k.toFixed(2)}" data-tip="${esc(`<b>${esc(ADV.teams[t]?.name)} – ${esc(ADV.teams[f.opp]?.name)}</b>Runde ${g}, ${f.home ? "hjemme" : "ude"}<br>Forventede mål: ${num(f.gf, 2)} for, ${num(f.ga, 2)} imod<br>Chance for clean sheet: ${Math.round(Math.exp(-f.ga) * 100)}%`)}">${teamShort(f.opp)}${f.home ? "" : " u"}<small>${label}</small></span>`;
+        return `<span class="fxcell${f.euro_h != null ? " eu" : ""}" style="--t:${k.toFixed(2)}" data-tip="${esc(`<b>${esc(ADV.teams[t]?.name)} – ${esc(ADV.teams[f.opp]?.name)}</b>Runde ${g}, ${f.home ? "hjemme" : "ude"}<br>Forventede mål: ${num(f.gf, 2)} for, ${num(f.ga, 2)} imod<br>Chance for clean sheet: ${Math.round(Math.exp(-f.ga) * 100)}%${f.euro_h != null ? `<br>Europæisk kamp ${Math.round(f.euro_h / 24)} dage før` : ""}`)}">${teamShort(f.opp)}${f.home ? "" : " u"}<small>${label}</small></span>`;
       }).join("")}</td>`;
     }).join("")}</tr>`).join("")}</tbody></table>`;
   enhanceMatrices(app);

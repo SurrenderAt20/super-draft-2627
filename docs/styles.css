@@ -766,3 +766,10 @@ td.blank { color: var(--dim); }
   .curve-pick { padding: 12px; }
   .add-player { min-width: 0; width: 100%; }
 }
+
+/* European match a few days before: small violet dot in the corner */
+.fxc.eu, .fxcell.eu { position: relative; }
+.fxc.eu::after, .fxcell.eu::after {
+  content: ""; position: absolute; top: -2px; right: -2px; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--violet); box-shadow: 0 0 6px var(--violet);
+}
