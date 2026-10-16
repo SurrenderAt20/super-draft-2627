@@ -129,7 +129,7 @@ def build(boot, gws, fetch, owners, entry_to_le, next_gw=None):
             "id": e["id"], "name": e["web_name"], "full": f'{e.get("first_name", "")} {e.get("second_name", "")}'.strip(),
             "club": clubs.get(e["team"], ""), "pos": pos.get(e["element_type"], ""),
             "owner": entry_to_le.get(owner) if owner else None,
-            "status": e.get("status"), "news": e.get("news") or "",
+            "status": e.get("status"), "news": e.get("news") or "", "draft_rank": e.get("draft_rank"),
             "chance": e.get("chance_of_playing_next_round"),
         })
 

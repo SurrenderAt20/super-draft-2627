@@ -10,7 +10,10 @@ const HOLD = { horizon: 3 };
 
 // ---------------------------------------------------------------- data helpers
 
-const projOf = (pid) => ADV.proj.by_player[pid] || [];
+// every round left in the season when available; the first six are the same as by_player
+const projOf = (pid) => ADV.proj.long?.[pid] || ADV.proj.by_player[pid] || [];
+const seasonLeft = () => ADV.proj.gws_long?.length || ADV.proj.gws.length;
+const horizonLabel = (h) => (h === 1 ? "næste runde" : h >= seasonLeft() ? "resten af sæsonen" : `de næste ${h} runder`);
 const sumH = (pid, h) => projOf(pid).slice(0, h).reduce((a, b) => a + b, 0);
 const teamShort = (t) => ADV.teams[t]?.short ?? "?";
 const playerById = (pid) => ADV.players.find((p) => p.id === pid);
@@ -93,7 +96,8 @@ function subnav(active) {
 }
 
 function horizonSelect(id, value) {
-  return `<label>Periode<select id="${id}">${[[1, "Næste runde"], [3, "Næste 3 runder"], [6, "Næste 6 runder"]].map(([v, l]) => `<option value="${v}"${v === value ? " selected" : ""}>${l}</option>`).join("")}</select></label>`;
+  const opts = [[1, "Næste runde"], [3, "Næste 3 runder"], [6, "Næste 6 runder"], [99, `Resten af sæsonen (${seasonLeft()} runder)`]];
+  return `<label>Periode<select id="${id}">${opts.map(([v, l]) => `<option value="${v}"${v === value ? " selected" : ""}>${l}</option>`).join("")}</select></label>`;
 }
 
 function modelNote() {
@@ -301,6 +305,31 @@ function waiverStatus() {
   return "";
 }
 
+
+// hidden gold among free agents: short term (ready now) and long term (injured players on their way back count too)
+function freeGold(h, longTerm) {
+  const vis = visibleValue();
+  return ADV.players
+    .filter((p) => !p.owner && (longTerm ? p.status !== "u" && p.status !== "n" : isAvailable(p)))
+    // gold must also be good in absolute terms: top 30% of the position by the model, not just "better than zero points"
+    .filter((p) => (modelValue(h)[p.id] ?? 0) >= 0.7 && sumH(p.id, h) / h >= 2.0 && goldScore(p.id, h) >= 0.15)
+    .sort((a, b) => goldScore(b.id, h) - goldScore(a.id, h) || sumH(b.id, h) - sumH(a.id, h))
+    .slice(0, 8)
+    .map((p) => ({ p, vis: vis[p.id] }));
+}
+
+function goldList(title, lede, rows, h) {
+  return `<section class="sec">
+    <div class="sec-head"><div><h2>${title}</h2><p class="lede">${lede}</p></div></div>
+    ${rows.length ? `<div class="gold-list">${rows.map(({ p, vis }) => `<article class="panel spot gold" data-pid="${p.id}">
+      <div class="g-top"><b>${esc(p.name)}</b>${statusDot(p)}<span class="muted small">${esc(p.pos)}, ${esc(p.club)}</span>
+        <span class="g-xp"><b>${num(sumH(p.id, h), 1)}</b> xP ${horizonLabel(h)}</span></div>
+      <div class="g-why">${esc(reasonFor(p))}${p.status === "i" || p.status === "d" ? `. ${esc(p.news || "")}` : ""}</div>
+      <div class="g-meta"><span>${vis.season} point indtil nu</span><span>${num(seasonSum(p.id, "xpt"), 1)} xP indtil nu</span><span>form ${vis.form}</span>${fixChips(p, Math.min(6, Math.max(3, h)))}</div>
+    </article>`).join("")}</div>` : `<p class="adv-empty">Ingen ledige spillere skiller sig ud lige nu.</p>`}
+  </section>`;
+}
+
 function renderWaivers() {
   app.innerHTML = `
     ${advHead()}
@@ -312,14 +341,22 @@ function renderWaivers() {
       <div class="seg" id="wv-pos" role="group" aria-label="Position">${["ALL", "GKP", "DEF", "MID", "FWD"].map((p) => `<button type="button" data-pos="${p}">${p === "ALL" ? "Alle" : p}</button>`).join("")}</div>
     </div></div>
     <div class="wv-list" id="wv-list"></div>
+    <div class="cols2">
+      ${goldList("Skjult guld: kort sigt", "Ledige spillere klar til at spille, som modellen vurderer højere de næste 3 runder end deres point og form antyder.", freeGold(3, false), 3)}
+      ${goldList("Skjult guld: langtidsinvestering", "Resten af sæsonen. Her tæller også skadede spillere, der forventes tilbage, og spillere med et bedre program senere. Det er dem, andre overser, fordi de ikke scorer lige nu.", freeGold(seasonLeft(), true), seasonLeft())}
+    </div>
     <section class="sec">${modelNote()}</section>`;
   app.querySelector("#wv-h").addEventListener("change", (e) => { WAIV.horizon = Number(e.target.value); drawWaivers(); });
+  app.querySelectorAll(".gold[data-pid]").forEach((el) => el.addEventListener("click", (e) => {
+    if (e.target.closest(".st-dot")) return;
+    playerSheet(Number(el.dataset.pid));
+  }));
   app.querySelectorAll("#wv-pos button").forEach((b) => b.addEventListener("click", () => { WAIV.pos = b.dataset.pos; drawWaivers(); }));
   drawWaivers();
 }
 
 function drawWaivers() {
-  const h = WAIV.horizon;
+  const h = Math.min(WAIV.horizon, seasonLeft());
   app.querySelectorAll("#wv-pos button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.pos === WAIV.pos));
   const rows = ADV.players.filter((p) => !p.owner && isAvailable(p) && (WAIV.pos === "ALL" || p.pos === WAIV.pos))
     .sort((a, b) => sumH(b.id, h) - sumH(a.id, h)).slice(0, 20);
@@ -337,7 +374,7 @@ function drawWaivers() {
           <span class="muted small">Sæson: ${seasonSum(p.id, "pt")} point, ${num(seasonSum(p.id, "xpt"), 1)} xP, ${mi} min</span>
         </div>
       </div>
-      <div class="wv-xp"><span class="v">${num(sumH(p.id, h), 1)}</span><span class="muted small">xP ${h === 1 ? "næste runde" : `næste ${h}`}</span></div>
+      <div class="wv-xp"><span class="v">${num(sumH(p.id, h), 1)}</span><span class="muted small">xP ${horizonLabel(h)}</span></div>
     </article>`;
   }).join("") || `<p class="adv-empty">Ingen ledige spillere i den position.</p>`;
   app.querySelectorAll(".wv").forEach((el) => el.addEventListener("click", (e) => {
@@ -421,6 +458,140 @@ function renderAccuracy() {
   bindTips(app);
 }
 
+
+// ---------------------------------------------------------------- confidence from the 2025/26 replay
+
+const isRegular = (pid) => {
+  const i = ADV.cols.indexOf("mi");
+  return ADV.gws.slice(-4).reduce((a, gw) => a + (ADV.by_gw[gw]?.[pid]?.[i] ?? 0), 0) >= 240;
+};
+
+// How often the model was right in similar comparisons in the 2025/26 replay: same horizon, a similar
+// predicted gap per round, and whether both players were regular starters. Falls back to a coarser
+// group when a cell has too few comparisons.
+function confidenceFor(a, b, h) {
+  const C = ADV.replay?.confidence;
+  if (!C) return null;
+  const H = h <= 1 ? "1" : h <= 3 ? "3" : h <= 6 ? "6" : h <= 12 ? "10" : C.cells.season ? "season" : "10";
+  const gap = Math.abs(sumH(a.id, h) - sumH(b.id, h)) / h;
+  const edges = C.gap_edges;
+  let gi = 0;
+  edges.forEach((e, i) => { if (gap >= e) gi = i; });
+  const rg = isRegular(a.id) && isRegular(b.id) ? 1 : 0;
+  const sp = a.pos === b.pos ? 1 : 0;
+  const cells = C.cells[H] || {};
+  const pick = (keys) => {
+    let ok = 0, n = 0;
+    keys.forEach((k) => { const c = cells[k]; if (c) { ok += c.acc * c.n; n += c.n; } });
+    return n >= 300 ? { acc: ok / n, n } : null;
+  };
+  return pick([`${gi}|${rg}|${sp}`]) || pick([`${gi}|${rg}|0`, `${gi}|${rg}|1`]) ||
+         pick([`${gi}|0|0`, `${gi}|0|1`, `${gi}|1|0`, `${gi}|1|1`]);
+}
+
+function bucketByConfidence(conf) {
+  if (!conf) return ["watch", "Hold øje"];
+  if (conf.acc >= 0.70) return ["clear", "Klar opgradering"];
+  if (conf.acc >= 0.60) return ["marginal", "Marginal"];
+  return ["watch", "Hold øje"];
+}
+
+const confBadge = (conf) => conf ? `<span class="conf" title="I testen på hele 2025/26 havde modellen ret i ${Math.round(conf.acc * 100)}% af ${conf.n.toLocaleString("da-DK")} lignende sammenligninger.">${Math.round(conf.acc * 100)}% sikker</span>` : "";
+
+// the start/bench decisions for the next round where the model can barely tell the players apart
+function closeCalls(squad, next, inXI) {
+  const xi = next.xi.map((x) => x.p);
+  const bench = squad.filter((p) => !inXI.has(p.id));
+  const v = (p) => projOf(p.id)[0] ?? 0;
+  const calls = [];
+  for (const b of bench) {
+    for (const s of xi) {
+      // swapping must keep a legal formation: same position, or an outfield swap the minimums allow
+      const same = s.pos === b.pos;
+      const legal = same || (s.pos !== "GKP" && b.pos !== "GKP" && next.count[s.pos] > FORM[s.pos].min && next.count[b.pos] < FORM[b.pos].max);
+      if (!legal) continue;
+      const conf = confidenceFor(s, b, 1);
+      calls.push({ s, b, gap: v(s) - v(b), conf });
+    }
+  }
+  const best = new Map();
+  calls.sort((x, y) => x.gap - y.gap).forEach((c) => { if (!best.has(c.b.id)) best.set(c.b.id, c); });
+  const rows = [...best.values()].filter((c) => c.gap < 1.5).sort((x, y) => x.gap - y.gap).slice(0, 5);
+  if (!rows.length) return "";
+  const fx = (p) => fixturesOf(p, 1).map((f) => `${teamShort(f.opp)}${f.home ? "" : " u"}`).join("+") || "ingen kamp";
+  return `<section class="sec">
+    <div class="sec-head"><div><h2>Tætte valg til runde ${ADV.proj.gws[0]}</h2><p class="lede">Bænkspillere, der næsten er lige så gode som den svageste spiller, de kan erstatte. Sikkerheden er, hvor ofte modellen havde ret i lignende valg for en enkelt runde i testen på 2025/26. Under ca. 55% er det reelt plat eller krone, så brug din egen viden om holdnyheder.</p></div></div>
+    <div class="panel"><div class="scroll"><table class="advt"><thead><tr><th class="l">Start</th><th class="l">Bænk</th><th>Forskel</th><th>Sikkerhed</th><th class="l">Råd</th></tr></thead><tbody>
+      ${rows.map((c) => {
+        const acc = c.conf?.acc ?? 0.5;
+        const advice = acc >= 0.62 ? `Start ${esc(c.s.name)}` : acc >= 0.55 ? `Svag fordel til ${esc(c.s.name)}` : "Plat eller krone";
+        return `<tr><td class="l"><b>${esc(c.s.name)}</b> <span class="muted small">${esc(c.s.pos)}, ${fx(c.s)}, ${num(v(c.s), 1)} xP</span></td><td class="l"><b>${esc(c.b.name)}</b> <span class="muted small">${esc(c.b.pos)}, ${fx(c.b)}, ${num(v(c.b), 1)} xP</span></td><td>${num(c.gap, 1)}</td><td>${c.conf ? `${Math.round(acc * 100)}%` : "–"}</td><td class="l">${advice}</td></tr>`;
+      }).join("")}
+    </tbody></table></div></div>
+  </section>`;
+}
+
+
+// ---------------------------------------------------------------- hidden gold: model value vs. visible value
+
+// What a manager sees on the FPL site: points so far, recent form and FPL's pre-season draft rank,
+// each as a percentile within the position. The model's value is expected points over the horizon.
+let _vis = null;
+function visibleValue() {
+  if (_vis) return _vis;
+  const pt = ADV.cols.indexOf("pt");
+  const recent = ADV.gws.slice(-4);
+  const by = {};
+  for (const p of ADV.players) {
+    const season = ADV.gws.reduce((a, gw) => a + (ADV.by_gw[gw]?.[p.id]?.[pt] ?? 0), 0);
+    const form = recent.reduce((a, gw) => a + (ADV.by_gw[gw]?.[p.id]?.[pt] ?? 0), 0);
+    (by[p.pos] = by[p.pos] || []).push({ id: p.id, season, form, rank: p.draft_rank ?? 999 });
+  }
+  const pct = (arr, key, asc) => {
+    const sorted = [...arr].sort((a, b) => (asc ? b[key] - a[key] : a[key] - b[key]));
+    const out = {};
+    sorted.forEach((x, i) => { out[x.id] = arr.length > 1 ? i / (arr.length - 1) : 0.5; });
+    return out;
+  };
+  _vis = {};
+  for (const arr of Object.values(by)) {
+    const s = pct(arr, "season"), f = pct(arr, "form"), r = pct(arr, "rank", true);
+    arr.forEach((x) => { _vis[x.id] = { v: 0.45 * s[x.id] + 0.35 * f[x.id] + 0.2 * r[x.id], season: x.season, form: x.form, rank: x.rank }; });
+  }
+  return _vis;
+}
+
+let _mod = {};
+function modelValue(h) {
+  if (_mod[h]) return _mod[h];
+  const by = {};
+  ADV.players.forEach((p) => (by[p.pos] = by[p.pos] || []).push({ id: p.id, x: sumH(p.id, h) }));
+  const out = {};
+  for (const arr of Object.values(by)) {
+    const sorted = [...arr].sort((a, b) => a.x - b.x);
+    sorted.forEach((x, i) => { out[x.id] = arr.length > 1 ? i / (arr.length - 1) : 0.5; });
+  }
+  return (_mod[h] = out);
+}
+
+// how much higher the model rates a player than his visible value suggests (0 = valued as the model does)
+const goldScore = (pid, h) => (modelValue(h)[pid] ?? 0) - (visibleValue()[pid]?.v ?? 0);
+
+function goldTable(le, h) {
+  const vis = visibleValue();
+  const xpi = ADV.cols.indexOf("xpt");
+  const rows = ADV.players
+    .filter((p) => p.owner !== le && isAvailable(p) && seasonSum(p.id, "mi") >= 180 && (modelValue(h)[p.id] ?? 0) >= 0.7 && sumH(p.id, h) / h >= 2.0 && goldScore(p.id, h) >= 0.2)
+    .sort((a, b) => goldScore(b.id, h) - goldScore(a.id, h)).slice(0, 12);
+  if (!rows.length) return "";
+  return `<section class="sec">
+    <div class="sec-head"><div><h2>Skjult guld</h2><p class="lede">Spillere, som modellen rangerer markant højere end deres synlige værdi: få point eller svag form indtil nu, men stærke underliggende tal. Det er dem, deres ejer sandsynligvis undervurderer, og ledige spillere andre har overset.</p></div></div>
+    <div class="panel"><div class="scroll"><table class="advt" data-keep="0,1,5"><thead><tr><th class="l">Spiller</th><th class="l">Ejer</th><th>Point</th><th>xP indtil nu</th><th>Form (4 r.)</th><th>xP ${horizonLabel(h)}</th></tr></thead><tbody>
+      ${rows.map((p) => `<tr data-pid="${p.id}"><td class="l"><span class="pl"><b>${esc(p.name)}${statusDot(p)}</b><span>${esc(p.pos)}, ${esc(p.club)}</span></span></td><td class="l">${ownerHtml(p)}</td><td>${vis[p.id].season}</td><td class="${seasonSum(p.id, "xpt") > vis[p.id].season ? "delta-up" : ""}">${num(seasonSum(p.id, "xpt"), 1)}</td><td>${vis[p.id].form}</td><td class="pts">${num(sumH(p.id, h), 1)}</td></tr>`).join("")}
+    </tbody></table></div></div>
+  </section>`;
+}
+
 // ---------------------------------------------------------------- Mit hold
 
 function storedTeam() { try { return localStorage.getItem("adv-team"); } catch { return null; } }
@@ -465,7 +636,7 @@ function bucket(gainPerRound) {
 }
 
 function drawHold(le) {
-  const h = Math.min(HOLD.horizon, ADV.proj.gws.length);
+  const h = Math.min(HOLD.horizon, seasonLeft());
   const squad = ADV.players.filter((p) => p.owner === le);
   const body = app.querySelector("#hd-body");
   if (!squad.length) { body.innerHTML = `<p class="adv-empty">Fandt ingen spillere på holdet.</p>`; return; }
@@ -481,11 +652,14 @@ function drawHold(le) {
   for (const pos of Object.keys(FORM)) topFree[pos] = free.filter((p) => p.pos === pos).sort((a, b) => sumH(b.id, h) - sumH(a.id, h)).slice(0, 25);
   const swaps = squad.map((out) => {
     const adds = topFree[out.pos].map((inn) => ({ inn, gain: xiOver(squad.map((p) => (p === out ? inn : p)), h) - base }))
-      .filter((x) => x.gain > 0.05).sort((a, b) => b.gain - a.gain).slice(0, 3);
+      .filter((x) => x.gain > 0.05).sort((a, b) => b.gain - a.gain).slice(0, 3)
+      .map((x) => ({ ...x, conf: confidenceFor(x.inn, out, h) }));
     return { out, adds };
   }).filter((s) => s.adds.length).sort((a, b) => b.adds[0].gain - a.adds[0].gain).slice(0, 6);
 
-  // 1-for-1 trades: my XI gain and the other team's XI change
+  // 1-for-1 trades the other manager could plausibly accept: what you give has at least the same
+  // visible value (points, form, draft rank) as what you get, but the model rates what you get higher
+  const vis = visibleValue();
   const trades = [];
   const others = Object.keys(ADV.managers).map(Number).filter((x) => x !== le);
   for (const o of others) {
@@ -493,16 +667,17 @@ function drawHold(le) {
     const theirBase = xiOver(theirs, h);
     for (const give of squad) {
       for (const get of theirs.filter((p) => p.pos === give.pos && isAvailable(p))) {
+        if ((vis[give.id]?.v ?? 0) < (vis[get.id]?.v ?? 0) - 0.03) continue;   // looks like a loss to them: unrealistic
         const mine = xiOver(squad.map((p) => (p === give ? get : p)), h) - base;
         if (mine < 0.25 * h) continue;   // less than a quarter point per round is noise
         const them = xiOver(theirs.map((p) => (p === get ? give : p)), h) - theirBase;
-        trades.push({ o, give, get, mine, them });
+        trades.push({ o, give, get, mine, them, conf: confidenceFor(get, give, h), visGive: vis[give.id], visGet: vis[get.id] });
       }
     }
   }
-  // realistic first: both gain, then a fair price for them, then hard sells; within each, biggest gain for you
+  // every offer here already looks fair or better to them; rank by your gain, the most certain first
   const tier = (t) => (t.them >= 0 ? 0 : t.them > -t.mine / 2 ? 1 : 2);
-  trades.sort((a, b) => tier(a) - tier(b) || b.mine - a.mine);
+  trades.sort((a, b) => ((b.conf?.acc ?? 0.5) * b.mine) - ((a.conf?.acc ?? 0.5) * a.mine));
   const bestTrades = trades.slice(0, 8);
 
   const xpCell = (p) => `<td>${num(projOf(p.id)[0] ?? 0, 1)}</td><td class="pts">${num(sumH(p.id, h), 1)}</td>`;
@@ -515,23 +690,27 @@ function drawHold(le) {
       <div class="pitch-xi panel">${["GKP", "DEF", "MID", "FWD"].map((pos) => `<div class="xi-row">${next.xi.filter((x) => x.p.pos === pos).sort((a, b) => b.v - a.v).map((x) => `<button type="button" class="xi-p" data-pid="${x.p.id}"><b>${esc(x.p.name)}</b><span>${num(x.v, 1)} xP</span><small>${fixturesOf(x.p, 1).map((f) => `${teamShort(f.opp)}${f.home ? "" : " u"}`).join("+") || "ingen kamp"}</small></button>`).join("")}</div>`).join("")}</div>
     </section>
 
+    ${closeCalls(squad, next, inXI)}
+
     <section class="sec">
-      <div class="sec-head"><div><h2>Drop og hent</h2><p class="lede">Gevinsten er ændringen i din bedste startopstillings forventede point over ${h === 1 ? "næste runde" : `de næste ${h} runder`}. Tre alternativer per spiller, så du kan stille flere waiver-ønsker op til samme drop. Sæt det mest eftertragtede ønske øverst: et vundet ønske sender dig bagerst i waiver-køen.${ADV.replay?.gap_buckets ? ` Klar opgradering betyder mindst 0,6 point per runde. I testen på 2025/26 havde modellen ret i ${Math.round(ADV.replay.gap_buckets[2].acc * 100)}% af sammenligningerne ved forskelle på 1–2 point per runde og ${Math.round(ADV.replay.gap_buckets[3].acc * 100)}% over 2 point.` : ""}</p></div></div>
+      <div class="sec-head"><div><h2>Drop og hent</h2><p class="lede">Gevinsten er ændringen i din bedste startopstillings forventede point over ${horizonLabel(h)}. Tre alternativer per spiller, så du kan stille flere waiver-ønsker op til samme drop. Sæt det mest eftertragtede ønske øverst: et vundet ønske sender dig bagerst i waiver-køen.${ADV.replay?.confidence ? ` "Sikker" er hvor ofte modellen havde ret i lignende sammenligninger i testen på hele 2025/26 (samme horisont, lignende forskel, faste startere eller ej). Klar opgradering: mindst 70%. Marginal: 60–70%. Hold øje: under 60%.` : ""}</p></div></div>
       ${swaps.length ? `<div class="swaps">${swaps.map((s) => {
-        const [cls, label] = bucket(s.adds[0].gain / h);
+        const [cls, label] = bucketByConfidence(s.adds[0].conf);
         return `<div class="panel swap ${cls}">
           <div class="swap-head"><span class="bucket ${cls}">${label}</span><span class="muted small">Drop</span><b>${esc(s.out.name)}</b><span class="muted small">${esc(s.out.pos)}, ${esc(s.out.club)}, ${num(sumH(s.out.id, h), 1)} xP</span></div>
-          <ol>${s.adds.map((a) => `<li data-pid="${a.inn.id}"><span class="gain">+${num(a.gain, 1)}</span><span><b>${esc(a.inn.name)}</b>${statusDot(a.inn)} <span class="muted small">${esc(a.inn.club)}, ${num(sumH(a.inn.id, h), 1)} xP</span><br><span class="small muted">${esc(reasonFor(a.inn))}</span></span>${fixChips(a.inn, Math.max(3, h))}</li>`).join("")}</ol>
+          <ol>${s.adds.map((a) => `<li data-pid="${a.inn.id}"><span class="gain">+${num(a.gain, 1)}</span><span><b>${esc(a.inn.name)}</b>${statusDot(a.inn)} <span class="muted small">${esc(a.inn.club)}, ${num(sumH(a.inn.id, h), 1)} xP</span> ${confBadge(a.conf)}<br><span class="small muted">${esc(reasonFor(a.inn))}</span></span>${fixChips(a.inn, Math.max(3, h))}</li>`).join("")}</ol>
         </div>`;
       }).join("")}</div>` : `<p class="adv-empty">Ingen ledige spillere ville forbedre din startopstilling lige nu.</p>`}
     </section>
 
     <section class="sec">
-      <div class="sec-head"><div><h2>Byttehandler</h2><p class="lede">Én mod én med andre managere. Din gevinst og deres ændring er målt på hver sin bedste startopstilling, så en handel kan være god for begge, hvis den passer til deres trup.</p></div></div>
-      ${bestTrades.length ? `<div class="panel"><div class="scroll"><table class="advt"><thead><tr><th class="l">Du giver</th><th class="l">Du får</th><th class="l">Fra</th><th>Din gevinst</th><th>Deres ændring</th><th class="l">Vurdering</th></tr></thead><tbody>
-        ${bestTrades.map((t) => `<tr><td class="l"><b>${esc(t.give.name)}</b> <span class="muted small">${esc(t.give.pos)}</span></td><td class="l"><b>${esc(t.get.name)}</b>${statusDot(t.get)} <span class="muted small">${esc(t.get.club)}</span></td><td class="l">${esc(ADV.managers[t.o])}</td><td class="delta-up">+${num(t.mine, 1)}</td><td class="${t.them >= 0 ? "delta-up" : "delta-down"}">${t.them >= 0 ? "+" : "−"}${num(Math.abs(t.them), 1)}</td><td class="l">${["Begge vinder", "Rimelig", "Svær at sælge"][tier(t)]}</td></tr>`).join("")}
-      </tbody></table></div></div>` : `<p class="adv-empty">Ingen oplagte byttehandler lige nu.</p>`}
+      <div class="sec-head"><div><h2>Byttehandler</h2><p class="lede">Kun handler, der ser fair ud for den anden manager: det, du giver, har mindst samme synlige værdi (point indtil nu, form og draft-rang) som det, du får. Gevinsten kommer fra, at modellen rangerer det, du får, højere. Din gevinst og deres ændring er målt på hver sin bedste startopstilling.</p></div></div>
+      ${bestTrades.length ? `<div class="panel"><div class="scroll"><table class="advt"><thead><tr><th class="l">Du giver</th><th class="l">Du får</th><th class="l">Fra</th><th class="l">Det ser de</th><th>Din gevinst</th><th>Deres ændring</th><th>Sikkerhed</th></tr></thead><tbody>
+        ${bestTrades.map((t) => `<tr><td class="l"><b>${esc(t.give.name)}</b> <span class="muted small">${esc(t.give.pos)}</span></td><td class="l"><b>${esc(t.get.name)}</b>${statusDot(t.get)} <span class="muted small">${esc(t.get.club)}</span></td><td class="l">${esc(ADV.managers[t.o])}</td><td class="l small">${t.visGive.season} mod ${t.visGet.season} point, form ${t.visGive.form} mod ${t.visGet.form}</td><td class="delta-up">+${num(t.mine, 1)}</td><td class="${t.them >= 0 ? "delta-up" : "delta-down"}">${t.them >= 0 ? "+" : "−"}${num(Math.abs(t.them), 1)}</td><td>${t.conf ? `${Math.round(t.conf.acc * 100)}%` : "–"}</td></tr>`).join("")}
+      </tbody></table></div></div>` : `<p class="adv-empty">Ingen byttehandler, der både ser fair ud for den anden manager og giver dig en gevinst, lige nu.</p>`}
     </section>
+
+    ${goldTable(le, h)}
 
     <section class="sec">
       <div class="sec-head"><div><h2>Din trup</h2><p class="lede">Forventede point næste runde og over perioden.</p></div></div>

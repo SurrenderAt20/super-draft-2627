@@ -327,16 +327,41 @@ def minutes_profile2(live, gws, pos_of, team_of, fixtures, ctx):
     return prof
 
 
-def availability(el, k):
-    """Chance of being available k rounds ahead (k = 0 is the next round)."""
+MONTHS = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
+
+
+def expected_back(news, today):
+    """'Expected back 28 Nov' in FPL's news -> that date (the next one on or after today)."""
+    import re
+    from datetime import date
+    m = re.search(r"[Ee]xpected back (\d{1,2}) ([A-Za-z]{3})", news or "")
+    if not m or m.group(2).lower() not in MONTHS:
+        return None
+    d = date(today.year, MONTHS[m.group(2).lower()], int(m.group(1)))
+    return d if d >= today else date(today.year + 1, d.month, d.day)
+
+
+def availability(el, k, deadline=None):
+    """Chance of being available k rounds ahead (k = 0 is the next round). `deadline` is that round's
+    deadline (a date), used with FPL's 'Expected back <date>' news."""
     status, chance = el.get("status", "a"), el.get("chance_of_playing_next_round")
     if status in ("u", "n"):
         return 0.0
     # FPL leaves the chance empty for fit players; some sources write 0 there, so a fit player counts as available
     if status == "a":
-        a0 = 1.0
-    else:
-        a0 = chance / 100 if chance is not None else (0.75 if status == "d" else 0.0)
+        return 1.0
+    news = el.get("news") or ""
+    if status in ("i", "s") and deadline is not None:
+        from datetime import date
+        back = expected_back(news, date.today())
+        if back is not None:
+            if deadline < back:
+                return 0.0
+            weeks = (deadline - back).days / 7
+            return min(1.0, 0.5 + 0.25 * weeks)    # back in the squad, building up match fitness
+        if "unknown return" in news.lower():
+            return max(0.0, min(1.0, (k - 1) / 6))  # no date: nothing for two rounds, then a slow return
+    a0 = chance / 100 if chance is not None else (0.75 if status == "d" else 0.0)
     return min(1.0, a0 + (1 - a0) * min(1.0, k / 4))   # injured players drift back over about four rounds
 
 
@@ -375,6 +400,28 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
     pen_rate = ctx.get("last", {}).get("pens_per_team_match", 0.12)
     pen_share = {1: 1.0, 2: 0.15}
     prof = minutes_profile2(live, gws_known, pos_of, team_of, fixtures, ctx) if use.get("mins") else minutes_profile(live, gws_known)
+    gk_scale = {}
+    if use.get("mins"):
+        gks = {}
+        for pid, pos in pos_of.items():
+            if pos == 1:
+                gks.setdefault(team_of.get(pid), []).append(pid)
+        for team, ids in gks.items():
+            for k, gw in enumerate(targets):
+                eff = []
+                for pid in ids:
+                    if avail == "hist":
+                        prev = ctx.get("rounds_now", {}).get(ctx["code_of"].get(pid), {}).get(gw - 1)
+                        a = availability({"status": prev["status"], "chance_of_playing_next_round": prev.get("chance")}, 0) if prev else 1.0
+                    else:
+                        a = availability(elements[pid], k, ctx.get("deadlines", {}).get(gw)) if elements and avail else 1.0
+                    eff.append((prof.get(pid, {}).get("p_start", 0.0) * a, pid))
+                # the most likely starter keeps his chance; the others share what is left (one keeper plays)
+                left = 1.0
+                for e, pid in sorted(eff, reverse=True):
+                    if e > left and e > 0:
+                        gk_scale[(pid, k)] = max(0.0, left) / e
+                    left -= min(e, left)
     out = {}
     detail = {}
     for pid, pos in pos_of.items():
@@ -383,13 +430,14 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
         r = rates[pid]
         row = []
         for k, gw in enumerate(targets):
+            a_gk = gk_scale.get((pid, k), 1.0)
             # the backtest must not see today's injury news for past rounds: "hist" uses the status
             # FPL showed after the previous round, which was known before this one
             if avail == "hist":
                 prev = ctx.get("rounds_now", {}).get(ctx["code_of"].get(pid), {}).get(gw - 1)
                 a = availability({"status": prev["status"], "chance_of_playing_next_round": prev.get("chance")}, 0) if prev else 1.0
             else:
-                a = availability(elements[pid], k) if elements and avail else 1.0
+                a = availability(elements[pid], k, ctx.get("deadlines", {}).get(gw)) if elements and avail else 1.0
             xp = 0.0
             for f in fx_idx.get((gw, team), []):
                 home = 1 if f["team_h"] == team else 0
@@ -401,7 +449,7 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
                     lf = w * (oh if home else oa) + (1 - w) * lf
                     la_ = w * (oa if home else oh) + (1 - w) * la_
                 m_att, m_def = lf / avg[team]["for"], la_ / avg[team]["against"]
-                emin, p60, pplay = mp["emin"] * a, mp["p60"] * a, mp["pplay"] * a
+                emin, p60, pplay = mp["emin"] * a * a_gk, mp["p60"] * a * a_gk, mp["pplay"] * a * a_gk
                 if use.get("rot") and ctx.get("euro_flag", {}).get((team, f["id"])):
                     rf = ctx.get("rot_factor", {}).get(pid, ctx.get("rot_league", 1.0))
                     emin, p60 = emin * rf, min(pplay, p60 * rf)
@@ -540,6 +588,13 @@ def context(boot, gws, fixtures, last, now):
                 if h is not None:
                     euro_flag[(t, f["id"])] = round(h)
     rounds_now = (now or {}).get("rounds", {})
+    from datetime import date
+    deadlines = {}
+    for f in fixtures:
+        t = f.get("kickoff_time")
+        if f.get("event") and t:
+            d = date.fromisoformat(str(t)[:10])
+            deadlines[f["event"]] = min(deadlines.get(f["event"], d), d)
     setp_now = {e["id"]: (e.get("corners_and_indirect_freekicks_order"), e.get("direct_freekicks_order")) for e in boot["elements"]}
     setp_share = {}
     for pid, c in code_of.items():
@@ -552,7 +607,7 @@ def context(boot, gws, fixtures, last, now):
         tot = mins + lm
         setp_share[pid] = ((cur[0] * mins + lc * lm) / tot, (cur[1] * mins + lf * lm) / tot) if tot else (0.0, 0.0)
     return {"code_of": code_of, "team_code_of": team_code_of, "last": last or {}, "team_prior": team_prior,
-            "rounds_now": rounds_now, "setp_now": setp_now, "setp_share": setp_share,
+            "rounds_now": rounds_now, "setp_now": setp_now, "setp_share": setp_share, "deadlines": deadlines,
             "pens_now": (now or {}).get("pens", {}), "rot_league": rot_league, "rot_factor": rot_factor,
             "euro_flag": euro_flag}
 
@@ -676,7 +731,8 @@ def run(boot, live, gws, fixtures, next_gw, horizon=6, last=None, now=None, odds
     internal = {"live": live, "fixtures": fixtures, "pos_of": pos_of, "team_of": team_of, "elements": elements,
                 "ctx": ctx, "proj_long": proj_long, "targets": targets_all, "gws": gws}
     return {"_internal": internal, "scorecard": scorecard, "special_rounds": special, "unscheduled": unscheduled,
-            "xpt": xpt, "proj": {"gws": targets, "by_player": proj, "detail": detail, "pens": pens_taker},
+            "xpt": xpt, "proj": {"gws": targets, "by_player": proj, "detail": detail, "pens": pens_taker,
+                                 "gws_long": targets_all, "long": {pid: [round(x, 2) for x in v] for pid, v in proj_long.items()}},
             "fixtures": fix, "backtest": bt, "rules_mismatch": wrong,
             "strength": {"home": round(S["home"], 3), "att": {t: round(v, 3) for t, v in S["att"].items()},
                          "def": {t: round(v, 3) for t, v in S["def"].items()}}}

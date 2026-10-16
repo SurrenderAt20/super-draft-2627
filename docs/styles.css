@@ -820,3 +820,19 @@ td.blank { color: var(--dim); }
 .key-dot.p { border: 2px solid var(--text); }
 .key-dot.o { background: var(--violet); }
 @media (max-width: 720px) { .calbar { width: 110px; } }
+
+/* confidence badge on suggestions */
+.conf { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px; font-size: 11.5px; font-weight: 700;
+  color: var(--violet); background: rgba(167,139,250,.12); border: 1px solid rgba(167,139,250,.3); vertical-align: 1px; cursor: help; }
+
+/* hidden gold cards */
+.gold-list { display: grid; gap: 8px; }
+.gold { padding: 14px 16px; cursor: pointer; border-color: rgba(251,191,36,.18);
+  background: linear-gradient(160deg, rgba(251,191,36,.06), rgba(255,255,255,.02) 55%); }
+.g-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.g-top > b { font-size: 16px; }
+.g-xp { margin-left: auto; color: var(--muted); font-size: 13px; }
+.g-xp b { font-size: 20px; color: var(--gold); letter-spacing: -0.03em; }
+.g-why { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+.g-why::first-letter { text-transform: uppercase; }
+.g-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; margin-top: 8px; font-size: 12.5px; color: var(--dim); }

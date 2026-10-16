@@ -292,6 +292,54 @@ def summarise(per, cs, base="old", new="new"):
     return out
 
 
+GAP_EDGES = [0.0, 0.5, 1.0, 2.0, 3.0]   # predicted difference per round, lower edges
+
+
+def confidence_table(S, rounds):
+    """How often the model was right when it put player A above player B, by horizon, predicted gap
+    per round, whether both were regular starters (240+ minutes in the last four rounds) and whether
+    they play the same position. Counted, not stored per pair."""
+    table = {}
+    for Hk in (1, 3, 6, 10, "season"):
+        cnt = {}
+        for gw in rounds:
+            known = [g for g in S.gws if g < gw]
+            if len(known) < 3:
+                continue
+            # "season": every round left, from rounds with at least ten to go
+            H = 39 - gw if Hk == "season" else Hk
+            if Hk == "season" and H < 10:
+                continue
+            pr, _, tg = S.predict(gw, model.ALL, H)
+            if len(tg) < H:
+                continue
+            pl = [c for c in S.pos_of if sum(S.live[g].get(c, {}).get("minutes", 0) for g in tg) >= 45 * len(tg)]
+            p = np.array([sum(pr[c]) for c in pl])
+            a = np.array([sum(S.live[g].get(c, {}).get("total_points", 0) for g in tg) for c in pl], float)
+            reg = np.array([sum(S.live[g].get(c, {}).get("minutes", 0) for g in known[-4:]) >= 240 for c in pl])
+            pos = np.array([S.pos_of[c] for c in pl])
+            dp, da = p[:, None] - p[None, :], a[:, None] - a[None, :]
+            m = np.triu((da != 0) & (dp != 0), 1)
+            gap = np.abs(dp)[m] / H
+            ok = (np.sign(dp) == np.sign(da))[m]
+            both = (reg[:, None] & reg[None, :])[m]
+            same = (pos[:, None] == pos[None, :])[m]
+            b = np.searchsorted(GAP_EDGES, gap, side="right") - 1
+            for gi in range(len(GAP_EDGES)):
+                for rg in (0, 1):
+                    for sp in (0, 1):
+                        sel = (b == gi) & (both == bool(rg)) & (same == bool(sp))
+                        n = int(sel.sum())
+                        if n:
+                            k = f"{gi}|{rg}|{sp}"
+                            c = cnt.setdefault(k, [0, 0])
+                            c[0] += int(ok[sel].sum())
+                            c[1] += n
+        table[str(Hk)] = {k: {"acc": round(v[0] / v[1], 3), "n": v[1]} for k, v in cnt.items()}
+    return {"gap_edges": GAP_EDGES, "cells": table, "rounds": [min(rounds), max(rounds)],
+            "regular": "240+ minutes in the last four rounds"}
+
+
 def report():
     """Full-season replay (rounds 4-38) and the held-out half (20-38) the settings were not tuned on."""
     S = Season(load())
@@ -306,10 +354,11 @@ def report():
         sel = [c for g, c in gaps if lo <= g < hi]
         if sel:
             buckets.append({"lo": lo, "hi": hi if hi < 99 else None, "acc": round(sum(sel) / len(sel), 3), "n": len(sel)})
+    conf = confidence_table(S, range(4, 39))
     from datetime import datetime, timezone
     rep = {"season": SEASON, "prior": PRIOR, "made": datetime.now(timezone.utc).isoformat(timespec="minutes"),
            "full": full, "held_out": held, "held_out_rounds": [20, 38], "tuned_on_rounds": [4, 19],
-           "gap_buckets": buckets, "players": len(S.pos_of),
+           "gap_buckets": buckets, "players": len(S.pos_of), "confidence": conf,
            "settings": {k: getattr(model, k) for k in ("K_MIN", "RIDGE", "K_LAST_MIN", "MIN_K", "CALIB_K", "TEAM_REGRESS")}}
     with open(REPORT, "w", encoding="utf-8", newline=chr(10)) as fh:
         json.dump(rep, fh, indent=1)
