@@ -18,6 +18,7 @@ import urllib.request
 
 import history
 import model
+import odds as odds_src
 
 CORE = "https://raw.githubusercontent.com/olbauday/FPL-Core-Insights/main/data/2026-2027"
 ITERATIONS = 250_000
@@ -139,7 +140,7 @@ def build(boot, gws, fetch, owners, entry_to_le, next_gw=None):
     print(f"  advanced: {penalty_order(boot)} first-choice penalty takers", flush=True)
     last = history.last_season()
     now = history.this_season(max(gws) if gws else 1)
-    m = model.run(boot, live_raw, list(gws), fixtures, next_gw, last=last, now=now)
+    m = model.run(boot, live_raw, list(gws), fixtures, next_gw, last=last, now=now, odds=odds_src.refresh(boot))
 
     by_gw = {}
     for gw in gws:

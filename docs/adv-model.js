@@ -111,6 +111,7 @@ function modelNote() {
   return `<div class="panel model-note">
     <h3>Hvor godt rammer modellen?</h3>
     ${rank}
+    ${b.odds_check ? `<p>Bookmakerodds bruges for de kommende kampe, hvor de findes (typisk de næste 1–2 runder). I ${b.odds_check.n} spillede kampe ramte odds holdenes xG bedre end modellens egen regression: i snit ${num(b.odds_check.rmse_odds, 2)} mål ved siden af per hold mod ${num(b.odds_check.rmse_model, 2)}. Derfor vægter odds ${Math.round(b.odds_check.w * 100)}%, hvor de findes. Kilder: The Odds API og football-data.co.uk.</p>` : ""}
     <p>Runde for runde, testet på runde ${b.gws[0]}–${b.gws[b.gws.length - 1]} hvor hver runde blev forudsagt kun ud fra runderne før: i snit <b>${num(b.mae, 2)} point</b> ved siden af per spiller. Et simpelt formsnit ramte ${num(b.mae_form, 2)} ved siden af.</p>
     <p class="small muted">Modellen bygger på xG, xA, minutter, modstandernes styrke, sidste sæson (2025/26, den første sæson med DefCon) og hvem der tager straffe. Point i én runde er meget tilfældige, så brug tallene til at sammenligne spillere over flere runder. Modellen ser minutter, ikke træningsnyheder: en spiller på vej tilbage fra skade er undervurderet, indtil han spiller igen. Faste startere mister ifølge sidste sæsons data næsten ingen minutter efter europæiske kampe, så det flag er til information.</p>
   </div>`;
@@ -284,7 +285,7 @@ function drawFixtures() {
         const v = score(f);
         const k = Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
         const label = def ? `${Math.round(v * 100)}%` : num(v, 1);
-        return `<span class="fxcell${f.euro_h != null ? " eu" : ""}" style="--t:${k.toFixed(2)}" data-tip="${esc(`<b>${esc(ADV.teams[t]?.name)} – ${esc(ADV.teams[f.opp]?.name)}</b>Runde ${g}, ${f.home ? "hjemme" : "ude"}<br>Forventede mål: ${num(f.gf, 2)} for, ${num(f.ga, 2)} imod<br>Chance for clean sheet: ${Math.round(Math.exp(-f.ga) * 100)}%${f.euro_h != null ? `<br>Europæisk kamp ${Math.round(f.euro_h / 24)} dage før` : ""}`)}">${teamShort(f.opp)}${f.home ? "" : " u"}<small>${label}</small></span>`;
+        return `<span class="fxcell${f.euro_h != null ? " eu" : ""}" style="--t:${k.toFixed(2)}" data-tip="${esc(`<b>${esc(ADV.teams[t]?.name)} – ${esc(ADV.teams[f.opp]?.name)}</b>Runde ${g}, ${f.home ? "hjemme" : "ude"}<br>Forventede mål: ${num(f.gf, 2)} for, ${num(f.ga, 2)} imod<br>Chance for clean sheet: ${Math.round(Math.exp(-f.ga) * 100)}%${f.odds ? "<br>Ud fra bookmakerodds" : ""}${f.euro_h != null ? `<br>Europæisk kamp ${Math.round(f.euro_h / 24)} dage før` : ""}`)}">${teamShort(f.opp)}${f.home ? "" : " u"}<small>${label}</small></span>`;
       }).join("")}</td>`;
     }).join("")}</tr>`).join("")}</tbody></table>`;
   enhanceMatrices(app);

@@ -392,7 +392,7 @@ function seasonForecast(F) {
       ${rows.map((r) => `<tr><td class="l">${who(r.le)}</td>${r.dist.map((p, i) => `<td class="cell" style="background:rgba(167,139,250,${(Math.min(1, p / 0.4) * 0.55).toFixed(3)})" data-tip="${esc(`<b>${esc(mgr(r.le))}</b>${i + 1}. plads: ${pc(p)}`)}">${p >= 0.005 ? pc(p) : ""}</td>`).join("")}</tr>`).join("")}
     </tbody></table></div></div>
     ${special}
-    <p class="small muted" style="margin-top:12px;max-width:72ch">${calibText(F)} Hvert hold stilles op med sin bedste startopstilling ifølge modellen. Holdene antages at beholde deres trupper, men waivers og byttehandler ændrer dem, så hver simulation giver hvert hold en varig afvigelse på ±${num(F.drift_sd, 0)} point per runde. Den afvigelse er en antagelse, ikke målt.</p>
+    <p class="small muted" style="margin-top:12px;max-width:72ch">${calibText(F)} Hvert hold stilles op med sin bedste startopstilling ifølge modellen. For de nærmeste kampe bruges bookmakerodds (The Odds API og football-data.co.uk) til holdenes forventede mål. Holdene antages at beholde deres trupper, men waivers og byttehandler ændrer dem, så hver simulation giver hvert hold en varig afvigelse på ±${num(F.drift_sd, 0)} point per runde. Den afvigelse er en antagelse, ikke målt.</p>
   </section>`;
 }
 

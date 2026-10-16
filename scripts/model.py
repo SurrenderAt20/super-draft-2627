@@ -16,6 +16,7 @@ Extras (each can be switched off, so the backtest can show what it adds):
             instead of the position/league average. DefCon only exists from 2025/26.
     pens    xG split into open play (npxG) and penalties; the first-choice taker gets the team's penalties
     rot     minutes after a European match, scaled by the measured effect (close to none for regulars)
+    odds    bookmakers' implied expected goals blended into each match, with a weight measured on past rounds
 """
 
 import math
@@ -36,7 +37,7 @@ MOVED = 0.6          # weight kept for last season when a player has changed clu
 TEAM_REGRESS = 0.7   # last season's team ratings pulled 30% toward average
 PROMOTED = -0.2      # starting attack and defence for teams not in last season's league
 POS_NAME = {"Goalkeeper": 1, "Defender": 2, "Midfielder": 3, "Forward": 4}
-ALL = {"prior": True, "pens": True, "rot": True}
+ALL = {"prior": True, "pens": True, "rot": True, "odds": True}
 
 
 def pois_floor_div(lam, n, kmax=25):
@@ -288,6 +289,11 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
                 home = 1 if f["team_h"] == team else 0
                 opp = f["team_a"] if home else f["team_h"]
                 lf, la_ = lam(S, team, opp, home), lam(S, opp, team, 1 - home)
+                if use.get("odds") and f["id"] in ctx.get("odds", {}):
+                    oh, oa = ctx["odds"][f["id"]]
+                    w = ctx.get("odds_w", 0.0)
+                    lf = w * (oh if home else oa) + (1 - w) * lf
+                    la_ = w * (oa if home else oh) + (1 - w) * la_
                 m_att, m_def = lf / avg[team]["for"], la_ / avg[team]["against"]
                 emin, p60, pplay = mp["emin"] * a, mp["p60"] * a, mp["pplay"] * a
                 if use.get("rot") and ctx.get("euro_flag", {}).get((team, f["id"])):
@@ -432,7 +438,42 @@ def context(boot, gws, fixtures, last, now):
             "euro_flag": euro_flag}
 
 
-def run(boot, live, gws, fixtures, next_gw, horizon=6, last=None, now=None):
+def odds_weight(live, fixtures, gws, team_of, ctx):
+    """How much to trust bookmakers vs. the xG regression: for each past round, fit the regression on
+    the rounds before it and compare both with the teams' actual xG in that round's matches."""
+    teams = sorted(set(team_of.values()))
+    rows = []
+    for i, gw in enumerate(gws):
+        if i < 2:
+            continue
+        S = fit_strength(team_matches(live, fixtures, team_of, gws[:i]), teams, ctx.get("team_prior"))
+        xg = {}
+        for pid, st in live[gw].items():
+            t = team_of.get(pid)
+            if t:
+                xg[t] = xg.get(t, 0.0) + float(st.get("expected_goals", 0) or 0)
+        for f in fixtures:
+            if f["event"] != gw or f["id"] not in ctx.get("odds", {}):
+                continue
+            h, a = f["team_h"], f["team_a"]
+            oh, oa = ctx["odds"][f["id"]]
+            rows.append((lam(S, h, a, 1), oh, xg.get(h, 0.0)))
+            rows.append((lam(S, a, h, 0), oa, xg.get(a, 0.0)))
+    if len(rows) < 20:
+        return 0.5, None
+    best = None
+    for k in range(11):
+        w = k / 10
+        mse = sum((w * o + (1 - w) * m - y) ** 2 for m, o, y in rows) / len(rows)
+        if best is None or mse < best[1]:
+            best = (w, mse)
+    mse_model = sum((m - y) ** 2 for m, o, y in rows) / len(rows)
+    mse_odds = sum((o - y) ** 2 for m, o, y in rows) / len(rows)
+    return best[0], {"n": len(rows) // 2, "w": best[0], "rmse_model": round(mse_model ** 0.5, 3),
+                     "rmse_odds": round(mse_odds ** 0.5, 3), "rmse_blend": round(best[1] ** 0.5, 3)}
+
+
+def run(boot, live, gws, fixtures, next_gw, horizon=6, last=None, now=None, odds=None):
     """Everything the protected pages need: past xP, projections, fixtures and the backtest."""
     pos_of = {e["id"]: e["element_type"] for e in boot["elements"]}
     team_of = {e["id"]: e["team"] for e in boot["elements"]}
@@ -454,6 +495,15 @@ def run(boot, live, gws, fixtures, next_gw, horizon=6, last=None, now=None):
     targets_all = list(range(next_gw, 39)) if next_gw else []
     targets = targets_all[:horizon]
     ctx = context(boot, gws, fixtures, last, now)
+    # bookmakers' expected goals per fixture: played matches (pre-match odds) and upcoming ones
+    ctx["odds"] = {}
+    for f in fixtures:
+        k = f"{f['team_h']}-{f['team_a']}"
+        src = (odds or {}).get("played" if f.get("finished") else "upcoming", {}).get(k)
+        if src:
+            ctx["odds"][f["id"]] = (src["gh"], src["ga"])
+    ctx["odds_w"], odds_check = odds_weight(live, fixtures, gws, team_of, ctx)
+    print(f"  model: odds weight {ctx['odds_w']} {odds_check}, {sum(1 for f in fixtures if f['id'] in ctx['odds'] and not f.get('finished'))} upcoming matches with odds", flush=True)
     proj_long, detail, S = project(live, fixtures, gws, targets_all, pos_of, team_of, elements, teams, ctx, ALL)
     proj = {pid: v[:horizon] for pid, v in proj_long.items()}
 
@@ -468,17 +518,20 @@ def run(boot, live, gws, fixtures, next_gw, horizon=6, last=None, now=None):
                       "gf": round(lam(S, t, opp, home), 2), "ga": round(lam(S, opp, t, 1 - home), 2)}
                 if (t, f["id"]) in ctx["euro_flag"]:
                     fx["euro_h"] = ctx["euro_flag"][(t, f["id"])]
+                if f["id"] in ctx["odds"]:
+                    fx["odds"] = 1
                 fix[t].append(fx)
 
     bt = backtest(live, fixtures, gws, pos_of, team_of, actual, elements, ctx, ALL)
     base = backtest(live, fixtures, gws, pos_of, team_of, actual, elements, ctx, {})
     if bt and base:
         bt["mae_base"], bt["corr_base"] = base["mae"], base["corr"]
-        for name in ("prior", "pens", "rot"):
+        for name in ("prior", "pens", "rot", "odds"):
             one = backtest(live, fixtures, gws, pos_of, team_of, actual, elements, ctx, {name: True})
             bt[f"mae_{name}"] = one["mae"]
         print(f"  model: backtest rounds {bt['gws']}: MAE {bt['mae']} r={bt['corr']} | without extras {base['mae']} r={base['corr']} | "
-              f"prior only {bt['mae_prior']}, pens only {bt['mae_pens']}, rotation only {bt['mae_rot']} | form {bt['mae_form']}", flush=True)
+              f"prior only {bt['mae_prior']}, pens only {bt['mae_pens']}, rotation only {bt['mae_rot']}, odds only {bt['mae_odds']} | form {bt['mae_form']}", flush=True)
+        bt["odds_check"] = odds_check
     if bt and len(gws) >= 4:
         start = 3 if len(gws) < 10 else len(gws) - 5
         bt["rank"] = rank_test(live, fixtures, gws, pos_of, team_of, elements, ctx, ALL, start)
