@@ -30,9 +30,9 @@ import numpy as np
 GOAL = {1: 6, 2: 6, 3: 5, 4: 4}
 CS = {1: 4, 2: 4, 3: 1, 4: 0}
 DC_THR = {2: 10, 3: 12, 4: 12}
-K_MIN = 400          # minutes of prior weight when shrinking per-90 rates
+K_MIN = 800          # minutes of prior weight when shrinking per-90 rates (tuned on 2025/26 replay)
 K_APPS = 3           # appearances of prior weight for the DefCon hit rate
-RIDGE = 3.0          # pull on team attack/defence ratings: about six matches each so far
+RIDGE = 6.0          # pull on team attack/defence ratings toward their prior (tuned on 2025/26 replay)
 RECENT_W = [1, 2, 3, 4]   # weights for the last four rounds, oldest first
 PEN_XG = 0.76        # xG of a penalty
 K_LAST_MIN = 1200    # minutes at which last season counts as much as the position average
@@ -41,12 +41,13 @@ MOVED = 0.6          # weight kept for last season when a player has changed clu
 TEAM_REGRESS = 0.7   # last season's team ratings pulled 30% toward average
 PROMOTED = -0.2      # starting attack and defence for teams not in last season's league
 POS_NAME = {"Goalkeeper": 1, "Defender": 2, "Midfielder": 3, "Forward": 4}
-ALL = {"prior": True, "pens": True, "rot": True, "odds": True, "mins": True, "older": True, "setp": True}
+ALL = {"prior": True, "pens": True, "rot": True, "odds": True, "mins": True, "older": True, "setp": True, "calib": True}
+CALIB_K = 100.0  # prior weight (in expected goals/assists) on a ratio of 1.0 (tuned on 2025/26 replay)
 OLD_MODEL = {"prior": True, "pens": True, "rot": True, "odds": True}   # the model before the minutes/history/set-piece work
 UNAVAILABLE = {"i", "s", "u", "n"}
 OLDER_W = 0.5        # 2024/25 counts half as much as 2025/26
 MIN_DEFAULT = {"p_start": 0.5, "e_start": 84.0, "p60s": 0.93, "p_sub": 0.35, "e_sub": 20.0}
-MIN_K = 1.0   # chosen from a small grid (0.5-3) on rounds 3-6 by Brier score for 60+ minutes
+MIN_K = 2.0   # rounds of weight on the minutes prior (tuned on 2025/26 replay)
 
 
 def pois_floor_div(lam, n, kmax=25):
@@ -233,9 +234,9 @@ def player_rates(live, gws, pos_of, ctx=None, use_prior=False, use_pens=False, u
             moved = MOVED if str(L.get("team")) != str(ctx["team_code_of"].get(pid)) else 1.0
             w = L["mi"] / (L["mi"] + K_LAST_MIN) * moved
             lxg = L["xg"] if L.get("_np") else max(0.0, L["xg"] - (PEN_XG * L.get("pens", 0) if use_pens else 0.0))
-            last_r = {"xg": lxg, "xa": L["xa"], "sv": L["sv"], "bo": L["bo"], "yc": L["yc"]}
-            for k in ("xg", "xa", "sv", "bo", "yc"):
-                pr[k] = w * last_r[k] / L["mi"] * 90 + (1 - w) * pr[k]
+            last_r = {"xg": lxg, **{k: L[k] for k in ("xa", "sv", "bo", "yc") if k in L}}
+            for k, v in last_r.items():   # a stat missing from that season keeps the position average
+                pr[k] = w * v / L["mi"] * 90 + (1 - w) * pr[k]
             if L.get("dc_apps") and POS_NAME.get(L.get("pos")) == pos:
                 wd = L["dc_apps"] / (L["dc_apps"] + K_LAST_APPS) * moved
                 pr["dc"] = wd * L["dc_hits"] / L["dc_apps"] + (1 - wd) * pr["dc"]
@@ -331,7 +332,11 @@ def availability(el, k):
     status, chance = el.get("status", "a"), el.get("chance_of_playing_next_round")
     if status in ("u", "n"):
         return 0.0
-    a0 = chance / 100 if chance is not None else (1.0 if status == "a" else 0.75 if status == "d" else 0.0)
+    # FPL leaves the chance empty for fit players; some sources write 0 there, so a fit player counts as available
+    if status == "a":
+        a0 = 1.0
+    else:
+        a0 = chance / 100 if chance is not None else (0.75 if status == "d" else 0.0)
     return min(1.0, a0 + (1 - a0) * min(1.0, k / 4))   # injured players drift back over about four rounds
 
 
@@ -357,6 +362,16 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
         for t in (f["team_h"], f["team_a"]):
             fx_idx.setdefault((f["event"], t), []).append(f)
     rates = player_rates(live, gws_known, pos_of, ctx, use.get("prior"), use.get("pens"), use.get("older"), use.get("setp"))
+    # FPL credits more assists than xA (rebounds, deflections, penalties won) and goals can run above xG:
+    # scale by the league-wide ratio in the rounds already played, pulled toward 1.0
+    g_ratio = a_ratio = 1.0
+    if use.get("calib"):
+        sg = sum(st.get("goals_scored", 0) for gw in gws_known for st in live[gw].values())
+        sxg = sum(float(st.get("expected_goals", 0) or 0) for gw in gws_known for st in live[gw].values())
+        sa = sum(st.get("assists", 0) for gw in gws_known for st in live[gw].values())
+        sxa = sum(float(st.get("expected_assists", 0) or 0) for gw in gws_known for st in live[gw].values())
+        g_ratio = (sg + CALIB_K) / (sxg + CALIB_K)
+        a_ratio = (sa + CALIB_K) / (sxa + CALIB_K)
     pen_rate = ctx.get("last", {}).get("pens_per_team_match", 0.12)
     pen_share = {1: 1.0, 2: 0.15}
     prof = minutes_profile2(live, gws_known, pos_of, team_of, fixtures, ctx) if use.get("mins") else minutes_profile(live, gws_known)
@@ -391,7 +406,7 @@ def project(live, fixtures, gws_known, targets, pos_of, team_of, elements=None, 
                     rf = ctx.get("rot_factor", {}).get(pid, ctx.get("rot_league", 1.0))
                     emin, p60 = emin * rf, min(pplay, p60 * rf)
                 share = emin / 90
-                xg, xa = r["xg"] * share * m_att, r["xa"] * share * m_att
+                xg, xa = r["xg"] * share * m_att * g_ratio, r["xa"] * share * m_att * a_ratio
                 if use.get("pens") and elements and elements[pid].get("penalties_order") in pen_share:
                     xg += pen_rate * m_att * share * PEN_XG * pen_share[elements[pid]["penalties_order"]]
                 pts = 2 * p60 + (pplay - p60)

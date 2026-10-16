@@ -1,0 +1,176 @@
+{
+ "season": "2025-2026",
+ "prior": "2024-2025",
+ "made": "2026-10-16T14:19+00:00",
+ "full": {
+  "old": {
+   "mae": 1.6266,
+   "rmse": 2.5463,
+   "bias": -0.0646,
+   "brier60": 0.1539,
+   "pair": 0.5857,
+   "rounds": 35
+  },
+  "new": {
+   "mae": 1.633,
+   "rmse": 2.521,
+   "bias": -0.0132,
+   "brier60": 0.1449,
+   "pair": 0.5892,
+   "rounds": 35
+  },
+  "form": {
+   "mae": 1.862,
+   "rmse": 2.8724,
+   "pair": 0.5517,
+   "rounds": 35
+  },
+  "new_vs_old": {
+   "diff_pair": 0.0035,
+   "lo": 0.0005,
+   "hi": 0.0068,
+   "p_value": 0.0235,
+   "better_rounds": 21,
+   "rounds": 35,
+   "mae_gain": -0.0064,
+   "rmse_gain": 0.0253,
+   "rmse_p_value": 0.0
+  },
+  "new_vs_form": {
+   "diff_pair": 0.0375,
+   "lo": 0.0299,
+   "hi": 0.0451,
+   "p_value": 0.0,
+   "better_rounds": 31,
+   "rounds": 35
+  },
+  "clean_sheets": {
+   "n": 700,
+   "brier": 0.1742,
+   "brier_flat": 0.1861,
+   "calibration": [
+    {
+     "lo": 0,
+     "hi": 0.2,
+     "pred": 0.145,
+     "obs": 0.12,
+     "n": 208
+    },
+    {
+     "lo": 0.2,
+     "hi": 0.3,
+     "pred": 0.243,
+     "obs": 0.227,
+     "n": 225
+    },
+    {
+     "lo": 0.3,
+     "hi": 0.4,
+     "pred": 0.337,
+     "obs": 0.321,
+     "n": 193
+    },
+    {
+     "lo": 0.4,
+     "hi": 0.5,
+     "pred": 0.434,
+     "obs": 0.469,
+     "n": 64
+    },
+    {
+     "lo": 0.5,
+     "hi": 1.0,
+     "pred": 0.548,
+     "obs": 0.5,
+     "n": 10
+    }
+   ]
+  }
+ },
+ "held_out": {
+  "old": {
+   "mae": 1.5924,
+   "rmse": 2.5068,
+   "bias": -0.0954,
+   "brier60": 0.1566,
+   "pair": 0.5924,
+   "rounds": 19
+  },
+  "new": {
+   "mae": 1.6073,
+   "rmse": 2.4768,
+   "bias": -0.0055,
+   "brier60": 0.1469,
+   "pair": 0.5966,
+   "rounds": 19
+  },
+  "form": {
+   "mae": 1.8718,
+   "rmse": 2.8718,
+   "pair": 0.5522,
+   "rounds": 19
+  },
+  "new_vs_old": {
+   "diff_pair": 0.0043,
+   "lo": -0.0008,
+   "hi": 0.0101,
+   "p_value": 0.084,
+   "better_rounds": 11,
+   "rounds": 19,
+   "mae_gain": -0.0149,
+   "rmse_gain": 0.0301,
+   "rmse_p_value": 0.0
+  },
+  "new_vs_form": {
+   "diff_pair": 0.0444,
+   "lo": 0.0337,
+   "hi": 0.0554,
+   "p_value": 0.0,
+   "better_rounds": 18,
+   "rounds": 19
+  }
+ },
+ "held_out_rounds": [
+  20,
+  38
+ ],
+ "tuned_on_rounds": [
+  4,
+  19
+ ],
+ "gap_buckets": [
+  {
+   "lo": 0,
+   "hi": 0.5,
+   "acc": 0.525,
+   "n": 106254
+  },
+  {
+   "lo": 0.5,
+   "hi": 1.0,
+   "acc": 0.566,
+   "n": 95063
+  },
+  {
+   "lo": 1.0,
+   "hi": 2.0,
+   "acc": 0.613,
+   "n": 133242
+  },
+  {
+   "lo": 2.0,
+   "hi": null,
+   "acc": 0.685,
+   "n": 93265
+  }
+ ],
+ "players": 841,
+ "settings": {
+  "K_MIN": 800,
+  "RIDGE": 6.0,
+  "K_LAST_MIN": 1200,
+  "MIN_K": 2.0,
+  "CALIB_K": 100.0,
+  "TEAM_REGRESS": 0.7
+ }
+}

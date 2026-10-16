@@ -160,10 +160,14 @@ def build(boot, gws, fetch, owners, entry_to_le, next_gw=None):
         print(f"  advanced: GW{gw} {len(rows)} players, {len(core)} with match stats", flush=True)
 
     teams = {t["id"]: {"short": t["short_name"], "name": t["name"]} for t in boot["teams"]}
+    # the season replay report is made by scripts/replay.py whenever the model changes
+    rp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache", "replay_report.json")
+    replay = json.load(open(rp, encoding="utf-8")) if os.path.exists(rp) else None
     for p in players:
         p["team"] = next((e["team"] for e in boot["elements"] if e["id"] == p["id"]), None)
     return {"cols": COLS, "gws": list(gws), "players": players, "by_gw": by_gw, "teams": teams,
             "proj": m["proj"], "fixtures": m["fixtures"], "backtest": m["backtest"], "strength": m["strength"], "scorecard": m["scorecard"],
+            "replay": replay,
             "_internal": m["_internal"], "special_rounds": m["special_rounds"], "unscheduled": m["unscheduled"]}
 
 

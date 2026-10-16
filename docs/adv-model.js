@@ -358,6 +358,24 @@ function renderAccuracy() {
     return;
   }
   const r = S.ranking, sr = S.single_round, cs = S.clean_sheets, F = D.forecast?.calibration;
+  const R = ADV.replay;
+  const replaySec = R ? (() => {
+    const h = R.held_out, nf = h.new_vs_form, no = h.new_vs_old;
+    const pv = (p) => p < 0.001 ? "p < 0,001" : `p = ${num(p, 3)}`;
+    return `<section class="sec">
+      <div class="sec-head"><div><h2>Test på hele sæsonen 2025/26</h2><p class="lede">Den store test: hele 2025/26 spillet igen runde for runde med 2024/25 som udgangspunkt, skadesstatus og straffeskytter som de var før hver runde, og bookmakerodds fra før kampene. Indstillingerne er valgt på runde ${R.tuned_on_rounds[0]}–${R.tuned_on_rounds[1]} og testet på runde ${R.held_out_rounds[0]}–${R.held_out_rounds[1]}, som de aldrig har set.</p></div></div>
+      <div class="recs">
+        ${panel(`<span class="v">${pc(h.new.pair)}</span><span class="t">Rigtige sammenligninger</span><span class="d">Over de næste tre runder, på runde ${R.held_out_rounds[0]}–${R.held_out_rounds[1]}. Formsnit: ${pc(h.form.pair)}.</span>`, "rec")}
+        ${panel(`<span class="v">${pp(nf.diff_pair)}</span><span class="t">Bedre end formsnit</span><span class="d">${pv(nf.p_value)}. Bedre i ${nf.better_rounds} af ${nf.rounds} runder.</span>`, "rec")}
+        ${panel(`<span class="v">${num(h.new.rmse, 2)}</span><span class="t">Kvadratfejl per spiller per runde</span><span class="d">Gammel model ${num(h.old.rmse, 2)}, formsnit ${num(h.form.rmse, 2)}. Ny mod gammel: ${pv(no.rmse_p_value)}.</span>`, "rec")}
+      </div>
+      <div class="panel" style="margin-top:12px"><div class="scroll"><table class="advt"><thead><tr><th class="l">Forudsagt forskel per runde</th><th>Modellen har ret</th><th>Sammenligninger</th></tr></thead><tbody>
+        ${R.gap_buckets.map((b) => `<tr><td class="l">${b.hi ? `${num(b.lo, 1)}–${num(b.hi, 1)} point` : `over ${num(b.lo, 1)} point`}</td><td class="pts">${pc(b.acc)}</td><td class="muted">${b.n.toLocaleString("da-DK")}</td></tr>`).join("")}
+      </tbody></table></div></div>
+      <p class="small muted" style="margin-top:10px">Ny mod gammel model på rangering: ${pp(no.diff_pair)}, ${pv(no.p_value)}. Clean sheets over hele sæsonen: Brier ${num(R.full.clean_sheets.brier, 3)} mod ${num(R.full.clean_sheets.brier_flat, 3)} for gennemsnittet (${R.full.clean_sheets.n} holdkampe). Begrænsninger: 2024/25 har ikke DefCon, redninger, kort eller starter, og en spillers klub er hans klub ved sæsonens slutning.</p>
+    </section>`;
+  })() : "";
+
   const rounds = S.rounds;
   const verdict = (d) => d.lo > 0 ? `<span class="delta-up">Sikkert bedre</span>` : d.hi < 0 ? `<span class="delta-down">Sikkert dårligere</span>` : `<span class="muted">Ikke sikkert endnu</span>`;
   const calRows = (bins) => bins.map((b) => `<tr><td class="l">${Math.round(b.lo * 100)}–${Math.round(b.hi * 100)}%</td><td>${pc(b.pred)}</td><td class="strong">${pc(b.obs)}</td><td class="muted">${b.n}</td>
@@ -366,7 +384,9 @@ function renderAccuracy() {
   app.innerHTML = `
     ${advHead()}
     ${subnav("noejagtighed")}
-    <p class="lede">Kan modellen noget? Hver test forudsiger en runde kun ud fra runderne før og sammenligner med, hvad der skete. Alle modeller testes på præcis de samme spillere og runder (runde ${rounds[0]}–${rounds[rounds.length - 1]}). Skadesstatus er den, FPL viste efter runden før.</p>
+    <p class="lede">Kan modellen noget? Hver test forudsiger en runde kun ud fra runderne før og sammenligner med, hvad der skete. Alle modeller testes på præcis de samme spillere og runder. Skadesstatus er den, FPL viste efter runden før.</p>
+    ${replaySec}
+    <section class="sec"><div class="sec-head"><div><h2>Denne sæson indtil nu</h2><p class="lede">Runde ${rounds[0]}–${rounds[rounds.length - 1]} af 2026/27. Få runder endnu, så intervallerne er brede.</p></div></div></section>
 
     <div class="recs" style="margin-top:24px">
       ${r ? panel(`<span class="v">${pc(r.new.acc)}</span><span class="t">Rigtige sammenligninger</span><span class="d">Når modellen siger, at spiller A får flere point end B i runde ${r.from + 1}–${r.to}. 90%-interval: ${pc(r.new.lo)}–${pc(r.new.hi)}. Et gæt giver 50%.</span>`, "rec") : ""}
@@ -496,7 +516,7 @@ function drawHold(le) {
     </section>
 
     <section class="sec">
-      <div class="sec-head"><div><h2>Drop og hent</h2><p class="lede">Gevinsten er ændringen i din bedste startopstillings forventede point over ${h === 1 ? "næste runde" : `de næste ${h} runder`}. Tre alternativer per spiller, så du kan stille flere waiver-ønsker op til samme drop. Sæt det mest eftertragtede ønske øverst: et vundet ønske sender dig bagerst i waiver-køen.${ADV.backtest?.rank?.buckets ? ` Klar opgradering betyder mindst 0,6 point per runde. I testen havde modellen ret i ${Math.round(ADV.backtest.rank.buckets[2].acc * 100)}% af sammenligningerne ved forskelle over 1 point per runde.` : ""}</p></div></div>
+      <div class="sec-head"><div><h2>Drop og hent</h2><p class="lede">Gevinsten er ændringen i din bedste startopstillings forventede point over ${h === 1 ? "næste runde" : `de næste ${h} runder`}. Tre alternativer per spiller, så du kan stille flere waiver-ønsker op til samme drop. Sæt det mest eftertragtede ønske øverst: et vundet ønske sender dig bagerst i waiver-køen.${ADV.replay?.gap_buckets ? ` Klar opgradering betyder mindst 0,6 point per runde. I testen på 2025/26 havde modellen ret i ${Math.round(ADV.replay.gap_buckets[2].acc * 100)}% af sammenligningerne ved forskelle på 1–2 point per runde og ${Math.round(ADV.replay.gap_buckets[3].acc * 100)}% over 2 point.` : ""}</p></div></div>
       ${swaps.length ? `<div class="swaps">${swaps.map((s) => {
         const [cls, label] = bucket(s.adds[0].gain / h);
         return `<div class="panel swap ${cls}">
