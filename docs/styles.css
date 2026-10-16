@@ -588,3 +588,14 @@ section.sec { scroll-margin-top: calc(var(--top, 64px) + 60px); }
   .rec .t { font-size: 14px; margin-top: 8px; }
   .rec .d { font-size: 12px; }
 }
+
+/* ---------- most moved players ---------- */
+.never { display: none; }
+.chain { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 2px 4px; white-space: normal; max-width: 320px; font-size: 13.5px; }
+.chain .chev { width: 12px; height: 12px; fill: none; stroke: var(--dim); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.free { color: var(--gold); font-weight: 600; }
+.kv dd .chain { justify-content: flex-end; }
+@media (hover: none) { .hover-only { display: none; } }
+.kv dt.wide { grid-column: 1 / -1; margin-top: 6px; }
+.kv dd.wide { grid-column: 1 / -1; text-align: left; font-weight: 500; color: var(--muted); line-height: 1.7; }
+.sheet-card { max-height: 82vh; overflow-y: auto; }

@@ -406,6 +406,727 @@
    "final": false
   }
  ],
+ "most_moved": [
+  {
+   "id": 591,
+   "name": "Enciso",
+   "club": "IPS",
+   "pos": "MID",
+   "pts": 17,
+   "ins": 3,
+   "outs": 3,
+   "moves": 6,
+   "managers": 2,
+   "owner": null,
+   "history": [
+    {
+     "gw": 3,
+     "type": "in",
+     "le": 265639,
+     "kind": "waiver"
+    },
+    {
+     "gw": 3,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 4,
+     "type": "in",
+     "le": 50414,
+     "kind": "free"
+    },
+    {
+     "gw": 5,
+     "type": "out",
+     "le": 50414
+    },
+    {
+     "gw": 6,
+     "type": "in",
+     "le": 265639,
+     "kind": "waiver"
+    },
+    {
+     "gw": 7,
+     "type": "out",
+     "le": 265639
+    }
+   ]
+  },
+  {
+   "id": 403,
+   "name": "Sávio",
+   "club": "TOT",
+   "pos": "MID",
+   "pts": 10,
+   "ins": 3,
+   "outs": 2,
+   "moves": 5,
+   "managers": 3,
+   "owner": 243916,
+   "history": [
+    {
+     "gw": 1,
+     "type": "in",
+     "le": 265639,
+     "kind": "waiver"
+    },
+    {
+     "gw": 1,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 2,
+     "type": "in",
+     "le": 1850,
+     "kind": "waiver"
+    },
+    {
+     "gw": 3,
+     "type": "out",
+     "le": 1850
+    },
+    {
+     "gw": 5,
+     "type": "in",
+     "le": 243916,
+     "kind": "free"
+    }
+   ]
+  },
+  {
+   "id": 123,
+   "name": "Hinshelwood",
+   "club": "BHA",
+   "pos": "MID",
+   "pts": 16,
+   "ins": 3,
+   "outs": 2,
+   "moves": 5,
+   "managers": 2,
+   "owner": 265639,
+   "history": [
+    {
+     "gw": 2,
+     "type": "in",
+     "le": 33708,
+     "kind": "waiver"
+    },
+    {
+     "gw": 2,
+     "type": "out",
+     "le": 33708
+    },
+    {
+     "gw": 3,
+     "type": "in",
+     "le": 265639,
+     "kind": "waiver"
+    },
+    {
+     "gw": 4,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 7,
+     "type": "in",
+     "le": 265639,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
+   "id": 503,
+   "name": "Van de Ven",
+   "club": "TOT",
+   "pos": "DEF",
+   "pts": 17,
+   "ins": 2,
+   "outs": 2,
+   "moves": 4,
+   "managers": 3,
+   "owner": 50414,
+   "history": [
+    {
+     "gw": 0,
+     "type": "draft",
+     "le": 33708
+    },
+    {
+     "gw": 2,
+     "type": "out",
+     "le": 33708
+    },
+    {
+     "gw": 4,
+     "type": "in",
+     "le": 265639,
+     "kind": "free"
+    },
+    {
+     "gw": 6,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 7,
+     "type": "in",
+     "le": 50414,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
+   "id": 338,
+   "name": "Ampadu",
+   "club": "LEE",
+   "pos": "MID",
+   "pts": 22,
+   "ins": 2,
+   "outs": 2,
+   "moves": 4,
+   "managers": 2,
+   "owner": null,
+   "history": [
+    {
+     "gw": 1,
+     "type": "in",
+     "le": 265639,
+     "kind": "free"
+    },
+    {
+     "gw": 3,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 5,
+     "type": "in",
+     "le": 50414,
+     "kind": "waiver"
+    },
+    {
+     "gw": 6,
+     "type": "out",
+     "le": 50414
+    }
+   ]
+  },
+  {
+   "id": 429,
+   "name": "Rashford",
+   "club": "MUN",
+   "pos": "MID",
+   "pts": 11,
+   "ins": 2,
+   "outs": 2,
+   "moves": 4,
+   "managers": 2,
+   "owner": null,
+   "history": [
+    {
+     "gw": 3,
+     "type": "in",
+     "le": 263989,
+     "kind": "waiver"
+    },
+    {
+     "gw": 4,
+     "type": "out",
+     "le": 263989
+    },
+    {
+     "gw": 5,
+     "type": "in",
+     "le": 294024,
+     "kind": "waiver"
+    },
+    {
+     "gw": 6,
+     "type": "out",
+     "le": 294024
+    }
+   ]
+  },
+  {
+   "id": 224,
+   "name": "Nketiah",
+   "club": "CRY",
+   "pos": "FWD",
+   "pts": 9,
+   "ins": 2,
+   "outs": 2,
+   "moves": 4,
+   "managers": 2,
+   "owner": null,
+   "history": [
+    {
+     "gw": 1,
+     "type": "in",
+     "le": 265639,
+     "kind": "free"
+    },
+    {
+     "gw": 1,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 3,
+     "type": "in",
+     "le": 33708,
+     "kind": "waiver"
+    },
+    {
+     "gw": 6,
+     "type": "out",
+     "le": 33708
+    }
+   ]
+  },
+  {
+   "id": 504,
+   "name": "Vuskovic",
+   "club": "BHA",
+   "pos": "DEF",
+   "pts": 40,
+   "ins": 2,
+   "outs": 2,
+   "moves": 4,
+   "managers": 1,
+   "owner": 265639,
+   "history": [
+    {
+     "gw": 0,
+     "type": "draft",
+     "le": 265639
+    },
+    {
+     "gw": 1,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 2,
+     "type": "in",
+     "le": 265639,
+     "kind": "waiver"
+    },
+    {
+     "gw": 5,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 6,
+     "type": "in",
+     "le": 265639,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
+   "id": 432,
+   "name": "Mainoo",
+   "club": "MUN",
+   "pos": "MID",
+   "pts": 26,
+   "ins": 2,
+   "outs": 2,
+   "moves": 4,
+   "managers": 1,
+   "owner": null,
+   "history": [
+    {
+     "gw": 4,
+     "type": "in",
+     "le": 239612,
+     "kind": "waiver"
+    },
+    {
+     "gw": 4,
+     "type": "out",
+     "le": 239612
+    },
+    {
+     "gw": 5,
+     "type": "in",
+     "le": 239612,
+     "kind": "waiver"
+    },
+    {
+     "gw": 5,
+     "type": "out",
+     "le": 239612
+    }
+   ]
+  },
+  {
+   "id": 264,
+   "name": "Bobb",
+   "club": "FUL",
+   "pos": "MID",
+   "pts": 16,
+   "ins": 2,
+   "outs": 2,
+   "moves": 4,
+   "managers": 1,
+   "owner": null,
+   "history": [
+    {
+     "gw": 3,
+     "type": "in",
+     "le": 263989,
+     "kind": "waiver"
+    },
+    {
+     "gw": 4,
+     "type": "out",
+     "le": 263989
+    },
+    {
+     "gw": 6,
+     "type": "in",
+     "le": 263989,
+     "kind": "waiver"
+    },
+    {
+     "gw": 7,
+     "type": "out",
+     "le": 263989
+    }
+   ]
+  },
+  {
+   "id": 332,
+   "name": "Justin",
+   "club": "LEE",
+   "pos": "DEF",
+   "pts": 32,
+   "ins": 2,
+   "outs": 1,
+   "moves": 3,
+   "managers": 2,
+   "owner": 239612,
+   "history": [
+    {
+     "gw": 2,
+     "type": "in",
+     "le": 294024,
+     "kind": "waiver"
+    },
+    {
+     "gw": 6,
+     "type": "out",
+     "le": 294024
+    },
+    {
+     "gw": 7,
+     "type": "in",
+     "le": 239612,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
+   "id": 127,
+   "name": "Gomez",
+   "club": "BHA",
+   "pos": "MID",
+   "pts": 29,
+   "ins": 2,
+   "outs": 1,
+   "moves": 3,
+   "managers": 2,
+   "owner": 1850,
+   "history": [
+    {
+     "gw": 4,
+     "type": "in",
+     "le": 294024,
+     "kind": "waiver"
+    },
+    {
+     "gw": 5,
+     "type": "out",
+     "le": 294024
+    },
+    {
+     "gw": 6,
+     "type": "in",
+     "le": 1850,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
+   "id": 316,
+   "name": "Emersonn",
+   "club": "IPS",
+   "pos": "FWD",
+   "pts": 28,
+   "ins": 2,
+   "outs": 1,
+   "moves": 3,
+   "managers": 2,
+   "owner": 239612,
+   "history": [
+    {
+     "gw": 1,
+     "type": "in",
+     "le": 265639,
+     "kind": "free"
+    },
+    {
+     "gw": 1,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 2,
+     "type": "in",
+     "le": 239612,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
+   "id": 472,
+   "name": "Murillo",
+   "club": "NFO",
+   "pos": "DEF",
+   "pts": 25,
+   "ins": 1,
+   "outs": 2,
+   "moves": 3,
+   "managers": 2,
+   "owner": null,
+   "history": [
+    {
+     "gw": 0,
+     "type": "draft",
+     "le": 239612
+    },
+    {
+     "gw": 3,
+     "type": "out",
+     "le": 239612
+    },
+    {
+     "gw": 5,
+     "type": "in",
+     "le": 205703,
+     "kind": "waiver"
+    },
+    {
+     "gw": 7,
+     "type": "out",
+     "le": 205703
+    }
+   ]
+  },
+  {
+   "id": 114,
+   "name": "Boscagli",
+   "club": "BHA",
+   "pos": "DEF",
+   "pts": 24,
+   "ins": 2,
+   "outs": 1,
+   "moves": 3,
+   "managers": 2,
+   "owner": 294024,
+   "history": [
+    {
+     "gw": 4,
+     "type": "in",
+     "le": 1850,
+     "kind": "free"
+    },
+    {
+     "gw": 5,
+     "type": "out",
+     "le": 1850
+    },
+    {
+     "gw": 6,
+     "type": "in",
+     "le": 294024,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
+   "id": 116,
+   "name": "Dunk",
+   "club": "BHA",
+   "pos": "DEF",
+   "pts": 23,
+   "ins": 2,
+   "outs": 1,
+   "moves": 3,
+   "managers": 2,
+   "owner": 263989,
+   "history": [
+    {
+     "gw": 4,
+     "type": "in",
+     "le": 265639,
+     "kind": "free"
+    },
+    {
+     "gw": 4,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 4,
+     "type": "in",
+     "le": 263989,
+     "kind": "free"
+    }
+   ]
+  },
+  {
+   "id": 469,
+   "name": "N.Williams",
+   "club": "NFO",
+   "pos": "DEF",
+   "pts": 20,
+   "ins": 1,
+   "outs": 2,
+   "moves": 3,
+   "managers": 2,
+   "owner": null,
+   "history": [
+    {
+     "gw": 0,
+     "type": "draft",
+     "le": 265639
+    },
+    {
+     "gw": 2,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 3,
+     "type": "in",
+     "le": 50414,
+     "kind": "waiver"
+    },
+    {
+     "gw": 7,
+     "type": "out",
+     "le": 50414
+    }
+   ]
+  },
+  {
+   "id": 336,
+   "name": "Okafor",
+   "club": "LEE",
+   "pos": "MID",
+   "pts": 20,
+   "ins": 2,
+   "outs": 1,
+   "moves": 3,
+   "managers": 2,
+   "owner": 50414,
+   "history": [
+    {
+     "gw": 5,
+     "type": "in",
+     "le": 239612,
+     "kind": "free"
+    },
+    {
+     "gw": 6,
+     "type": "out",
+     "le": 239612
+    },
+    {
+     "gw": 7,
+     "type": "in",
+     "le": 50414,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
+   "id": 377,
+   "name": "Munoz",
+   "club": "LIV",
+   "pos": "MID",
+   "pts": 17,
+   "ins": 1,
+   "outs": 2,
+   "moves": 3,
+   "managers": 2,
+   "owner": null,
+   "history": [
+    {
+     "gw": 0,
+     "type": "draft",
+     "le": 33708
+    },
+    {
+     "gw": 2,
+     "type": "out",
+     "le": 33708
+    },
+    {
+     "gw": 3,
+     "type": "in",
+     "le": 294024,
+     "kind": "waiver"
+    },
+    {
+     "gw": 4,
+     "type": "out",
+     "le": 294024
+    }
+   ]
+  },
+  {
+   "id": 541,
+   "name": "Meunier",
+   "club": "SUN",
+   "pos": "DEF",
+   "pts": 15,
+   "ins": 1,
+   "outs": 2,
+   "moves": 3,
+   "managers": 2,
+   "owner": null,
+   "history": [
+    {
+     "gw": 0,
+     "type": "draft",
+     "le": 50414
+    },
+    {
+     "gw": 1,
+     "type": "out",
+     "le": 50414
+    },
+    {
+     "gw": 6,
+     "type": "in",
+     "le": 239612,
+     "kind": "free"
+    },
+    {
+     "gw": 7,
+     "type": "out",
+     "le": 239612
+    }
+   ]
+  }
+ ],
  "standings": [
   {
    "le": 239612,
@@ -2365,5 +3086,5 @@
    "best_player": 1
   }
  },
- "updated": "2026-10-16T11:26+00:00"
+ "updated": "2026-10-16T11:30+00:00"
 }

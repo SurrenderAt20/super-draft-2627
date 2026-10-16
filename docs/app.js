@@ -156,8 +156,13 @@ function enhanceTables(root) {
       tr.addEventListener("click", () => {
         if (!(TOUCH || NARROW.matches)) return;
         const title = tr.querySelector(".who b, td.l b")?.textContent ?? "";
-        const rows = [...tr.cells].map((c, i) => [heads[i].textContent.trim(), c]).filter(([h, c]) => h && h !== "#" && !c.querySelector(".who"));
-        openSheet(`<b>${esc(title)}</b><dl class="kv">${rows.map(([h, c]) => `<dt>${esc(fullHead(h))}</dt><dd>${c.innerHTML}</dd>`).join("")}</dl>`);
+        // skip the rank and the name cell (the name is already the sheet's title)
+        const rows = [...tr.cells].map((c, i) => [heads[i].textContent.trim(), c])
+          .filter(([h, c]) => h && h !== "#" && !c.querySelector(".who") && c.querySelector("b")?.textContent !== title);
+        openSheet(`<b>${esc(title)}</b><dl class="kv">${rows.map(([h, c]) => {
+          const wide = c.classList.contains("never") ? ' class="wide"' : "";
+          return `<dt${wide}>${esc(fullHead(h))}</dt><dd${wide}>${c.innerHTML}</dd>`;
+        }).join("")}</dl>`);
       });
     });
   });
@@ -680,7 +685,20 @@ function viewRekorder() {
     R.luckiest_win && rec(R.luckiest_win.value, "Heldigste sejr", m(R.luckiest_win)),
     R.unluckiest_loss && rec(R.unluckiest_loss.value, "Mest uheldige nederlag", m(R.unluckiest_loss)),
     R.bench_shame && rec(R.bench_shame.value, "Flest point på bænken", `${esc(mgr(R.bench_shame.le))} i runde ${R.bench_shame.gw}`),
+    D.most_moved?.[0] && rec(D.most_moved[0].moves, "Mest handlede spiller", `${esc(D.most_moved[0].name)} er hentet eller droppet ${D.most_moved[0].moves} gange`),
   ].filter(Boolean).join("");
+
+  // most moved players: every pickup and drop, and the chain of managers who had them
+  const step = (h) => h.type === "draft" ? `Draftet af ${esc(mgr(h.le))}`
+    : h.type === "in" ? `Før runde ${h.gw}: hentet af ${esc(mgr(h.le))} ${h.kind === "waiver" ? "på waivers" : "som fri spiller"}`
+    : `Før runde ${h.gw}: droppet af ${esc(mgr(h.le))}`;
+  const chev = '<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
+  const chain = (r) => {
+    const hands = r.history.filter((h) => h.type !== "out").map((h) => `<span>${esc(mgr(h.le))}</span>`);
+    if (!r.owner) hands.push('<span class="free">Ledig</span>');
+    return `<span class="chain">${hands.join(chev)}</span>`;
+  };
+  const moved = D.most_moved || [];
 
   const ids = D.standings.map((s) => s.le);
   const honourKeys = [["top_score", "Højeste"], ["low_score", "Træske"], ["luckiest_win", "Heldig sejr"], ["unluckiest_loss", "Uheldigt nederlag"], ["bench_shame", "Bænkeskam"], ["waiver_hero", "Waiver-helt"]];
@@ -721,6 +739,14 @@ function viewRekorder() {
       ${D.best_pickups.map((p, i) => `<tr><td class="rank">${rank(i + 1)}</td><td class="l"><b>${esc(p.name)}</b> <span class="muted small">${esc(p.pos)}, ${esc(p.club)}</span></td><td class="l">${esc(mgr(p.le))}</td><td class="l"><span class="acq ${p.acq}">${ACQ[p.acq]}</span></td><td>${p.starts}</td><td class="pts">${p.pts}</td></tr>`).join("")}
       </tbody></table></div></div>
     </section>
+
+    ${moved.length ? `<section class="sec">
+      <div class="sec-head"><div><h2>Mest handlede spillere</h2><p class="lede">Spillere, der er blevet hentet og droppet flest gange. En handel er én gang hentet eller én gang droppet.</p></div></div>
+      <div class="panel"><div class="scroll"><table data-keep="0,1,2,6"><thead><tr><th>#</th><th class="l">Spiller</th><th>Handler</th><th>Hentet</th><th>Droppet</th><th>Managere</th><th class="l">Ejer nu</th><th class="l">Har været hos</th><th>Sæsonpoint</th><th class="never">Forløb</th></tr></thead><tbody>
+      ${moved.map((r, i) => `<tr data-tip="${esc(`<b>${esc(r.name)}</b>${r.history.map(step).join("<br>")}`)}"><td class="rank">${rank(i + 1)}</td><td class="l"><b>${esc(r.name)}</b> <span class="muted small">${esc(r.pos)}, ${esc(r.club)}</span></td><td class="pts">${r.moves}</td><td>${r.ins}</td><td>${r.outs}</td><td>${r.managers}</td><td class="l">${r.owner ? esc(mgr(r.owner)) : '<span class="free">Ledig</span>'}</td><td class="l">${chain(r)}</td><td class="muted">${r.pts}</td><td class="never l">${r.history.map(step).join("<br>")}</td></tr>`).join("")}
+      </tbody></table></div></div>
+      <div class="legend hover-only"><span>Hold musen over en spiller for hele forløbet.</span></div>
+    </section>` : ""}
 
     <section class="sec">
       <div class="sec-head"><div><h2>Indbyrdes opgør</h2><p class="lede">Rækkens resultater mod kolonnen (V-U-T).</p></div></div>

@@ -432,6 +432,47 @@ def season_stats(ctx, snapshots, details, game, transactions):
             "honours": {le: dict(v) for le, v in honours.items()}}
 
 
+# ---------------------------------------------------------------- most moved players
+
+def player_moves(choices, transactions, entry_to_le, boot, owners, limit=20):
+    """Every pickup and drop per player, oldest first, plus who drafted them and who owns them now."""
+    clubs = {t["id"]: t["short_name"] for t in boot["teams"]}
+    pos = {t["id"]: t["singular_name_short"] for t in boot["element_types"]}
+    info = {e["id"]: e for e in boot["elements"]}
+    hist = defaultdict(list)
+    for c in choices:
+        le = entry_to_le.get(c["entry"])
+        if le:
+            hist[c["element"]].append({"t": c["choice_time"], "gw": 0, "type": "draft", "le": le})
+    for t in sorted((t for t in transactions if t["result"] == "a"), key=lambda t: t["added"]):
+        le = entry_to_le.get(t["entry"])
+        if not le:
+            continue
+        kind = "waiver" if t["kind"] == "w" else "free"
+        hist[t["element_in"]].append({"t": t["added"], "gw": t["event"], "type": "in", "kind": kind, "le": le})
+        hist[t["element_out"]].append({"t": t["added"], "gw": t["event"], "type": "out", "le": le})
+
+    rows = []
+    for el, h in hist.items():
+        h.sort(key=lambda x: x["t"])
+        ins = sum(1 for x in h if x["type"] == "in")
+        outs = sum(1 for x in h if x["type"] == "out")
+        if ins + outs < 2:
+            continue
+        e = info.get(el, {})
+        owner = owners.get(el)
+        rows.append({
+            "id": el, "name": e.get("web_name", str(el)), "club": clubs.get(e.get("team"), ""),
+            "pos": pos.get(e.get("element_type"), ""), "pts": e.get("total_points", 0),
+            "ins": ins, "outs": outs, "moves": ins + outs,
+            "managers": len({x["le"] for x in h if x["type"] in ("in", "draft")}),
+            "owner": entry_to_le.get(owner) if owner else None,
+            "history": [{"gw": x["gw"], "type": x["type"], "le": x["le"], **({"kind": x["kind"]} if "kind" in x else {})} for x in h],
+        })
+    rows.sort(key=lambda r: (-r["moves"], -r["managers"], -r["pts"]))
+    return rows[:limit]
+
+
 # ---------------------------------------------------------------- main
 
 def first_kickoff(boot, gw):
@@ -450,6 +491,7 @@ def main():
     draft_id = details["league"]["drafts"][0]["id"] if details["league"].get("drafts") else None
     choices = fetch(f"draft/{league}/choices")["choices"]
     transactions = fetch(f"draft/league/{league}/transactions")["transactions"]
+    owners = {x["element"]: x["owner"] for x in fetch(f"league/{league}/element-status")["element_status"]}
 
     entries = {e["id"]: {"le": e["id"], "entry_id": e["entry_id"], "team": e["entry_name"],
                          "manager": e["player_first_name"], "short": e.get("short_name")}
@@ -528,6 +570,7 @@ def main():
         "live": {"gw": live_gw, "matches": live_matches} if live_gw else None,
         "next_round": {"gw": nxt, "matches": next_matches} if nxt else None,
         "blocks": blocks,
+        "most_moved": player_moves(choices, transactions, entry_to_le, boot, owners),
         **season,
     }
     cur_path = os.path.join(DATA, "current.json")
