@@ -62,7 +62,7 @@
   "current": 6,
   "current_finished": true,
   "next": 7,
-  "waivers_processed": false,
+  "waivers_processed": true,
   "next_trades": "2026-10-15T10:00:00Z",
   "next_waivers": "2026-10-16T10:00:00Z",
   "next_deadline": "2026-10-17T10:00:00Z",
@@ -2093,32 +2093,32 @@
    "le": 50414,
    "pts": 90,
    "share": 0.429,
-   "claims_won": 12,
-   "claims_lost": 15,
+   "claims_won": 14,
+   "claims_lost": 17,
    "free_agents": 8
   },
   {
    "le": 265639,
    "pts": 88,
    "share": 0.393,
-   "claims_won": 18,
-   "claims_lost": 25,
+   "claims_won": 20,
+   "claims_lost": 27,
    "free_agents": 9
   },
   {
    "le": 243916,
    "pts": 79,
    "share": 0.322,
-   "claims_won": 6,
-   "claims_lost": 8,
+   "claims_won": 7,
+   "claims_lost": 9,
    "free_agents": 1
   },
   {
    "le": 1850,
    "pts": 71,
    "share": 0.25,
-   "claims_won": 11,
-   "claims_lost": 26,
+   "claims_won": 12,
+   "claims_lost": 28,
    "free_agents": 5
   },
   {
@@ -2133,16 +2133,16 @@
    "le": 239612,
    "pts": 56,
    "share": 0.174,
-   "claims_won": 7,
-   "claims_lost": 10,
+   "claims_won": 8,
+   "claims_lost": 13,
    "free_agents": 7
   },
   {
    "le": 263989,
    "pts": 26,
    "share": 0.094,
-   "claims_won": 5,
-   "claims_lost": 5,
+   "claims_won": 8,
+   "claims_lost": 6,
    "free_agents": 2
   },
   {
@@ -2157,8 +2157,8 @@
    "le": 205703,
    "pts": 13,
    "share": 0.053,
-   "claims_won": 2,
-   "claims_lost": 4,
+   "claims_won": 4,
+   "claims_lost": 8,
    "free_agents": 0
   }
  ],
@@ -2365,5 +2365,5 @@
    "best_player": 1
   }
  },
- "updated": "2026-10-15T21:24+00:00"
+ "updated": "2026-10-16T11:26+00:00"
 }
