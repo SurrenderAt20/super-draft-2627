@@ -18,6 +18,8 @@ import urllib.request
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
+import advanced
+
 API = "https://draft.premierleague.com/api"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "docs", "data")
@@ -573,6 +575,14 @@ def main():
         "most_moved": player_moves(choices, transactions, entry_to_le, boot, owners),
         **season,
     }
+    # password-protected advanced player data (encrypted; skipped without ADV_PASSWORD)
+    adv_path = os.path.join(DATA, "adv.enc.json")
+    if os.environ.get("ADV_PASSWORD"):
+        adv = advanced.build(boot, sorted(snapshots), fetch, owners, entry_to_le)
+        adv["managers"] = {le: e["manager"] for le, e in entries.items()}
+        if advanced.write(adv_path, adv, read_json, write_json):
+            changed.append(adv_path)
+
     cur_path = os.path.join(DATA, "current.json")
     old = read_json(cur_path)
     content_changed = changed or not old or {k: v for k, v in old.items() if k != "updated"} != json.loads(json.dumps(current))
