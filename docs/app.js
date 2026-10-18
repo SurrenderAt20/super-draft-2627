@@ -438,7 +438,7 @@ async function viewStilling() {
   app.innerHTML = `${hero}
     <section class="sec">
       <div class="sec-head">
-        <div><h2>Tabel</h2><p class="lede" id="table-lede"></p></div>
+        <div><h2 id="table-title">Tabel</h2><p class="lede" id="table-lede"></p></div>
         <div class="switch" role="group" aria-label="Vælg tabel">
           <span class="pill-thumb" aria-hidden="true"></span>
           <button data-mode="h2h">Head-to-head</button>
@@ -460,6 +460,9 @@ async function viewStilling() {
     const box = app.querySelector("#table-box");
     const lede = app.querySelector("#table-lede");
     const legend = app.querySelector("#table-legend");
+    // the heading follows the chosen view (the section chips keep the name "Tabel")
+    // change only the text node: the phone "Næste" button lives inside the heading
+    app.querySelector("#table-title").firstChild.nodeValue = { h2h: "Tabel", points: "Samlede point", form: "Form", injuries: "Skadesstilling" }[tableMode];
     const trophy = inTrophyNow();
     if (tableMode === "h2h") {
       lede.textContent = "Den officielle stilling. Ved lige point afgør flest scorede point.";
