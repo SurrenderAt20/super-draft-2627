@@ -102,8 +102,8 @@
     "event": 7,
     "a": 294024,
     "b": 1850,
-    "pa": 4,
-    "pb": 36,
+    "pa": 48,
+    "pb": 68,
     "finished": false,
     "started": true
    },
@@ -111,8 +111,8 @@
     "event": 7,
     "a": 33708,
     "b": 274299,
-    "pa": 20,
-    "pb": 16,
+    "pa": 31,
+    "pb": 45,
     "finished": false,
     "started": true
    },
@@ -120,8 +120,8 @@
     "event": 7,
     "a": 50414,
     "b": 265639,
-    "pa": 16,
-    "pb": 11,
+    "pa": 26,
+    "pb": 47,
     "finished": false,
     "started": true
    },
@@ -129,8 +129,8 @@
     "event": 7,
     "a": 205703,
     "b": 263989,
-    "pa": 15,
-    "pb": 28,
+    "pa": 26,
+    "pb": 58,
     "finished": false,
     "started": true
    },
@@ -138,8 +138,8 @@
     "event": 7,
     "a": 239612,
     "b": 243916,
-    "pa": 19,
-    "pb": 8,
+    "pa": 33,
+    "pb": 16,
     "finished": false,
     "started": true
    }
@@ -1933,37 +1933,6 @@
    ]
   },
   {
-   "id": 114,
-   "name": "Boscagli",
-   "club": "BHA",
-   "pos": "DEF",
-   "pts": 35,
-   "ins": 2,
-   "outs": 1,
-   "moves": 3,
-   "managers": 2,
-   "owner": 294024,
-   "history": [
-    {
-     "gw": 4,
-     "type": "in",
-     "le": 1850,
-     "kind": "free"
-    },
-    {
-     "gw": 5,
-     "type": "out",
-     "le": 1850
-    },
-    {
-     "gw": 6,
-     "type": "in",
-     "le": 294024,
-     "kind": "waiver"
-    }
-   ]
-  },
-  {
    "id": 332,
    "name": "Justin",
    "club": "LEE",
@@ -1990,6 +1959,37 @@
      "gw": 7,
      "type": "in",
      "le": 239612,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
+   "id": 114,
+   "name": "Boscagli",
+   "club": "BHA",
+   "pos": "DEF",
+   "pts": 34,
+   "ins": 2,
+   "outs": 1,
+   "moves": 3,
+   "managers": 2,
+   "owner": 294024,
+   "history": [
+    {
+     "gw": 4,
+     "type": "in",
+     "le": 1850,
+     "kind": "free"
+    },
+    {
+     "gw": 5,
+     "type": "out",
+     "le": 1850
+    },
+    {
+     "gw": 6,
+     "type": "in",
+     "le": 294024,
      "kind": "waiver"
     }
    ]
@@ -4152,5 +4152,5 @@
    "best_player": 1
   }
  },
- "updated": "2026-10-18T18:32+00:00"
+ "updated": "2026-10-18T20:45+00:00"
 }
