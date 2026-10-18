@@ -579,6 +579,45 @@ def main():
     live_matches = [m for m in matches if live_gw and m["event"] == live_gw]
     next_matches = [m for m in matches if nxt and m["event"] == nxt]
 
+    # injury standings: every played round, each player in a manager's squad that round (XI and bench)
+    # who FPL listed as injured, suspended or unavailable counts as one round out; doubtful counted apart
+    rounds_status = I["ctx"].get("rounds_now", {})
+    code_of = {e["id"]: str(e["code"]) for e in boot["elements"]}
+    el_by_id = {e["id"]: e for e in boot["elements"]}
+    club = {t["id"]: t["short_name"] for t in boot["teams"]}
+    inj = {le: {"le": le, "out": 0, "injured": 0, "suspended": 0, "doubtful": 0, "players": {}} for le in entries}
+    for gw in sorted(snapshots):
+        for le, t in snapshots[gw]["teams"].items():
+            le = int(le)
+            for p in t["xi"] + t["bench"]:
+                st = rounds_status.get(code_of.get(p["id"]), {}).get(gw, {}).get("status", "a")
+                if st == "a":
+                    continue
+                row = inj[le]
+                rec = row["players"].setdefault(p["id"], {"id": p["id"], "name": p["name"], "club": p["club"], "out": 0, "doubtful": 0, "gws": []})
+                if st == "d":
+                    row["doubtful"] += 1
+                    rec["doubtful"] += 1
+                else:
+                    row["out"] += 1
+                    row["suspended" if st == "s" else "injured"] += 1
+                    rec["out"] += 1
+                    rec["gws"].append(gw)
+    for pid, owner in owners.items():
+        le = entry_to_le.get(owner)
+        e = el_by_id.get(pid)
+        if le and e and e.get("status") not in (None, "a"):
+            rec = inj[le]["players"].setdefault(pid, {"id": pid, "name": e["web_name"], "club": club.get(e["team"], ""), "out": 0, "doubtful": 0, "gws": []})
+            rec["now"] = {"status": e["status"], "news": e.get("news") or "", "chance": e.get("chance_of_playing_next_round")}
+    injuries = []
+    for row in inj.values():
+        players = sorted(row["players"].values(), key=lambda r: (-r["out"], -r["doubtful"]))
+        injuries.append({**{k: v for k, v in row.items() if k != "players"}, "players": players,
+                         "now_out": sum(1 for r in players if r.get("now", {}).get("status") in ("i", "s", "u", "n")),
+                         "now_doubtful": sum(1 for r in players if r.get("now", {}).get("status") == "d")})
+    injuries.sort(key=lambda r: (-r["out"], -r["doubtful"], -r["now_out"]))
+    injuries = {"rounds": sorted(snapshots), "table": injuries}
+
     current = {
         "league": {"id": league, "name": details["league"]["name"], "season": config["season"],
                    "prize_kr": config["prize_kr"], "draft_id": draft_id},
@@ -595,6 +634,7 @@ def main():
         "next_round": {"gw": nxt, "matches": next_matches} if nxt else None,
         "blocks": blocks,
         "forecast": fc,
+        "injuries": injuries,
         "most_moved": player_moves(choices, transactions, entry_to_le, boot, owners),
         **season,
     }

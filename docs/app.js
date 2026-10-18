@@ -444,6 +444,7 @@ async function viewStilling() {
           <button data-mode="h2h">Head-to-head</button>
           <button data-mode="points">Samlede point</button>
           <button data-mode="form">Form</button>
+          <button data-mode="injuries">Skader</button>
         </div>
       </div>
       <div class="panel"><div class="scroll" id="table-box"></div></div>
@@ -479,6 +480,19 @@ async function viewStilling() {
           return `<tr><td class="rank">${rank(i + 1)}</td><td class="l">${who(p.le)}</td><td>${num(p.avg)}</td><td>${p.best}</td><td class="muted">${p.worst}</td><td>${d}</td><td class="pts">${p.total}</td></tr>`;
         }).join("")}</tbody></table>`;
       legend.innerHTML = `<span><span class="delta-down">Rød plads:</span> holdet ligger lavere i H2H, end pointene fortjener.</span><span><span class="delta-up">Grøn:</span> højere.</span>`;
+    } else if (tableMode === "injuries") {
+      const I = D.injuries;
+      const rs = I?.rounds || [];
+      lede.textContent = rs.length ? `Samlet over runde ${rs[0]}–${rs[rs.length - 1]}: hver spiller i truppen (startopstilling og bænk), der var meldt skadet, i karantæne eller utilgængelig i en runde, tæller én skadesrunde.` : "Ingen spillede runder endnu.";
+      const stLabel = { i: "skadet", s: "karantæne", u: "utilgængelig", n: "utilgængelig", d: "tvivlsom" };
+      const list = (r) => r.players.filter((p) => p.out || p.doubtful || p.now).map((p) => {
+        const now = p.now ? ` Nu: ${stLabel[p.now.status] || p.now.status}${p.now.news ? `, ${esc(p.now.news)}` : ""}.` : "";
+        return `${esc(p.name)} (${esc(p.club)}): ${p.out} ${p.out === 1 ? "runde" : "runder"} ude${p.doubtful ? `, ${p.doubtful} tvivlsom` : ""}${p.gws.length ? ` (runde ${p.gws.join(", ")})` : ""}.${now}`;
+      }).join("<br>") || "Ingen";
+      box.innerHTML = `<table data-keep="0,1,5,6"><thead><tr><th>#</th><th class="l">Hold</th><th>Skadet</th><th>Karantæne</th><th>Tvivlsom</th><th>Ude nu</th><th>Skadesrunder</th><th class="never">Spillere</th></tr></thead><tbody>
+        ${(I?.table || []).map((r, i) => `<tr data-tip="${esc(`<b>${esc(mgr(r.le))}</b>${list(r)}`)}"><td class="rank">${rank(i + 1)}</td><td class="l">${who(r.le)}</td><td>${r.injured}</td><td>${r.suspended}</td><td class="muted">${r.doubtful}</td><td>${r.now_out ? `<b class="delta-down">${r.now_out}</b>` : "0"}</td><td class="pts">${r.out}</td><td class="never l">${list(r)}</td></tr>`).join("")}</tbody></table>`;
+      legend.innerHTML = `<span>Hold musen over eller tryk på et hold for at se spillerne.</span><span>Ude nu: spillere i truppen, der er skadet, i karantæne eller utilgængelige lige nu.</span>`;
+      bindTips(box);
     } else {
       const gws = D.gameweeks.slice(-4).map((g) => g.gw);
       lede.textContent = `Point i de seneste ${gws.length} runder (runde ${gws[0]}–${gws[gws.length - 1]}).`;
