@@ -6,7 +6,18 @@ const SERIES = ["#3987e5", "#d95926", "#199e70", "#c98500"];   // categorical sl
 const FORM = { GKP: { min: 1, max: 1 }, DEF: { min: 3, max: 5 }, MID: { min: 2, max: 5 }, FWD: { min: 1, max: 3 } };
 const PROG = { picks: null, horizon: 6, pos: "ALL", owner: "all", fixMode: "att" };
 const WAIV = { horizon: 3, pos: "ALL" };
-const HOLD = { horizon: 3 };
+const HOLD = { horizon: 3, pos: "ALL", tradeH: 3 };
+const POS_LABEL = { ALL: "Alle", GKP: "Målmand", DEF: "Forsvar", MID: "Midtbane", FWD: "Angreb" };
+const posOK = (p) => HOLD.pos === "ALL" || p.pos === HOLD.pos;
+
+// how kind the next n fixtures are for a player: clean-sheet chance for keepers/defenders,
+// expected team goals for midfielders/forwards (both from the model, odds where available)
+function programScore(p, n) {
+  const fx = fixturesOf(p, n);
+  if (!fx.length) return null;
+  const def = p.pos === "GKP" || p.pos === "DEF";
+  return fx.reduce((a, f) => a + (def ? Math.exp(-f.ga) : f.gf), 0) / fx.length;
+}
 
 // ---------------------------------------------------------------- data helpers
 
@@ -581,7 +592,7 @@ function goldTable(le, h) {
   const vis = visibleValue();
   const xpi = ADV.cols.indexOf("xpt");
   const rows = ADV.players
-    .filter((p) => p.owner !== le && isAvailable(p) && seasonSum(p.id, "mi") >= 180 && (modelValue(h)[p.id] ?? 0) >= 0.7 && sumH(p.id, h) / h >= 2.0 && goldScore(p.id, h) >= 0.2)
+    .filter((p) => p.owner !== le && posOK(p) && isAvailable(p) && seasonSum(p.id, "mi") >= 180 && (modelValue(h)[p.id] ?? 0) >= 0.7 && sumH(p.id, h) / h >= 2.0 && goldScore(p.id, h) >= 0.2)
     .sort((a, b) => goldScore(b.id, h) - goldScore(a.id, h)).slice(0, 12);
   if (!rows.length) return "";
   return `<section class="sec">
@@ -616,7 +627,9 @@ function renderHold() {
       <label>Hold<select id="hd-team"><option value="">Vælg hold</option>${opts.map(([le, n]) => `<option value="${le}"${Number(le) === saved ? " selected" : ""}>${esc(n)}, ${esc(ADV.teams_of?.[le] ?? "")}</option>`).join("")}</select></label>
       <label>Eller hold-ID<input id="hd-id" inputmode="numeric" placeholder="fx 263366"></label>
       ${horizonSelect("hd-h", HOLD.horizon)}
-    </div><p class="lock-err" id="hd-err" aria-live="polite"></p></div>
+    </div>
+    <div class="adv-filters"><div class="seg" id="hd-pos" role="group" aria-label="Position">${Object.entries(POS_LABEL).map(([k, l]) => `<button type="button" data-pos="${k}">${l}</button>`).join("")}</div></div>
+    <p class="lock-err" id="hd-err" aria-live="polite"></p></div>
     <div id="hd-body"></div>`;
   const pick = (le) => { storeTeam(String(le)); app.querySelector("#hd-team").value = String(le); drawHold(le); };
   app.querySelector("#hd-team").addEventListener("change", (e) => e.target.value && pick(Number(e.target.value)));
@@ -626,6 +639,14 @@ function renderHold() {
     if (le) pick(le);
   });
   app.querySelector("#hd-h").addEventListener("change", (e) => { HOLD.horizon = Number(e.target.value); const le = resolveTeam(storedTeam()); if (le) drawHold(le); });
+  const markPos = () => app.querySelectorAll("#hd-pos button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.pos === HOLD.pos));
+  app.querySelectorAll("#hd-pos button").forEach((b) => b.addEventListener("click", () => {
+    HOLD.pos = b.dataset.pos;
+    markPos();
+    const le = resolveTeam(storedTeam());
+    if (le) drawHold(le);
+  }));
+  markPos();
   if (saved) drawHold(saved);
 }
 
@@ -650,7 +671,7 @@ function drawHold(le) {
   const free = ADV.players.filter((p) => !p.owner && isAvailable(p));
   const topFree = {};
   for (const pos of Object.keys(FORM)) topFree[pos] = free.filter((p) => p.pos === pos).sort((a, b) => sumH(b.id, h) - sumH(a.id, h)).slice(0, 25);
-  const swaps = squad.map((out) => {
+  const swaps = squad.filter(posOK).map((out) => {
     const adds = topFree[out.pos].map((inn) => ({ inn, gain: xiOver(squad.map((p) => (p === out ? inn : p)), h) - base }))
       .filter((x) => x.gain > 0.05).sort((a, b) => b.gain - a.gain).slice(0, 3)
       .map((x) => ({ ...x, conf: confidenceFor(x.inn, out, h) }));
@@ -660,18 +681,21 @@ function drawHold(le) {
   // 1-for-1 trades the other manager could plausibly accept: what you give has at least the same
   // visible value (points, form, draft rank) as what you get, but the model rates what you get higher
   const vis = visibleValue();
+  const th = Math.min(HOLD.tradeH, seasonLeft());   // trades: next 3 matches unless "rest of season" is chosen
+  const myBase = xiOver(squad, th);
   const trades = [];
   const others = Object.keys(ADV.managers).map(Number).filter((x) => x !== le);
   for (const o of others) {
     const theirs = ADV.players.filter((p) => p.owner === o);
-    const theirBase = xiOver(theirs, h);
-    for (const give of squad) {
+    const theirBase = xiOver(theirs, th);
+    for (const give of squad.filter(posOK)) {
       for (const get of theirs.filter((p) => p.pos === give.pos && isAvailable(p))) {
         if ((vis[give.id]?.v ?? 0) < (vis[get.id]?.v ?? 0) - 0.03) continue;   // looks like a loss to them: unrealistic
-        const mine = xiOver(squad.map((p) => (p === give ? get : p)), h) - base;
-        if (mine < 0.25 * h) continue;   // less than a quarter point per round is noise
-        const them = xiOver(theirs.map((p) => (p === get ? give : p)), h) - theirBase;
-        trades.push({ o, give, get, mine, them, conf: confidenceFor(get, give, h), visGive: vis[give.id], visGet: vis[get.id] });
+        const mine = xiOver(squad.map((p) => (p === give ? get : p)), th) - myBase;
+        if (mine < 0.25 * th) continue;   // less than a quarter point per round is noise
+        const them = xiOver(theirs.map((p) => (p === get ? give : p)), th) - theirBase;
+        trades.push({ o, give, get, mine, them, conf: confidenceFor(get, give, th), visGive: vis[give.id], visGet: vis[get.id],
+                      progGive: programScore(give, 3), progGet: programScore(get, 3) });
       }
     }
   }
@@ -704,10 +728,17 @@ function drawHold(le) {
     </section>
 
     <section class="sec">
-      <div class="sec-head"><div><h2>Byttehandler</h2><p class="lede">Kun handler, der ser fair ud for den anden manager: det, du giver, har mindst samme synlige værdi (point indtil nu, form og draft-rang) som det, du får. Gevinsten kommer fra, at modellen rangerer det, du får, højere. Din gevinst og deres ændring er målt på hver sin bedste startopstilling.</p></div></div>
-      ${bestTrades.length ? `<div class="panel"><div class="scroll"><table class="advt"><thead><tr><th class="l">Du giver</th><th class="l">Du får</th><th class="l">Fra</th><th class="l">Det ser de</th><th>Din gevinst</th><th>Deres ændring</th><th>Sikkerhed</th></tr></thead><tbody>
-        ${bestTrades.map((t) => `<tr><td class="l"><b>${esc(t.give.name)}</b> <span class="muted small">${esc(t.give.pos)}</span></td><td class="l"><b>${esc(t.get.name)}</b>${statusDot(t.get)} <span class="muted small">${esc(t.get.club)}</span></td><td class="l">${esc(ADV.managers[t.o])}</td><td class="l small">${t.visGive.season} mod ${t.visGet.season} point, form ${t.visGive.form} mod ${t.visGet.form}</td><td class="delta-up">+${num(t.mine, 1)}</td><td class="${t.them >= 0 ? "delta-up" : "delta-down"}">${t.them >= 0 ? "+" : "−"}${num(Math.abs(t.them), 1)}</td><td>${t.conf ? `${Math.round(t.conf.acc * 100)}%` : "–"}</td></tr>`).join("")}
-      </tbody></table></div></div>` : `<p class="adv-empty">Ingen byttehandler, der både ser fair ud for den anden manager og giver dig en gevinst, lige nu.</p>`}
+      <div class="sec-head"><div><h2>Byttehandler</h2><p class="lede">Ud fra ${th >= seasonLeft() ? "resten af sæsonen" : "de næste 3 kampe"}, hvor modellen vægter modstandernes styrke (og bookmakerodds for de nærmeste kampe). Kun handler, der ser fair ud for den anden manager: det, du giver, har mindst samme synlige værdi (point indtil nu, form og draft-rang) som det, du får.${HOLD.pos !== "ALL" ? ` Viser kun ${POS_LABEL[HOLD.pos].toLowerCase()}.` : ""}</p></div>
+        <div class="seg" id="tr-h" role="group" aria-label="Periode for byttehandler"><button type="button" data-h="3"${HOLD.tradeH === 3 ? ' aria-pressed="true"' : ""}>Næste 3 kampe</button><button type="button" data-h="99"${HOLD.tradeH !== 3 ? ' aria-pressed="true"' : ""}>Resten af sæsonen</button></div></div>
+      ${bestTrades.length ? `<div class="trades">${bestTrades.map((t) => {
+        const better = t.progGet != null && t.progGive != null ? (t.progGet > t.progGive * 1.1 ? "Du får det letteste program" : t.progGet < t.progGive * 0.9 ? "Du får det sværeste program" : "Omtrent samme program") : "";
+        return `<div class="panel trade">
+          <div class="tr-side"><span class="muted small">Du giver</span><b>${esc(t.give.name)}</b><span class="muted small">${esc(t.give.pos)}, ${esc(t.give.club)}, ${t.visGive.season} point, form ${t.visGive.form}</span>${fixChips(t.give, 3)}</div>
+          <div class="tr-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 9h14l-4-4M19 15H5l4 4"/></svg></div>
+          <div class="tr-side"><span class="muted small">Du får fra ${esc(ADV.managers[t.o])}</span><b>${esc(t.get.name)}${statusDot(t.get)}</b><span class="muted small">${esc(t.get.pos)}, ${esc(t.get.club)}, ${t.visGet.season} point, form ${t.visGet.form}</span>${fixChips(t.get, 3)}</div>
+          <div class="tr-num"><span class="gain">+${num(t.mine, 1)}</span><span class="muted small">xP til dig</span>${confBadge(t.conf)}<span class="small ${t.them >= 0 ? "delta-up" : "delta-down"}">De: ${t.them >= 0 ? "+" : "−"}${num(Math.abs(t.them), 1)}</span><span class="small muted">${better}</span></div>
+        </div>`;
+      }).join("")}</div>` : `<p class="adv-empty">Ingen byttehandler, der både ser fair ud for den anden manager og giver dig en gevinst, lige nu${HOLD.pos !== "ALL" ? ` for ${POS_LABEL[HOLD.pos].toLowerCase()}` : ""}.</p>`}
     </section>
 
     ${goldTable(le, h)}
@@ -723,6 +754,7 @@ function drawHold(le) {
     </section>
     <section class="sec">${modelNote()}</section>`;
 
+  body.querySelectorAll("#tr-h button").forEach((b) => b.addEventListener("click", () => { HOLD.tradeH = Number(b.dataset.h); drawHold(le); }));
   body.querySelectorAll("tr[data-pid], .xi-p, .swap li[data-pid]").forEach((el) => el.addEventListener("click", (e) => {
     if (e.target.closest(".st-dot")) return;
     playerSheet(Number(el.dataset.pid));
