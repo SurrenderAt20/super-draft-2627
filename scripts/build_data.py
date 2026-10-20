@@ -20,6 +20,7 @@ from datetime import datetime, timedelta, timezone
 
 import advanced
 import forecast
+import cup
 
 API = "https://draft.premierleague.com/api"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -618,6 +619,12 @@ def main():
     injuries.sort(key=lambda r: (-r["out"], -r["doubtful"], -r["now_out"]))
     injuries = {"rounds": sorted(snapshots), "table": injuries}
 
+    # the league's own competitions from the shared Google Sheet (cup, best round, prizes)
+    old_current = read_json(os.path.join(DATA, "current.json")) or {}
+    people = {e["id"]: {"first": e["player_first_name"], "last": e.get("player_last_name", ""), "team": e["entry_name"]}
+              for e in details["league_entries"]}
+    tournament = cup.build(people, snapshots, old_current.get("tournament"))
+
     current = {
         "league": {"id": league, "name": details["league"]["name"], "season": config["season"],
                    "prize_kr": config["prize_kr"], "draft_id": draft_id},
@@ -635,6 +642,7 @@ def main():
         "blocks": blocks,
         "forecast": fc,
         "injuries": injuries,
+        "tournament": tournament,
         "most_moved": player_moves(choices, transactions, entry_to_le, boot, owners),
         **season,
     }

@@ -852,3 +852,27 @@ td.blank { color: var(--dim); }
   .tr-arrow { transform: rotate(90deg); }
   .tr-num { align-items: flex-start; text-align: left; flex-direction: row; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
 }
+
+/* ---------- cup bracket ---------- */
+.bracket { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; align-items: start; }
+.b-col { display: grid; gap: 10px; }
+.b-head { display: flex; flex-direction: column; gap: 2px; padding: 0 2px 4px; }
+.b-head b { font-size: 16px; }
+.cup-match { padding: 8px 12px; }
+.cm-row { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; padding: 6px 0; }
+.cm-row + .cm-row { border-top: 1px solid rgba(255,255,255,.06); }
+.cm-seed { font-size: 11px; color: var(--dim); min-width: 14px; }
+.cm-name { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cm-score { font-weight: 800; font-size: 18px; letter-spacing: -0.03em; }
+.cm-row.won .cm-name, .cm-row.won .cm-score { color: #fff; }
+.cm-row.won .cm-score { color: var(--gold); text-shadow: 0 0 14px rgba(251,191,36,.5); }
+.cm-row.lost { opacity: .55; }
+.cm-note { font-size: 12px; color: var(--gold); margin-top: 4px; }
+.cols2.tight { gap: 14px; }
+.cols2.tight .sec { margin-top: 0; }
+.bw-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+.bw-list li { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.bw-list b { font-size: 20px; font-weight: 800; color: var(--gold); }
+.prize-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.prize-card { padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
+.prize-card b { font-size: 24px; font-weight: 800; letter-spacing: -0.03em; background: linear-gradient(180deg, #fde68a, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }

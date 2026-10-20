@@ -1498,6 +1498,242 @@
    }
   ]
  },
+ "tournament": {
+  "cup": {
+   "rules": "Knoclout turnering over 2 kamp I et bracket der løber over sæsonen. (Bracket bestemmes af draft pick rank). Ved uafgjort efter 2 kampe spilles der sudden death de efterfølgende runder. Hvis en spiller har mere end en kamp i en GW regnes kun spilleres bedste score (fra 1 kamp) i udregningen a Pokalturnering score.",
+   "qualifier": {
+    "gws": [
+     3,
+     6
+    ],
+    "matches": [
+     {
+      "a": {
+       "name": "Draft Rank 1 - Kasper F",
+       "le": 1850,
+       "score": 88
+      },
+      "b": {
+       "name": "Draft Rank 2 -Niklas",
+       "le": 239612,
+       "score": 83
+      },
+      "winner": "a"
+     },
+     {
+      "a": {
+       "name": "Draft Rank 3 - Emil",
+       "le": 274299,
+       "score": 83
+      },
+      "b": {
+       "name": "Draft Rank 4 - Lasse",
+       "le": 265639,
+       "score": 90
+      },
+      "winner": "b"
+     }
+    ]
+   },
+   "stages": [
+    {
+     "title": "Kvartfinale",
+     "gws": [
+      11,
+      16
+     ],
+     "matches": [
+      {
+       "a": {
+        "name": "Kasper F",
+        "le": 1850,
+        "score": null,
+        "seed": 1
+       },
+       "b": {
+        "name": "Lasse",
+        "le": 265639,
+        "score": null,
+        "seed": 2
+       }
+      },
+      {
+       "a": {
+        "name": "Draft Rank 5 - Ludvig",
+        "le": 243916,
+        "score": null,
+        "seed": 3
+       },
+       "b": {
+        "name": "Draft Rank 6 - Malte",
+        "le": 263989,
+        "score": null,
+        "seed": 4
+       }
+      },
+      {
+       "a": {
+        "name": "Draft Rank 7 - Oskar",
+        "le": 294024,
+        "score": null,
+        "seed": 5
+       },
+       "b": {
+        "name": "Draft Rank 8 - Jakob",
+        "le": 33708,
+        "score": null,
+        "seed": 6
+       }
+      },
+      {
+       "a": {
+        "name": "Draft Rank 9 - Kasper S",
+        "le": 205703,
+        "score": null,
+        "seed": 7
+       },
+       "b": {
+        "name": "Draft Rank 10 - Marc",
+        "le": 50414,
+        "score": null,
+        "seed": 8
+       }
+      }
+     ]
+    },
+    {
+     "title": "Semifinale",
+     "gws": [
+      21,
+      26
+     ],
+     "matches": [
+      {
+       "a": {
+        "name": "1/2",
+        "le": null,
+        "score": null,
+        "seed": null
+       },
+       "b": {
+        "name": "3/4",
+        "le": null,
+        "score": null,
+        "seed": null
+       }
+      },
+      {
+       "a": {
+        "name": "5/6",
+        "le": null,
+        "score": null,
+        "seed": null
+       },
+       "b": {
+        "name": "7/8",
+        "le": null,
+        "score": null,
+        "seed": null
+       }
+      }
+     ]
+    },
+    {
+     "title": "Finale",
+     "gws": [
+      30,
+      33
+     ],
+     "matches": [
+      {
+       "a": {
+        "name": "1/2/3/4",
+        "le": null,
+        "score": null,
+        "seed": null
+       },
+       "b": {
+        "name": "5/6/7/8",
+        "le": null,
+        "score": null,
+        "seed": null
+       }
+      }
+     ]
+    }
+   ],
+   "best_gw": [
+    {
+     "gw": 1,
+     "name": "Malte",
+     "le": 263989,
+     "points": 58
+    },
+    {
+     "gw": 2,
+     "name": "Ludvig",
+     "le": 243916,
+     "points": 64
+    },
+    {
+     "gw": 3,
+     "name": "Kasper F",
+     "le": 1850,
+     "points": 54
+    },
+    {
+     "gw": 4,
+     "name": "Kasper F",
+     "le": 1850,
+     "points": 73
+    },
+    {
+     "gw": 5,
+     "name": "Niklas",
+     "le": 239612,
+     "points": 72
+    },
+    {
+     "gw": 6,
+     "name": "Lasse",
+     "le": 265639,
+     "points": 52
+    }
+   ],
+   "best_gw_rules": "Hold der scorer det højeste antal point i en GW vinder. Hvis en spiller har mere end en kamp i en GW regnes kun spilleres bedste score (fra 1 kamp) i udregningen a BGW score."
+  },
+  "prizes": {
+   "pot": 5600,
+   "fee": 560,
+   "split": [
+    {
+     "label": "1. Plads",
+     "amount": 2000
+    },
+    {
+     "label": "2. Plads",
+     "amount": 1000
+    },
+    {
+     "label": "3. Plads",
+     "amount": 500
+    },
+    {
+     "label": "Bedste GW",
+     "amount": 750
+    },
+    {
+     "label": "Pokalturnering",
+     "amount": 750
+    },
+    {
+     "label": "Månedspokal",
+     "amount": 600
+    }
+   ]
+  },
+  "sheet": "https://docs.google.com/spreadsheets/d/17ewEDgE99HTOYtOQipQjYy-VOLaiZUP2gUCBo6Og3Po"
+ },
  "most_moved": [
   {
    "id": 591,
@@ -4242,5 +4478,5 @@
    "bench_shame": 1
   }
  },
- "updated": "2026-10-20T08:34+00:00"
+ "updated": "2026-10-20T13:09+00:00"
 }

@@ -522,6 +522,92 @@ async function viewStilling() {
 
 // ---------------------------------------------------------------- view: bundpokal
 
+
+// ---------------------------------------------------------------- tournaments: cup, best round, prizes
+
+function cupName(e, stages) {
+  if (e.le) return esc(mgr(e.le));
+  // placeholders: "1/2" = winner of the quarter-final with seeds 1 and 2; "1/2/3/4" = winner of that semi-final
+  const parts = String(e.name).split("/").map(Number).filter(Boolean);
+  if (parts.length === 2 && stages[0]) {
+    const m = stages[0].matches.find((x) => [x.a.seed, x.b.seed].sort().join() === parts.sort().join());
+    if (m) return m.winner ? esc(mgr(m[m.winner].le)) : `<span class="muted">Vinder af ${esc(mgr(m.a.le) || m.a.name)} – ${esc(mgr(m.b.le) || m.b.name)}</span>`;
+  }
+  if (parts.length === 4 && stages[1]) {
+    const i = parts[0] <= 4 ? 0 : 1;
+    const m = stages[1].matches[i];
+    if (m?.winner) return esc(mgr(m[m.winner].le));
+    return `<span class="muted">Vinder af semifinale ${i + 1}</span>`;
+  }
+  return esc(e.name || "?");
+}
+
+function cupMatch(m, gws, stages) {
+  const row = (e, side) => `<div class="cm-row${m.winner === side ? " won" : m.winner ? " lost" : ""}">
+      ${e.seed ? `<span class="cm-seed">${e.seed}</span>` : ""}<span class="cm-name">${cupName(e, stages)}</span><span class="cm-score">${e.score ?? "–"}</span></div>`;
+  const note = m.provisional ? `<div class="cm-note">Foreløbigt, beregnet fra FPL. Regnearket er ikke opdateret endnu.</div>`
+    : m.tie ? `<div class="cm-note">Uafgjort: sudden death i de følgende runder.</div>` : "";
+  return `<div class="panel cup-match">${row(m.a, "a")}${row(m.b, "b")}${note}</div>`;
+}
+
+function cupHtml(T) {
+  const C = T.cup;
+  const cols = [];
+  if (C.qualifier) cols.push({ title: "Kvalifikation", gws: C.qualifier.gws, matches: C.qualifier.matches });
+  C.stages.forEach((s) => cols.push(s));
+  const nextGw = D.game.next;
+  return `<section class="sec" data-chip="Pokalturnering">
+    <div class="sec-head"><div><h2>Pokalturnering</h2><p class="lede">${esc(C.rules || "Knockout over to kampe. Samlet score afgør.")}</p></div></div>
+    <div class="bracket">${cols.map((c) => {
+      const live = c.gws?.length && nextGw >= c.gws[0] && nextGw <= c.gws[c.gws.length - 1];
+      return `<div class="b-col">
+        <div class="b-head"><b>${esc(c.title)}</b><span class="muted small">${c.gws?.length ? `Runde ${c.gws.join(" og ")}` : ""}${live ? ", i gang" : ""}</span></div>
+        ${c.matches.map((m) => cupMatch(m, c.gws, C.stages)).join("")}
+      </div>`;
+    }).join("")}</div>
+    <p class="small muted" style="margin-top:10px">Kilde: ligaens fælles regneark, opdateret hver tredje time.</p>
+  </section>`;
+}
+
+function bestGwHtml(T) {
+  const C = T.cup;
+  const inSheet = new Set(C.best_gw.map((r) => r.gw));
+  const rows = C.best_gw.map((r) => ({ ...r, provisional: false }));
+  // rounds already played but not yet in the sheet: highest FPL score, marked provisional
+  for (const g of D.gameweeks.map((x) => x.gw)) {
+    if (inSheet.has(g)) continue;
+    const top = D.points_table.map((p) => ({ le: p.le, v: p.by_gw[D.gameweeks.findIndex((x) => x.gw === g)] })).sort((a, b) => b.v - a.v)[0];
+    if (top && top.v != null) rows.push({ gw: g, le: top.le, name: mgr(top.le), points: top.v, provisional: true });
+  }
+  rows.sort((a, b) => a.gw - b.gw);
+  const wins = {};
+  rows.filter((r) => r.le && !r.provisional).forEach((r) => (wins[r.le] = (wins[r.le] || 0) + 1));
+  const best = rows.reduce((a, r) => (!a || r.points > a.points ? r : a), null);
+  const prize = T.prizes?.split.find((s) => /bedste gw/i.test(s.label));
+  return `<section class="sec" data-chip="Bedste runde">
+    <div class="sec-head"><div><h2>Bedste runde</h2><p class="lede">${esc(C.best_gw_rules || "Holdet med flest point i en runde vinder runden.")}${prize ? ` Præmie i alt: ${prize.amount.toLocaleString("da-DK")} kr.` : ""}</p></div></div>
+    <div class="cols2 tight">
+      <div class="panel"><div class="scroll"><table class="advt"><thead><tr><th>Runde</th><th class="l">Vinder</th><th>Point</th></tr></thead><tbody>
+        ${rows.map((r) => `<tr><td class="rank">${r.gw}</td><td class="l">${r.le ? who(r.le) : esc(r.name)}${r.provisional ? ' <span class="tag">Foreløbigt</span>' : ""}</td><td class="pts">${r.points}</td></tr>`).join("")}
+      </tbody></table></div></div>
+      <div class="panel" style="padding:18px 20px">
+        <h3>Flest rundesejre</h3>
+        <ol class="bw-list">${Object.entries(wins).sort((a, b) => b[1] - a[1]).map(([le, n]) => `<li>${who(Number(le))}<b>${n}</b></li>`).join("") || "<li class='muted'>Ingen endnu</li>"}</ol>
+        ${best ? `<p class="small muted" style="margin:14px 0 0">Sæsonens højeste: ${esc(best.le ? mgr(best.le) : best.name)} med ${best.points} point i runde ${best.gw}.</p>` : ""}
+      </div>
+    </div>
+  </section>`;
+}
+
+function prizesHtml(T) {
+  const P = T.prizes;
+  if (!P?.split?.length) return "";
+  return `<section class="sec" data-chip="Præmier">
+    <div class="sec-head"><div><h2>Præmier</h2><p class="lede">${P.fee ? `Indskud ${P.fee.toLocaleString("da-DK")} kr. per hold. ` : ""}${P.pot ? `Samlet pulje ${P.pot.toLocaleString("da-DK")} kr.` : ""}</p></div></div>
+    <div class="prize-grid">${P.split.map((s) => `<div class="panel spot prize-card"><span class="muted small">${esc(s.label)}</span><b>${s.amount.toLocaleString("da-DK")} kr.</b></div>`).join("")}</div>
+  </section>`;
+}
+
 function viewBundpokal() {
   const prize = D.league.prize_kr;
   const current = D.blocks.find((b) => b.status === "live") || D.blocks.find((b) => b.status === "locked")
@@ -571,9 +657,13 @@ function viewBundpokal() {
     return `<li class="panel spot ${cls}"><div class="gws">Runde ${b.from}–${b.to}</div><div class="res">${res}</div><div class="sub">${sub}</div></li>`;
   }).join("");
 
+  const T = D.tournament;
   app.innerHTML = `
-    <h1>Bundpokalen</h1>
-    <p class="lede">Hver blok har sin egen konkurrence for bundholdene. Den, der scorer flest point i blokken, vinder.</p>
+    <h1>Turneringer</h1>
+    <p class="lede">Ligaens egne konkurrencer ved siden af tabellen: pokalturneringen, bundpokalen og rundens højeste score.</p>
+    ${T?.cup ? cupHtml(T) : ""}
+    <section class="sec" data-chip="Bundpokal">
+    <div class="sec-head"><div><h2>Bundpokal</h2><p class="lede">Hver blok har sin egen konkurrence for bundholdene. Den, der scorer flest point i blokken, vinder.</p></div></div>
     <div class="trophy">
       ${race}
       <div class="panel spot rules">
@@ -589,7 +679,10 @@ function viewBundpokal() {
         <p class="small muted" style="margin:16px 0 0">Runde 1–6 var åben for alle.</p>
       </div>
     </div>
-    <section class="sec"><div class="sec-head"><h2>Alle blokke</h2></div><ol class="timeline">${history}</ol></section>`;
+    </section>
+    <section class="sec" data-chip="Bundpokal-blokke"><div class="sec-head"><h2>Alle bundpokal-blokke</h2></div><ol class="timeline">${history}</ol></section>
+    ${T?.cup ? bestGwHtml(T) : ""}
+    ${T?.prizes ? prizesHtml(T) : ""}`;
   bindTips(app);
 }
 
@@ -848,12 +941,13 @@ function viewRekorder() {
 
 // ---------------------------------------------------------------- router
 
-const VIEWS = { stilling: viewStilling, bundpokal: viewBundpokal, held: viewHeld, runder: viewRunder, rekorder: viewRekorder };
+const VIEWS = { stilling: viewStilling, turnering: viewBundpokal, bundpokal: viewBundpokal, held: viewHeld, runder: viewRunder, rekorder: viewRekorder };
 const nav = document.querySelector(".tabs");
 
 async function route() {
   const [name, arg] = (location.hash.slice(1) || "stilling").split("/");
-  const view = VIEWS[name] ? name : "stilling";
+  let view = VIEWS[name] ? name : "stilling";
+  if (view === "bundpokal") view = "turnering";   // old links
   let active = null;
   nav.querySelectorAll("a").forEach((a) => {
     if (a.dataset.view === view) { a.setAttribute("aria-current", "page"); active = a; } else a.removeAttribute("aria-current");
