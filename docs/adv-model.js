@@ -341,6 +341,75 @@ function goldList(title, lede, rows, h) {
   </section>`;
 }
 
+
+// ---------------------------------------------------------------- injured players worth stashing
+
+const INV = { scope: "free" };
+const MONTHS_DA = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+
+// "Expected back 28 Nov" in FPL's news -> a date (or null for "unknown return date")
+function backDate(news) {
+  const m = /expected back (\d{1,2}) ([a-z]{3})/i.exec(news || "");
+  if (!m || !(m[2].toLowerCase() in MONTHS_DA)) return null;
+  const now = new Date();
+  let d = new Date(now.getFullYear(), MONTHS_DA[m[2].toLowerCase()], Number(m[1]));
+  if (d < now) d = new Date(now.getFullYear() + 1, d.getMonth(), d.getDate());
+  return d;
+}
+
+// expected points per match once fully back: the projection after the return ramp has run its course
+function fitValue(pid) {
+  const v = projOf(pid);
+  const tail = v.slice(8).filter((x) => x > 0);
+  return tail.length ? tail.reduce((a, b) => a + b, 0) / tail.length : Math.max(0, ...v);
+}
+
+// first round in which the model expects real minutes (above a third of his fit value)
+function firstRoundBack(pid) {
+  const v = projOf(pid), fit = fitValue(pid), gws = ADV.proj.gws_long || ADV.proj.gws;
+  const i = v.findIndex((x) => x >= fit / 3);
+  return i >= 0 ? gws[i] : null;
+}
+
+function injuredInvestments(scope) {
+  const left = seasonLeft();
+  return ADV.players
+    .filter((p) => p.status === "i" || (p.status === "d" && (p.chance ?? 100) <= 50))
+    .filter((p) => scope === "free" ? !p.owner : p.owner && p.owner !== resolveTeam(storedTeam()))
+    .map((p) => ({ p, fit: fitValue(p.id), season: sumH(p.id, left), back: backDate(p.news), first: firstRoundBack(p.id) }))
+    .filter((r) => r.fit >= 2.8)   // good when fit: roughly a regular starter's level or better
+    .sort((a, b) => b.season - a.season)
+    .slice(0, 15);
+}
+
+function investSection() {
+  const rows = injuredInvestments(INV.scope);
+  const fmtDate = (d) => d ? d.toLocaleDateString("da-DK", { day: "numeric", month: "short" }) : "ukendt";
+  return `<section class="sec" id="invest">
+    <div class="sec-head"><div><h2>Skadede investeringer</h2><p class="lede">Spillere, der er skadet nu, men gode når de er raske: mindst ca. 2,8 forventede point per kamp, når de er helt tilbage. Sorteret efter forventede point resten af sæsonen, inklusive de kampe de misser. Comeback er FPL's nyhed. Uden dato antager modellen ingen spilletid de næste 2 runder og derefter en langsom vej tilbage.</p></div>
+      <div class="seg" id="inv-scope" role="group" aria-label="Hvem"><button type="button" data-s="free"${INV.scope === "free" ? ' aria-pressed="true"' : ""}>Ledige</button><button type="button" data-s="owned"${INV.scope === "owned" ? ' aria-pressed="true"' : ""}>Ejet af andre</button></div></div>
+    ${rows.length ? `<div class="panel"><div class="scroll"><table class="advt" data-keep="0,4,5"><thead><tr><th class="l">Spiller</th><th class="l">Skade</th><th>Comeback</th><th>Forventes at spille fra</th><th>xP per kamp, rask</th><th>xP resten af sæsonen</th>${INV.scope === "owned" ? '<th class="l">Ejer</th>' : ""}</tr></thead><tbody>
+      ${rows.map((r) => `<tr data-pid="${r.p.id}"><td class="l"><span class="pl"><b>${esc(r.p.name)}${statusDot(r.p)}</b><span>${esc(r.p.pos)}, ${esc(r.p.club)}</span></span></td><td class="l small muted">${esc((r.p.news || "").replace(/ - .*$/, ""))}</td><td>${fmtDate(r.back)}</td><td>${r.first ? `Runde ${r.first}` : "–"}</td><td class="pts">${num(r.fit, 1)}</td><td>${num(r.season, 1)}</td>${INV.scope === "owned" ? `<td class="l">${ownerHtml(r.p)}</td>` : ""}</tr>`).join("")}
+    </tbody></table></div></div>
+    <p class="small muted" style="margin-top:8px">${INV.scope === "owned" ? "Ejet af andre: ejeren får ingen point fra spilleren lige nu, så han kan måske købes billigt i en byttehandel." : "Ledige: kan hentes og gemmes på bænken, til han er tilbage. Kræver en ledig plads i truppen."}</p>`
+    : `<p class="adv-empty">Ingen ${INV.scope === "free" ? "ledige" : "ejede"} skadede spillere af høj kvalitet lige nu.</p>`}
+  </section>`;
+}
+
+function bindInvest() {
+  app.querySelectorAll("#inv-scope button").forEach((b) => b.addEventListener("click", () => {
+    INV.scope = b.dataset.s;
+    app.querySelector("#invest").outerHTML = investSection();
+    bindInvest();
+    enhanceTables(app.querySelector("#invest"));
+  }));
+  app.querySelectorAll("#invest tr[data-pid]").forEach((tr) => tr.addEventListener("click", (e) => {
+    if (e.target.closest(".st-dot")) return;
+    playerSheet(Number(tr.dataset.pid));
+  }));
+  bindTips(app.querySelector("#invest"));
+}
+
 function renderWaivers() {
   app.innerHTML = `
     ${advHead()}
@@ -356,7 +425,9 @@ function renderWaivers() {
       ${goldList("Skjult guld: kort sigt", "Ledige spillere klar til at spille, som modellen vurderer højere de næste 3 runder end deres point og form antyder.", freeGold(3, false), 3)}
       ${goldList("Skjult guld: langtidsinvestering", "Resten af sæsonen. Her tæller også skadede spillere, der forventes tilbage, og spillere med et bedre program senere. Det er dem, andre overser, fordi de ikke scorer lige nu.", freeGold(seasonLeft(), true), seasonLeft())}
     </div>
+    ${investSection()}
     <section class="sec">${modelNote()}</section>`;
+  bindInvest();
   app.querySelector("#wv-h").addEventListener("change", (e) => { WAIV.horizon = Number(e.target.value); drawWaivers(); });
   app.querySelectorAll(".gold[data-pid]").forEach((el) => el.addEventListener("click", (e) => {
     if (e.target.closest(".st-dot")) return;
