@@ -1734,6 +1734,128 @@
   },
   "sheet": "https://docs.google.com/spreadsheets/d/17ewEDgE99HTOYtOQipQjYy-VOLaiZUP2gUCBo6Og3Po"
  },
+ "best_round": {
+  "by_gw": [
+   {
+    "gw": 1,
+    "score": 58,
+    "winners": [
+     263989
+    ],
+    "double": false
+   },
+   {
+    "gw": 2,
+    "score": 64,
+    "winners": [
+     243916
+    ],
+    "double": false
+   },
+   {
+    "gw": 3,
+    "score": 54,
+    "winners": [
+     1850
+    ],
+    "double": false
+   },
+   {
+    "gw": 4,
+    "score": 73,
+    "winners": [
+     1850
+    ],
+    "double": false
+   },
+   {
+    "gw": 5,
+    "score": 72,
+    "winners": [
+     239612
+    ],
+    "double": false
+   },
+   {
+    "gw": 6,
+    "score": 52,
+    "winners": [
+     265639
+    ],
+    "double": false
+   },
+   {
+    "gw": 7,
+    "score": 68,
+    "winners": [
+     1850
+    ],
+    "double": false
+   }
+  ],
+  "standings": [
+   {
+    "le": 1850,
+    "best": 73,
+    "best_gw": 4,
+    "gw_wins": 3
+   },
+   {
+    "le": 239612,
+    "best": 72,
+    "best_gw": 5,
+    "gw_wins": 1
+   },
+   {
+    "le": 243916,
+    "best": 64,
+    "best_gw": 2,
+    "gw_wins": 1
+   },
+   {
+    "le": 33708,
+    "best": 59,
+    "best_gw": 2,
+    "gw_wins": 0
+   },
+   {
+    "le": 263989,
+    "best": 58,
+    "best_gw": 1,
+    "gw_wins": 1
+   },
+   {
+    "le": 205703,
+    "best": 56,
+    "best_gw": 4,
+    "gw_wins": 0
+   },
+   {
+    "le": 294024,
+    "best": 54,
+    "best_gw": 5,
+    "gw_wins": 0
+   },
+   {
+    "le": 265639,
+    "best": 52,
+    "best_gw": 6,
+    "gw_wins": 1
+   },
+   {
+    "le": 274299,
+    "best": 51,
+    "best_gw": 7,
+    "gw_wins": 0
+   },
+   {
+    "le": 50414,
+    "best": 44,
+    "best_gw": 5,
+    "gw_wins": 0
+   }
+  ]
+ },
  "most_moved": [
   {
    "id": 591,
@@ -4478,5 +4600,5 @@
    "bench_shame": 1
   }
  },
- "updated": "2026-10-20T13:11+00:00"
+ "updated": "2026-10-20T13:37+00:00"
 }

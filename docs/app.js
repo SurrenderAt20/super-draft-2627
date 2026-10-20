@@ -570,31 +570,26 @@ function cupHtml(T) {
 }
 
 function bestGwHtml(T) {
-  const C = T.cup;
-  const inSheet = new Set(C.best_gw.map((r) => r.gw));
-  const rows = C.best_gw.map((r) => ({ ...r, provisional: false }));
-  // rounds already played but not yet in the sheet: highest FPL score, marked provisional
-  for (const g of D.gameweeks.map((x) => x.gw)) {
-    if (inSheet.has(g)) continue;
-    const top = D.points_table.map((p) => ({ le: p.le, v: p.by_gw[D.gameweeks.findIndex((x) => x.gw === g)] })).sort((a, b) => b.v - a.v)[0];
-    if (top && top.v != null) rows.push({ gw: g, le: top.le, name: mgr(top.le), points: top.v, provisional: true });
-  }
-  rows.sort((a, b) => a.gw - b.gw);
-  const wins = {};
-  rows.filter((r) => r.le && !r.provisional).forEach((r) => (wins[r.le] = (wins[r.le] || 0) + 1));
-  const best = rows.reduce((a, r) => (!a || r.points > a.points ? r : a), null);
-  const prize = T.prizes?.split.find((s) => /bedste gw/i.test(s.label));
+  const B = D.best_round;
+  if (!B?.standings?.length) return "";
+  const S = B.standings;
+  const top = S[0];
+  const tied = S.filter((r) => r.best === top.best);
+  const leaders = tied.filter((r) => r.gw_wins === Math.max(...tied.map((x) => x.gw_wins)));
+  const prize = T?.prizes?.split.find((s) => /bedste gw/i.test(s.label));
+  const leadText = leaders.length > 1
+    ? `${names(leaders.map((r) => r.le))} deler førstepladsen med ${top.best} point og lige mange rundesejre.`
+    : `${esc(mgr(leaders[0].le))} fører med ${top.best} point i runde ${leaders[0].best_gw}${tied.length > 1 ? `. ${tied.length} hold har ${top.best} point, og flest rundesejre afgør` : ""}.`;
   return `<section class="sec" data-chip="Bedste runde">
-    <div class="sec-head"><div><h2>Bedste runde</h2><p class="lede">${esc(C.best_gw_rules || "Holdet med flest point i en runde vinder runden.")}${prize ? ` Præmie i alt: ${prize.amount.toLocaleString("da-DK")} kr.` : ""}</p></div></div>
-    <div class="cols2 tight">
-      <div class="panel"><div class="scroll"><table class="advt"><thead><tr><th>Runde</th><th class="l">Vinder</th><th>Point</th></tr></thead><tbody>
-        ${rows.map((r) => `<tr><td class="rank">${r.gw}</td><td class="l">${r.le ? who(r.le) : esc(r.name)}${r.provisional ? ' <span class="tag">Foreløbigt</span>' : ""}</td><td class="pts">${r.points}</td></tr>`).join("")}
+    <div class="sec-head"><div><h2>Bedste runde</h2><p class="lede">Præmien${prize ? ` (${prize.amount.toLocaleString("da-DK")} kr.)` : ""} går til holdet med sæsonens højeste score i én runde. Står flere lige, vinder den med flest rundesejre. I en dobbeltrunde tæller kun hver spillers bedste enkeltkamp. Beregnet fra FPL.</p></div></div>
+    <div class="panel spot beam best-lead"><span class="muted small">Fører lige nu</span><b>${top.best} point</b><span>${leadText}</span></div>
+    <div class="cols2 tight" style="margin-top:12px">
+      <div class="panel"><div class="scroll"><table class="advt"><thead><tr><th>#</th><th class="l">Hold</th><th>Bedste runde</th><th>Rundesejre</th><th>Point</th></tr></thead><tbody>
+        ${S.map((r, i) => `<tr><td class="rank">${rank(i + 1)}</td><td class="l">${who(r.le)}</td><td class="muted">${r.best_gw ? `Runde ${r.best_gw}` : "–"}</td><td>${r.gw_wins}</td><td class="pts">${r.best}</td></tr>`).join("")}
       </tbody></table></div></div>
-      <div class="panel" style="padding:18px 20px">
-        <h3>Flest rundesejre</h3>
-        <ol class="bw-list">${Object.entries(wins).sort((a, b) => b[1] - a[1]).map(([le, n]) => `<li>${who(Number(le))}<b>${n}</b></li>`).join("") || "<li class='muted'>Ingen endnu</li>"}</ol>
-        ${best ? `<p class="small muted" style="margin:14px 0 0">Sæsonens højeste: ${esc(best.le ? mgr(best.le) : best.name)} med ${best.points} point i runde ${best.gw}.</p>` : ""}
-      </div>
+      <div class="panel"><div class="scroll"><table class="advt"><thead><tr><th>Runde</th><th class="l">Rundens højeste</th><th>Point</th></tr></thead><tbody>
+        ${B.by_gw.map((r) => `<tr><td class="rank">${r.gw}</td><td class="l">${r.winners.map((le) => esc(mgr(le))).join(" og ")}${r.double ? ' <span class="tag">Dobbeltrunde</span>' : ""}</td><td class="pts">${r.score}</td></tr>`).join("")}
+      </tbody></table></div></div>
     </div>
   </section>`;
 }
@@ -681,7 +676,7 @@ function viewBundpokal() {
     </div>
     </section>
     <section class="sec" data-chip="Bundpokal-blokke"><div class="sec-head"><h2>Alle bundpokal-blokke</h2></div><ol class="timeline">${history}</ol></section>
-    ${T?.cup ? bestGwHtml(T) : ""}
+    ${bestGwHtml(T)}
     ${T?.prizes ? prizesHtml(T) : ""}`;
   bindTips(app);
 }

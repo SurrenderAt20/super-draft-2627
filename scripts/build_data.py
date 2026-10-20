@@ -180,6 +180,12 @@ def acquisition_lookup(choices, transactions, entry_to_le):
 def build_snapshot(gw, ctx):
     live = fetch(f"event/{gw}/live")
     pts = {int(k): v["stats"]["total_points"] for k, v in live["elements"].items()}
+    # points per fixture from FPL's explain data; only kept for players with more than one match this round
+    pts_best = {}
+    for k, v in live["elements"].items():
+        per = [sum(item["points"] for item in fx[0]) for fx in v.get("explain", [])]
+        if len(per) > 1:
+            pts_best[int(k)] = max(per)
     kickoffs = [parse_time(f["kickoff_time"]) for f in live.get("fixtures", []) if f.get("kickoff_time")]
     last_kickoff = max(kickoffs) if kickoffs else None
     all_done = all(f.get("finished") for f in live.get("fixtures", []))
@@ -208,6 +214,7 @@ def build_snapshot(gw, ctx):
                 "pos": el.get("pos", ""),
                 "club": el.get("club", ""),
                 "pts": pts.get(e, 0),
+                **({"pts1": pts_best[e]} if e in pts_best else {}),
                 "acq": ctx["how"](le, e, gw),
             }
 
@@ -619,7 +626,30 @@ def main():
     injuries.sort(key=lambda r: (-r["out"], -r["doubtful"], -r["now_out"]))
     injuries = {"rounds": sorted(snapshots), "table": injuries}
 
-    # the league's own competitions from the shared Google Sheet (cup, best round, prizes)
+    # best round (from FPL, not the sheet): the season's highest single-round total wins the prize;
+    # if that total is tied, the most round wins decides. In a double round only each player's best
+    # single match counts (the league's rule), using per-match points from FPL.
+    def rule_score(t):
+        return t["score"] - sum(p["pts"] - p["pts1"] for p in t["xi"] if "pts1" in p)
+    by_gw = []
+    for g in sorted(snapshots):
+        sc = {int(le): rule_score(t) for le, t in snapshots[g]["teams"].items()}
+        top = max(sc.values())
+        by_gw.append({"gw": g, "score": top, "winners": [le for le, v in sc.items() if v == top],
+                      "double": any("pts1" in p for t in snapshots[g]["teams"].values() for p in t["xi"])})
+    wins = {le: 0 for le in entries}
+    for r in by_gw:
+        for le in r["winners"]:
+            wins[le] += 1
+    best = {le: {"le": le, "best": 0, "best_gw": None, "gw_wins": wins[le]} for le in entries}
+    for g in sorted(snapshots):
+        for le, t in snapshots[g]["teams"].items():
+            v = rule_score(t)
+            if v > best[int(le)]["best"]:
+                best[int(le)].update(best=v, best_gw=g)
+    best_round = {"by_gw": by_gw, "standings": sorted(best.values(), key=lambda r: (-r["best"], -r["gw_wins"]))}
+
+    # the league's own competitions from the shared Google Sheet (cup, prizes)
     old_current = read_json(os.path.join(DATA, "current.json")) or {}
     people = {e["id"]: {"first": e["player_first_name"], "last": e.get("player_last_name", ""), "team": e["entry_name"]}
               for e in details["league_entries"]}
@@ -643,6 +673,7 @@ def main():
         "forecast": fc,
         "injuries": injuries,
         "tournament": tournament,
+        "best_round": best_round,
         "most_moved": player_moves(choices, transactions, entry_to_le, boot, owners),
         **season,
     }

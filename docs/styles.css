@@ -876,3 +876,6 @@ td.blank { color: var(--dim); }
 .prize-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
 .prize-card { padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
 .prize-card b { font-size: 24px; font-weight: 800; letter-spacing: -0.03em; background: linear-gradient(180deg, #fde68a, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+.best-lead { padding: 18px 20px; display: flex; flex-direction: column; gap: 4px; }
+.best-lead b { font-size: 34px; font-weight: 800; letter-spacing: -0.04em; background: linear-gradient(180deg, #fde68a, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }
