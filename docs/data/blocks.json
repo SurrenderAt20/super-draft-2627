@@ -168,33 +168,45 @@
   ],
   "standings": [
    {
-    "le": 205703,
-    "total": 0,
-    "by_gw": {}
-   },
-   {
-    "le": 243916,
-    "total": 0,
-    "by_gw": {}
+    "le": 265639,
+    "total": 50,
+    "by_gw": {
+     "7": 50
+    }
    },
    {
     "le": 294024,
-    "total": 0,
-    "by_gw": {}
+    "total": 47,
+    "by_gw": {
+     "7": 47
+    }
+   },
+   {
+    "le": 205703,
+    "total": 43,
+    "by_gw": {
+     "7": 43
+    }
    },
    {
     "le": 50414,
-    "total": 0,
-    "by_gw": {}
+    "total": 30,
+    "by_gw": {
+     "7": 30
+    }
    },
    {
-    "le": 265639,
-    "total": 0,
-    "by_gw": {}
+    "le": 243916,
+    "total": 29,
+    "by_gw": {
+     "7": 29
+    }
    }
   ],
-  "played": [],
-  "status": "locked",
+  "played": [
+   7
+  ],
+  "status": "live",
   "winners": [],
   "final": false,
   "group_ranks": {

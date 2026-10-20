@@ -60,7 +60,7 @@
  },
  "game": {
   "current": 7,
-  "current_finished": false,
+  "current_finished": true,
   "next": 8,
   "waivers_processed": false,
   "next_trades": "2026-10-21T17:30:00Z",
@@ -92,59 +92,14 @@
   {
    "gw": 6,
    "final": true
+  },
+  {
+   "gw": 7,
+   "final": false
   }
  ],
- "latest_gw": 6,
- "live": {
-  "gw": 7,
-  "matches": [
-   {
-    "event": 7,
-    "a": 294024,
-    "b": 1850,
-    "pa": 47,
-    "pb": 68,
-    "finished": false,
-    "started": true
-   },
-   {
-    "event": 7,
-    "a": 33708,
-    "b": 274299,
-    "pa": 37,
-    "pb": 45,
-    "finished": false,
-    "started": true
-   },
-   {
-    "event": 7,
-    "a": 50414,
-    "b": 265639,
-    "pa": 30,
-    "pb": 50,
-    "finished": false,
-    "started": true
-   },
-   {
-    "event": 7,
-    "a": 205703,
-    "b": 263989,
-    "pa": 34,
-    "pb": 58,
-    "finished": false,
-    "started": true
-   },
-   {
-    "event": 7,
-    "a": 239612,
-    "b": 243916,
-    "pa": 37,
-    "pb": 26,
-    "finished": false,
-    "started": true
-   }
-  ]
- },
+ "latest_gw": 7,
+ "live": null,
  "next_round": {
   "gw": 8,
   "matches": [
@@ -365,33 +320,45 @@
    ],
    "standings": [
     {
-     "le": 205703,
-     "total": 0,
-     "by_gw": {}
-    },
-    {
-     "le": 243916,
-     "total": 0,
-     "by_gw": {}
+     "le": 265639,
+     "total": 50,
+     "by_gw": {
+      "7": 50
+     }
     },
     {
      "le": 294024,
-     "total": 0,
-     "by_gw": {}
+     "total": 47,
+     "by_gw": {
+      "7": 47
+     }
+    },
+    {
+     "le": 205703,
+     "total": 43,
+     "by_gw": {
+      "7": 43
+     }
     },
     {
      "le": 50414,
-     "total": 0,
-     "by_gw": {}
+     "total": 30,
+     "by_gw": {
+      "7": 30
+     }
     },
     {
-     "le": 265639,
-     "total": 0,
-     "by_gw": {}
+     "le": 243916,
+     "total": 29,
+     "by_gw": {
+      "7": 29
+     }
     }
    ],
-   "played": [],
-   "status": "locked",
+   "played": [
+    7
+   ],
+   "status": "live",
    "winners": [],
    "final": false,
    "group_ranks": {
@@ -462,248 +429,248 @@
     "a": 1850,
     "b": 239612,
     "ea": 44.4,
-    "eb": 45.3,
-    "pa": 0.454,
+    "eb": 44.8,
+    "pa": 0.469,
     "pd": 0.026,
-    "pb": 0.519
+    "pb": 0.504
    },
    {
     "a": 243916,
     "b": 205703,
     "ea": 38.7,
-    "eb": 38.8,
-    "pa": 0.485,
-    "pd": 0.026,
-    "pb": 0.488
+    "eb": 39.4,
+    "pa": 0.465,
+    "pd": 0.027,
+    "pb": 0.508
    },
    {
     "a": 263989,
     "b": 50414,
-    "ea": 45.2,
-    "eb": 39.7,
-    "pa": 0.63,
+    "ea": 45.4,
+    "eb": 41.3,
+    "pa": 0.596,
     "pd": 0.026,
-    "pb": 0.344
+    "pb": 0.378
    },
    {
     "a": 265639,
     "b": 33708,
-    "ea": 43.9,
-    "eb": 44.8,
-    "pa": 0.463,
-    "pd": 0.026,
-    "pb": 0.511
+    "ea": 45.4,
+    "eb": 45.7,
+    "pa": 0.477,
+    "pd": 0.027,
+    "pb": 0.496
    },
    {
     "a": 274299,
     "b": 294024,
-    "ea": 43.8,
-    "eb": 40.5,
-    "pa": 0.575,
-    "pd": 0.028,
-    "pb": 0.397
+    "ea": 45.1,
+    "eb": 41.3,
+    "pa": 0.591,
+    "pd": 0.027,
+    "pb": 0.383
    }
   ],
   "next_gw": 8,
   "season": [
    {
     "le": 239612,
-    "exp_pts": 68.5,
-    "exp_rank": 2.68,
-    "p_first": 0.381,
-    "p_top3": 0.731,
+    "exp_pts": 69.6,
+    "exp_rank": 2.85,
+    "p_first": 0.337,
+    "p_top3": 0.694,
     "p_last": 0.004,
     "dist": [
-     0.381,
-     0.209,
-     0.142,
-     0.097,
-     0.066,
-     0.045,
-     0.03,
-     0.018,
+     0.337,
+     0.218,
+     0.139,
+     0.11,
+     0.076,
+     0.052,
+     0.036,
+     0.02,
      0.009,
      0.004
     ]
    },
    {
     "le": 1850,
-    "exp_pts": 62.1,
-    "exp_rank": 3.86,
-    "p_first": 0.172,
-    "p_top3": 0.515,
-    "p_last": 0.017,
+    "exp_pts": 66.0,
+    "exp_rank": 3.42,
+    "p_first": 0.229,
+    "p_top3": 0.591,
+    "p_last": 0.008,
     "dist": [
-     0.172,
-     0.184,
-     0.159,
-     0.131,
-     0.112,
-     0.086,
-     0.064,
-     0.046,
-     0.03,
-     0.017
-    ]
-   },
-   {
-    "le": 33708,
-    "exp_pts": 62.1,
-    "exp_rank": 3.94,
-    "p_first": 0.166,
-    "p_top3": 0.501,
-    "p_last": 0.016,
-    "dist": [
-     0.166,
-     0.18,
-     0.154,
-     0.135,
-     0.107,
-     0.09,
-     0.066,
-     0.052,
-     0.033,
-     0.016
+     0.229,
+     0.201,
+     0.161,
+     0.128,
+     0.095,
+     0.075,
+     0.051,
+     0.034,
+     0.018,
+     0.008
     ]
    },
    {
     "le": 263989,
-    "exp_pts": 59.4,
-    "exp_rank": 4.46,
-    "p_first": 0.116,
-    "p_top3": 0.407,
-    "p_last": 0.027,
+    "exp_pts": 62.9,
+    "exp_rank": 4.09,
+    "p_first": 0.146,
+    "p_top3": 0.466,
+    "p_last": 0.015,
     "dist": [
-     0.116,
-     0.144,
-     0.147,
-     0.141,
-     0.123,
-     0.103,
-     0.089,
-     0.065,
-     0.046,
-     0.027
+     0.146,
+     0.165,
+     0.156,
+     0.137,
+     0.121,
+     0.097,
+     0.077,
+     0.055,
+     0.032,
+     0.015
+    ]
+   },
+   {
+    "le": 33708,
+    "exp_pts": 61.1,
+    "exp_rank": 4.5,
+    "p_first": 0.115,
+    "p_top3": 0.4,
+    "p_last": 0.021,
+    "dist": [
+     0.115,
+     0.136,
+     0.149,
+     0.136,
+     0.122,
+     0.112,
+     0.091,
+     0.071,
+     0.047,
+     0.021
     ]
    },
    {
     "le": 274299,
-    "exp_pts": 53.6,
-    "exp_rank": 5.81,
-    "p_first": 0.047,
-    "p_top3": 0.217,
-    "p_last": 0.075,
+    "exp_pts": 58.1,
+    "exp_rank": 5.17,
+    "p_first": 0.071,
+    "p_top3": 0.291,
+    "p_last": 0.038,
     "dist": [
-     0.047,
-     0.074,
-     0.096,
-     0.113,
+     0.071,
+     0.098,
      0.121,
-     0.124,
-     0.127,
-     0.119,
-     0.104,
-     0.075
-    ]
-   },
-   {
-    "le": 205703,
-    "exp_pts": 53.1,
-    "exp_rank": 5.95,
-    "p_first": 0.043,
-    "p_top3": 0.202,
-    "p_last": 0.086,
-    "dist": [
-     0.043,
-     0.068,
-     0.091,
-     0.107,
-     0.122,
-     0.126,
-     0.126,
-     0.121,
-     0.111,
-     0.086
-    ]
-   },
-   {
-    "le": 294024,
-    "exp_pts": 52.6,
-    "exp_rank": 6.0,
-    "p_first": 0.037,
-    "p_top3": 0.192,
-    "p_last": 0.088,
-    "dist": [
-     0.037,
-     0.065,
-     0.09,
-     0.108,
-     0.122,
-     0.127,
      0.13,
-     0.123,
-     0.11,
-     0.088
+     0.132,
+     0.125,
+     0.117,
+     0.097,
+     0.07,
+     0.038
     ]
    },
    {
     "le": 265639,
-    "exp_pts": 49.1,
-    "exp_rank": 6.79,
-    "p_first": 0.022,
-    "p_top3": 0.119,
-    "p_last": 0.149,
+    "exp_pts": 55.1,
+    "exp_rank": 5.81,
+    "p_first": 0.042,
+    "p_top3": 0.206,
+    "p_last": 0.062,
     "dist": [
-     0.022,
-     0.038,
-     0.059,
-     0.076,
-     0.102,
-     0.119,
-     0.135,
-     0.148,
-     0.152,
-     0.149
+     0.042,
+     0.069,
+     0.096,
+     0.113,
+     0.128,
+     0.132,
+     0.13,
+     0.126,
+     0.103,
+     0.062
+    ]
+   },
+   {
+    "le": 205703,
+    "exp_pts": 52.0,
+    "exp_rank": 6.51,
+    "p_first": 0.026,
+    "p_top3": 0.138,
+    "p_last": 0.105,
+    "dist": [
+     0.026,
+     0.046,
+     0.065,
+     0.085,
+     0.11,
+     0.125,
+     0.141,
+     0.151,
+     0.145,
+     0.105
+    ]
+   },
+   {
+    "le": 294024,
+    "exp_pts": 51.4,
+    "exp_rank": 6.59,
+    "p_first": 0.02,
+    "p_top3": 0.125,
+    "p_last": 0.111,
+    "dist": [
+     0.02,
+     0.04,
+     0.065,
+     0.087,
+     0.109,
+     0.127,
+     0.144,
+     0.153,
+     0.145,
+     0.111
     ]
    },
    {
     "le": 50414,
-    "exp_pts": 45.6,
-    "exp_rank": 7.6,
-    "p_first": 0.009,
-    "p_top3": 0.067,
-    "p_last": 0.248,
+    "exp_pts": 47.9,
+    "exp_rank": 7.39,
+    "p_first": 0.011,
+    "p_top3": 0.072,
+    "p_last": 0.189,
     "dist": [
-     0.009,
-     0.021,
-     0.036,
-     0.05,
-     0.068,
-     0.095,
-     0.122,
-     0.15,
-     0.2,
-     0.248
+     0.011,
+     0.023,
+     0.039,
+     0.055,
+     0.078,
+     0.103,
+     0.134,
+     0.165,
+     0.205,
+     0.189
     ]
    },
    {
     "le": 243916,
-    "exp_pts": 44.2,
-    "exp_rank": 7.89,
-    "p_first": 0.006,
-    "p_top3": 0.048,
-    "p_last": 0.29,
+    "exp_pts": 41.0,
+    "exp_rank": 8.67,
+    "p_first": 0.002,
+    "p_top3": 0.017,
+    "p_last": 0.448,
     "dist": [
-     0.006,
-     0.016,
-     0.027,
-     0.042,
-     0.058,
-     0.084,
-     0.112,
-     0.159,
-     0.205,
-     0.29
+     0.002,
+     0.005,
+     0.01,
+     0.02,
+     0.03,
+     0.052,
+     0.08,
+     0.127,
+     0.225,
+     0.448
     ]
    }
   ],
@@ -712,23 +679,24 @@
    "from": 7,
    "to": 12,
    "p_win": {
-    "205703": 0.185,
-    "243916": 0.079,
-    "294024": 0.272,
-    "50414": 0.143,
-    "265639": 0.321
+    "205703": 0.14,
+    "243916": 0.013,
+    "294024": 0.288,
+    "50414": 0.066,
+    "265639": 0.493
    }
   },
   "calibration": {
-   "bias": 3.33,
-   "sd": 10.63,
-   "fav_won": 16,
-   "fav_n": 20,
+   "bias": 3.69,
+   "sd": 10.46,
+   "fav_won": 20,
+   "fav_n": 25,
    "rounds": [
     3,
     4,
     5,
-    6
+    6,
+    7
    ]
   },
   "drift_sd": 3.0,
@@ -742,15 +710,16 @@
    3,
    4,
    5,
-   6
+   6,
+   7
   ],
   "table": [
    {
     "le": 33708,
-    "out": 13,
-    "injured": 13,
+    "out": 14,
+    "injured": 14,
     "suspended": 0,
-    "doubtful": 1,
+    "doubtful": 3,
     "players": [
      {
       "id": 6,
@@ -767,11 +736,28 @@
       ]
      },
      {
+      "id": 69,
+      "name": "Scott",
+      "club": "BOU",
+      "out": 3,
+      "doubtful": 0,
+      "gws": [
+       5,
+       6,
+       7
+      ],
+      "now": {
+       "status": "i",
+       "news": "Thigh injury - Unknown return date",
+       "chance": 0
+      }
+     },
+     {
       "id": 198,
       "name": "Henderson",
       "club": "CRY",
       "out": 2,
-      "doubtful": 1,
+      "doubtful": 2,
       "gws": [
        4,
        5
@@ -780,22 +766,6 @@
        "status": "d",
        "news": "Foot injury - 50% chance of playing",
        "chance": 50
-      }
-     },
-     {
-      "id": 69,
-      "name": "Scott",
-      "club": "BOU",
-      "out": 2,
-      "doubtful": 0,
-      "gws": [
-       5,
-       6
-      ],
-      "now": {
-       "status": "i",
-       "news": "Thigh injury - Unknown return date",
-       "chance": 0
       }
      },
      {
@@ -810,21 +780,11 @@
       ]
      },
      {
-      "id": 463,
-      "name": "Woltemade",
-      "club": "NEW",
-      "out": 1,
-      "doubtful": 0,
-      "gws": [
-       2
-      ]
-     },
-     {
       "id": 552,
       "name": "Brobbey",
       "club": "SUN",
       "out": 1,
-      "doubtful": 0,
+      "doubtful": 1,
       "gws": [
        5
       ],
@@ -833,10 +793,203 @@
        "news": "Hamstring injury - 75% chance of playing",
        "chance": 75
       }
+     },
+     {
+      "id": 463,
+      "name": "Woltemade",
+      "club": "NEW",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       2
+      ]
      }
     ],
     "now_out": 1,
     "now_doubtful": 2
+   },
+   {
+    "le": 205703,
+    "out": 6,
+    "injured": 6,
+    "suspended": 0,
+    "doubtful": 8,
+    "players": [
+     {
+      "id": 554,
+      "name": "Tzolis",
+      "club": "ARS",
+      "out": 3,
+      "doubtful": 0,
+      "gws": [
+       5,
+       6,
+       7
+      ],
+      "now": {
+       "status": "i",
+       "news": "Hamstring injury - Expected back 1 Nov",
+       "chance": 0
+      }
+     },
+     {
+      "id": 5,
+      "name": "J.Timber",
+      "club": "ARS",
+      "out": 1,
+      "doubtful": 2,
+      "gws": [
+       1
+      ]
+     },
+     {
+      "id": 471,
+      "name": "Milenković",
+      "club": "NFO",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       4
+      ]
+     },
+     {
+      "id": 6,
+      "name": "Saliba",
+      "club": "ARS",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       7
+      ],
+      "now": {
+       "status": "i",
+       "news": "Back injury - Unknown return date",
+       "chance": 0
+      }
+     },
+     {
+      "id": 480,
+      "name": "Gibbs-White",
+      "club": "NFO",
+      "out": 0,
+      "doubtful": 3,
+      "gws": [],
+      "now": {
+       "status": "d",
+       "news": "Muscular injury - 75% chance of playing",
+       "chance": 75
+      }
+     },
+     {
+      "id": 387,
+      "name": "O'Reilly",
+      "club": "MCI",
+      "out": 0,
+      "doubtful": 2,
+      "gws": [],
+      "now": {
+       "status": "d",
+       "news": "Back injury - 75% chance of playing",
+       "chance": 75
+      }
+     },
+     {
+      "id": 401,
+      "name": "Marmoush",
+      "club": "TOT",
+      "out": 0,
+      "doubtful": 1,
+      "gws": [],
+      "now": {
+       "status": "d",
+       "news": "Calf injury - 75% chance of playing",
+       "chance": 75
+      }
+     }
+    ],
+    "now_out": 2,
+    "now_doubtful": 3
+   },
+   {
+    "le": 239612,
+    "out": 6,
+    "injured": 4,
+    "suspended": 2,
+    "doubtful": 4,
+    "players": [
+     {
+      "id": 439,
+      "name": "Šeško",
+      "club": "MUN",
+      "out": 3,
+      "doubtful": 0,
+      "gws": [
+       5,
+       6,
+       7
+      ],
+      "now": {
+       "status": "i",
+       "news": "Shin injury - Expected back 31 Oct",
+       "chance": 0
+      }
+     },
+     {
+      "id": 398,
+      "name": "Foden",
+      "club": "MCI",
+      "out": 2,
+      "doubtful": 0,
+      "gws": [
+       4,
+       5
+      ]
+     },
+     {
+      "id": 84,
+      "name": "Collins",
+      "club": "BRE",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       3
+      ]
+     },
+     {
+      "id": 595,
+      "name": "Dedić",
+      "club": "NEW",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 165,
+      "name": "João Pedro",
+      "club": "CHE",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 541,
+      "name": "Meunier",
+      "club": "SUN",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 94,
+      "name": "Schade",
+      "club": "BRE",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     }
+    ],
+    "now_out": 1,
+    "now_doubtful": 0
    },
    {
     "le": 274299,
@@ -900,91 +1053,11 @@
     "now_doubtful": 0
    },
    {
-    "le": 239612,
-    "out": 5,
-    "injured": 3,
-    "suspended": 2,
-    "doubtful": 4,
-    "players": [
-     {
-      "id": 398,
-      "name": "Foden",
-      "club": "MCI",
-      "out": 2,
-      "doubtful": 0,
-      "gws": [
-       4,
-       5
-      ]
-     },
-     {
-      "id": 439,
-      "name": "Šeško",
-      "club": "MUN",
-      "out": 2,
-      "doubtful": 0,
-      "gws": [
-       5,
-       6
-      ],
-      "now": {
-       "status": "i",
-       "news": "Shin injury - Expected back 31 Oct",
-       "chance": 0
-      }
-     },
-     {
-      "id": 84,
-      "name": "Collins",
-      "club": "BRE",
-      "out": 1,
-      "doubtful": 0,
-      "gws": [
-       3
-      ]
-     },
-     {
-      "id": 595,
-      "name": "Dedić",
-      "club": "NEW",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 165,
-      "name": "João Pedro",
-      "club": "CHE",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 541,
-      "name": "Meunier",
-      "club": "SUN",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 94,
-      "name": "Schade",
-      "club": "BRE",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     }
-    ],
-    "now_out": 1,
-    "now_doubtful": 0
-   },
-   {
     "le": 294024,
-    "out": 4,
-    "injured": 4,
+    "out": 5,
+    "injured": 5,
     "suspended": 0,
-    "doubtful": 7,
+    "doubtful": 8,
     "players": [
      {
       "id": 465,
@@ -1000,19 +1073,26 @@
       ]
      },
      {
-      "id": 452,
-      "name": "Bruno G.",
-      "club": "ARS",
-      "out": 0,
-      "doubtful": 2,
-      "gws": []
+      "id": 397,
+      "name": "Semenyo",
+      "club": "MCI",
+      "out": 1,
+      "doubtful": 1,
+      "gws": [
+       7
+      ],
+      "now": {
+       "status": "i",
+       "news": "Knee injury - Unknown return date",
+       "chance": 0
+      }
      },
      {
       "id": 389,
       "name": "Matheus N.",
       "club": "MCI",
       "out": 0,
-      "doubtful": 1,
+      "doubtful": 2,
       "gws": [],
       "now": {
        "status": "d",
@@ -1021,25 +1101,20 @@
       }
      },
      {
+      "id": 452,
+      "name": "Bruno G.",
+      "club": "ARS",
+      "out": 0,
+      "doubtful": 2,
+      "gws": []
+     },
+     {
       "id": 56,
       "name": "Abraham",
       "club": "AVL",
       "out": 0,
       "doubtful": 1,
       "gws": []
-     },
-     {
-      "id": 397,
-      "name": "Semenyo",
-      "club": "MCI",
-      "out": 0,
-      "doubtful": 1,
-      "gws": [],
-      "now": {
-       "status": "i",
-       "news": "Knee injury - Unknown return date",
-       "chance": 0
-      }
      },
      {
       "id": 429,
@@ -1055,10 +1130,10 @@
    },
    {
     "le": 50414,
-    "out": 4,
+    "out": 5,
     "injured": 2,
-    "suspended": 2,
-    "doubtful": 6,
+    "suspended": 3,
+    "doubtful": 7,
     "players": [
      {
       "id": 223,
@@ -1083,12 +1158,40 @@
       ]
      },
      {
+      "id": 98,
+      "name": "Janelt",
+      "club": "BRE",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       7
+      ],
+      "now": {
+       "status": "s",
+       "news": "Suspended until 31 Oct",
+       "chance": 0
+      }
+     },
+     {
       "id": 233,
       "name": "Mykolenko",
       "club": "EVE",
       "out": 0,
       "doubtful": 2,
       "gws": []
+     },
+     {
+      "id": 553,
+      "name": "Isidor",
+      "club": "SUN",
+      "out": 0,
+      "doubtful": 2,
+      "gws": [],
+      "now": {
+       "status": "d",
+       "news": "Knock - 50% chance of playing",
+       "chance": 50
+      }
      },
      {
       "id": 152,
@@ -1113,74 +1216,107 @@
       "out": 0,
       "doubtful": 1,
       "gws": []
-     },
-     {
-      "id": 553,
-      "name": "Isidor",
-      "club": "SUN",
-      "out": 0,
-      "doubtful": 1,
-      "gws": [],
-      "now": {
-       "status": "d",
-       "news": "Knock - 50% chance of playing",
-       "chance": 50
-      }
-     },
-     {
-      "id": 98,
-      "name": "Janelt",
-      "club": "BRE",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "s",
-       "news": "Suspended until 31 Oct",
-       "chance": 0
-      }
      }
     ],
     "now_out": 1,
     "now_doubtful": 1
    },
    {
-    "le": 205703,
-    "out": 4,
-    "injured": 4,
+    "le": 1850,
+    "out": 5,
+    "injured": 5,
     "suspended": 0,
-    "doubtful": 5,
+    "doubtful": 3,
     "players": [
      {
-      "id": 554,
-      "name": "Tzolis",
-      "club": "ARS",
+      "id": 208,
+      "name": "Sarr",
+      "club": "CRY",
       "out": 2,
       "doubtful": 0,
       "gws": [
-       5,
-       6
+       1,
+       2
+      ]
+     },
+     {
+      "id": 499,
+      "name": "Pedro Porro",
+      "club": "TOT",
+      "out": 1,
+      "doubtful": 1,
+      "gws": [
+       5
+      ]
+     },
+     {
+      "id": 368,
+      "name": "Szoboszlai",
+      "club": "LIV",
+      "out": 1,
+      "doubtful": 1,
+      "gws": [
+       7
       ],
       "now": {
        "status": "i",
-       "news": "Hamstring injury - Expected back 1 Nov",
+       "news": "Hamstring injury - Unknown return date",
        "chance": 0
       }
      },
      {
-      "id": 5,
-      "name": "J.Timber",
-      "club": "ARS",
+      "id": 380,
+      "name": "Ekitiké",
+      "club": "LIV",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       7
+      ],
+      "now": {
+       "status": "i",
+       "news": "Achilles injury - Unknown return date",
+       "chance": 0
+      }
+     },
+     {
+      "id": 411,
+      "name": "Haaland",
+      "club": "MCI",
+      "out": 0,
+      "doubtful": 1,
+      "gws": [],
+      "now": {
+       "status": "d",
+       "news": "Unspecified injury - 75% chance of playing",
+       "chance": 75
+      }
+     }
+    ],
+    "now_out": 2,
+    "now_doubtful": 1
+   },
+   {
+    "le": 243916,
+    "out": 4,
+    "injured": 4,
+    "suspended": 0,
+    "doubtful": 9,
+    "players": [
+     {
+      "id": 367,
+      "name": "Gakpo",
+      "club": "LIV",
       "out": 1,
       "doubtful": 2,
       "gws": [
-       1
+       5
       ]
      },
      {
-      "id": 471,
-      "name": "Milenković",
-      "club": "NFO",
+      "id": 454,
+      "name": "Elanga",
+      "club": "NEW",
       "out": 1,
       "doubtful": 0,
       "gws": [
@@ -1188,60 +1324,70 @@
       ]
      },
      {
-      "id": 480,
-      "name": "Gibbs-White",
-      "club": "NFO",
-      "out": 0,
-      "doubtful": 2,
-      "gws": [],
-      "now": {
-       "status": "d",
-       "news": "Muscular injury - 75% chance of playing",
-       "chance": 75
-      }
-     },
-     {
-      "id": 387,
-      "name": "O'Reilly",
-      "club": "MCI",
-      "out": 0,
-      "doubtful": 1,
-      "gws": [],
-      "now": {
-       "status": "d",
-       "news": "Back injury - 75% chance of playing",
-       "chance": 75
-      }
-     },
-     {
-      "id": 401,
-      "name": "Marmoush",
-      "club": "TOT",
-      "out": 0,
+      "id": 28,
+      "name": "Martinez",
+      "club": "CHE",
+      "out": 1,
       "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "d",
-       "news": "Calf injury - 75% chance of playing",
-       "chance": 75
-      }
-     },
-     {
-      "id": 6,
-      "name": "Saliba",
-      "club": "ARS",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
+      "gws": [
+       7
+      ],
       "now": {
        "status": "i",
-       "news": "Back injury - Unknown return date",
+       "news": "Head injury - Unknown return date",
        "chance": 0
       }
+     },
+     {
+      "id": 403,
+      "name": "Sávio",
+      "club": "TOT",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       7
+      ],
+      "now": {
+       "status": "i",
+       "news": "Muscular injury - Expected back 7 Nov",
+       "chance": 0
+      }
+     },
+     {
+      "id": 125,
+      "name": "Georginio",
+      "club": "BHA",
+      "out": 0,
+      "doubtful": 3,
+      "gws": []
+     },
+     {
+      "id": 515,
+      "name": "Maddison",
+      "club": "TOT",
+      "out": 0,
+      "doubtful": 2,
+      "gws": []
+     },
+     {
+      "id": 431,
+      "name": "Amad",
+      "club": "MUN",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 512,
+      "name": "Kudus",
+      "club": "TOT",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
      }
     ],
     "now_out": 2,
-    "now_doubtful": 3
+    "now_doubtful": 0
    },
    {
     "le": 265639,
@@ -1293,171 +1439,11 @@
     "now_doubtful": 0
    },
    {
-    "le": 1850,
-    "out": 3,
-    "injured": 3,
-    "suspended": 0,
-    "doubtful": 2,
-    "players": [
-     {
-      "id": 208,
-      "name": "Sarr",
-      "club": "CRY",
-      "out": 2,
-      "doubtful": 0,
-      "gws": [
-       1,
-       2
-      ]
-     },
-     {
-      "id": 499,
-      "name": "Pedro Porro",
-      "club": "TOT",
-      "out": 1,
-      "doubtful": 1,
-      "gws": [
-       5
-      ]
-     },
-     {
-      "id": 368,
-      "name": "Szoboszlai",
-      "club": "LIV",
-      "out": 0,
-      "doubtful": 1,
-      "gws": [],
-      "now": {
-       "status": "i",
-       "news": "Hamstring injury - Unknown return date",
-       "chance": 0
-      }
-     },
-     {
-      "id": 411,
-      "name": "Haaland",
-      "club": "MCI",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "d",
-       "news": "Unspecified injury - 75% chance of playing",
-       "chance": 75
-      }
-     },
-     {
-      "id": 380,
-      "name": "Ekitiké",
-      "club": "LIV",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "i",
-       "news": "Achilles injury - Unknown return date",
-       "chance": 0
-      }
-     }
-    ],
-    "now_out": 2,
-    "now_doubtful": 1
-   },
-   {
-    "le": 243916,
-    "out": 2,
-    "injured": 2,
-    "suspended": 0,
-    "doubtful": 9,
-    "players": [
-     {
-      "id": 367,
-      "name": "Gakpo",
-      "club": "LIV",
-      "out": 1,
-      "doubtful": 2,
-      "gws": [
-       5
-      ]
-     },
-     {
-      "id": 454,
-      "name": "Elanga",
-      "club": "NEW",
-      "out": 1,
-      "doubtful": 0,
-      "gws": [
-       4
-      ]
-     },
-     {
-      "id": 125,
-      "name": "Georginio",
-      "club": "BHA",
-      "out": 0,
-      "doubtful": 3,
-      "gws": []
-     },
-     {
-      "id": 515,
-      "name": "Maddison",
-      "club": "TOT",
-      "out": 0,
-      "doubtful": 2,
-      "gws": []
-     },
-     {
-      "id": 431,
-      "name": "Amad",
-      "club": "MUN",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 512,
-      "name": "Kudus",
-      "club": "TOT",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 28,
-      "name": "Martinez",
-      "club": "CHE",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "i",
-       "news": "Head injury - Unknown return date",
-       "chance": 0
-      }
-     },
-     {
-      "id": 403,
-      "name": "Sávio",
-      "club": "TOT",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "i",
-       "news": "Muscular injury - Expected back 7 Nov",
-       "chance": 0
-      }
-     }
-    ],
-    "now_out": 2,
-    "now_doubtful": 0
-   },
-   {
     "le": 263989,
     "out": 1,
     "injured": 0,
     "suspended": 1,
-    "doubtful": 4,
+    "doubtful": 5,
     "players": [
      {
       "id": 371,
@@ -1498,7 +1484,7 @@
       "name": "Manzambi",
       "club": "AVL",
       "out": 0,
-      "doubtful": 0,
+      "doubtful": 1,
       "gws": [],
       "now": {
        "status": "d",
@@ -2239,87 +2225,87 @@
    "le": 239612,
    "rank": 1,
    "last_rank": 1,
-   "w": 5,
+   "w": 6,
    "d": 1,
    "l": 0,
-   "pf": 322,
-   "pa": 258,
-   "pts": 16,
-   "form": [
-    "D",
-    "W",
-    "W",
-    "W",
-    "W"
-   ]
-  },
-  {
-   "le": 33708,
-   "rank": 2,
-   "last_rank": 2,
-   "w": 4,
-   "d": 0,
-   "l": 2,
-   "pf": 246,
-   "pa": 230,
-   "pts": 12,
+   "pf": 359,
+   "pa": 287,
+   "pts": 19,
    "form": [
     "W",
-    "L",
-    "L",
+    "W",
+    "W",
     "W",
     "W"
    ]
   },
   {
    "le": 1850,
-   "rank": 3,
+   "rank": 2,
    "last_rank": 3,
-   "w": 3,
+   "w": 4,
    "d": 0,
    "l": 3,
-   "pf": 284,
-   "pa": 262,
-   "pts": 9,
+   "pf": 352,
+   "pa": 309,
+   "pts": 12,
    "form": [
-    "L",
     "W",
     "W",
     "L",
+    "W",
     "W"
    ]
   },
   {
    "le": 263989,
-   "rank": 4,
+   "rank": 3,
    "last_rank": 4,
-   "w": 3,
+   "w": 4,
    "d": 0,
    "l": 3,
-   "pf": 278,
-   "pa": 270,
-   "pts": 9,
+   "pf": 336,
+   "pa": 313,
+   "pts": 12,
    "form": [
     "L",
+    "W",
     "L",
+    "W",
+    "W"
+   ]
+  },
+  {
+   "le": 274299,
+   "rank": 4,
+   "last_rank": 5,
+   "w": 4,
+   "d": 0,
+   "l": 3,
+   "pf": 308,
+   "pa": 302,
+   "pts": 12,
+   "form": [
+    "W",
+    "W",
     "W",
     "L",
     "W"
    ]
   },
   {
-   "le": 274299,
+   "le": 33708,
    "rank": 5,
-   "last_rank": 5,
-   "w": 3,
+   "last_rank": 2,
+   "w": 4,
    "d": 0,
    "l": 3,
-   "pf": 257,
-   "pa": 264,
-   "pts": 9,
+   "pf": 284,
+   "pa": 281,
+   "pts": 12,
    "form": [
     "L",
-    "W",
+    "L",
     "W",
     "W",
     "L"
@@ -2331,14 +2317,14 @@
    "last_rank": 6,
    "w": 3,
    "d": 0,
-   "l": 3,
-   "pf": 246,
-   "pa": 244,
+   "l": 4,
+   "pf": 289,
+   "pa": 302,
    "pts": 9,
    "form": [
-    "W",
     "L",
     "W",
+    "L",
     "L",
     "L"
    ]
@@ -2349,243 +2335,253 @@
    "last_rank": 7,
    "w": 3,
    "d": 0,
-   "l": 3,
-   "pf": 245,
-   "pa": 241,
+   "l": 4,
+   "pf": 274,
+   "pa": 278,
    "pts": 9,
    "form": [
     "W",
-    "W",
     "L",
     "L",
-    "L"
-   ]
-  },
-  {
-   "le": 294024,
-   "rank": 8,
-   "last_rank": 8,
-   "w": 2,
-   "d": 0,
-   "l": 4,
-   "pf": 257,
-   "pa": 242,
-   "pts": 6,
-   "form": [
-    "W",
     "L",
-    "L",
-    "W",
-    "L"
-   ]
-  },
-  {
-   "le": 50414,
-   "rank": 9,
-   "last_rank": 9,
-   "w": 2,
-   "d": 0,
-   "l": 4,
-   "pf": 210,
-   "pa": 269,
-   "pts": 6,
-   "form": [
-    "L",
-    "W",
-    "L",
-    "W",
     "L"
    ]
   },
   {
    "le": 265639,
-   "rank": 10,
+   "rank": 8,
    "last_rank": 10,
-   "w": 1,
+   "w": 2,
    "d": 1,
    "l": 4,
-   "pf": 224,
-   "pa": 289,
-   "pts": 4,
+   "pf": 274,
+   "pa": 319,
+   "pts": 7,
    "form": [
-    "D",
     "L",
     "L",
     "L",
+    "W",
     "W"
+   ]
+  },
+  {
+   "le": 294024,
+   "rank": 9,
+   "last_rank": 8,
+   "w": 2,
+   "d": 0,
+   "l": 5,
+   "pf": 304,
+   "pa": 310,
+   "pts": 6,
+   "form": [
+    "L",
+    "L",
+    "W",
+    "L",
+    "L"
+   ]
+  },
+  {
+   "le": 50414,
+   "rank": 10,
+   "last_rank": 9,
+   "w": 2,
+   "d": 0,
+   "l": 5,
+   "pf": 240,
+   "pa": 319,
+   "pts": 6,
+   "form": [
+    "W",
+    "L",
+    "W",
+    "L",
+    "L"
    ]
   }
  ],
  "points_table": [
   {
    "le": 239612,
-   "total": 322,
-   "avg": 53.7,
+   "total": 359,
+   "avg": 51.3,
    "best": 72,
    "worst": 36,
-   "recent": 217,
+   "recent": 218,
    "by_gw": [
     55,
     50,
     36,
     62,
     72,
-    47
+    47,
+    37
    ]
   },
   {
    "le": 1850,
-   "total": 284,
-   "avg": 47.3,
+   "total": 352,
+   "avg": 50.3,
    "best": 73,
    "worst": 34,
-   "recent": 199,
+   "recent": 213,
    "by_gw": [
     47,
     38,
     54,
     73,
     38,
-    34
+    34,
+    68
    ]
   },
   {
    "le": 263989,
-   "total": 278,
-   "avg": 46.3,
+   "total": 336,
+   "avg": 48.0,
    "best": 58,
    "worst": 35,
-   "recent": 171,
+   "recent": 191,
    "by_gw": [
     58,
     49,
     38,
     51,
     35,
-    47
+    47,
+    58
    ]
   },
   {
    "le": 274299,
-   "total": 257,
-   "avg": 42.8,
-   "best": 45,
+   "total": 308,
+   "avg": 44.0,
+   "best": 51,
    "worst": 40,
-   "recent": 170,
+   "recent": 178,
    "by_gw": [
     44,
     43,
     43,
     42,
     45,
-    40
+    40,
+    51
    ]
   },
   {
    "le": 294024,
-   "total": 257,
-   "avg": 42.8,
+   "total": 304,
+   "avg": 43.4,
    "best": 54,
    "worst": 30,
-   "recent": 184,
+   "recent": 193,
    "by_gw": [
     30,
     43,
     38,
     52,
     54,
-    40
-   ]
-  },
-  {
-   "le": 33708,
-   "total": 246,
-   "avg": 41.0,
-   "best": 59,
-   "worst": 29,
-   "recent": 144,
-   "by_gw": [
-    43,
-    59,
-    35,
-    29,
-    37,
-    43
+    40,
+    47
    ]
   },
   {
    "le": 205703,
-   "total": 246,
-   "avg": 41.0,
+   "total": 289,
+   "avg": 41.3,
    "best": 56,
    "worst": 25,
-   "recent": 156,
+   "recent": 165,
    "by_gw": [
     45,
     45,
     34,
     56,
     41,
-    25
+    25,
+    43
+   ]
+  },
+  {
+   "le": 33708,
+   "total": 284,
+   "avg": 40.6,
+   "best": 59,
+   "worst": 29,
+   "recent": 147,
+   "by_gw": [
+    43,
+    59,
+    35,
+    29,
+    37,
+    43,
+    38
    ]
   },
   {
    "le": 243916,
-   "total": 245,
-   "avg": 40.8,
+   "total": 274,
+   "avg": 39.1,
    "best": 64,
    "worst": 29,
-   "recent": 141,
+   "recent": 127,
    "by_gw": [
     40,
     64,
     43,
     36,
     29,
-    33
+    33,
+    29
    ]
   },
   {
    "le": 265639,
-   "total": 224,
-   "avg": 37.3,
+   "total": 274,
+   "avg": 39.1,
    "best": 52,
    "worst": 20,
-   "recent": 149,
+   "recent": 161,
    "by_gw": [
     25,
     50,
     38,
     39,
     20,
-    52
+    52,
+    50
    ]
   },
   {
    "le": 50414,
-   "total": 210,
-   "avg": 35.0,
+   "total": 240,
+   "avg": 34.3,
    "best": 44,
    "worst": 25,
-   "recent": 153,
+   "recent": 147,
    "by_gw": [
     32,
     25,
     36,
     37,
     44,
-    36
+    36,
+    30
    ]
   }
  ],
  "luck": [
   {
    "le": 239612,
-   "w": 40,
+   "w": 42,
    "d": 3,
-   "l": 11,
-   "xpts": 13.67,
-   "pts": 16,
+   "l": 18,
+   "xpts": 14.33,
+   "pts": 19,
    "series": [
     {
      "gw": 1,
@@ -2616,58 +2612,22 @@
      "gw": 6,
      "xpts": 13.67,
      "pts": 16
+    },
+    {
+     "gw": 7,
+     "xpts": 14.33,
+     "pts": 19
     }
    ],
-   "luck": 2.33
-  },
-  {
-   "le": 263989,
-   "w": 32,
-   "d": 3,
-   "l": 19,
-   "xpts": 11.0,
-   "pts": 9,
-   "series": [
-    {
-     "gw": 1,
-     "xpts": 3.0,
-     "pts": 3
-    },
-    {
-     "gw": 2,
-     "xpts": 4.67,
-     "pts": 3
-    },
-    {
-     "gw": 3,
-     "xpts": 6.22,
-     "pts": 3
-    },
-    {
-     "gw": 4,
-     "xpts": 7.89,
-     "pts": 6
-    },
-    {
-     "gw": 5,
-     "xpts": 8.56,
-     "pts": 6
-    },
-    {
-     "gw": 6,
-     "xpts": 11.0,
-     "pts": 9
-    }
-   ],
-   "luck": -2.0
+   "luck": 4.67
   },
   {
    "le": 1850,
-   "w": 32,
+   "w": 41,
    "d": 0,
    "l": 22,
-   "xpts": 10.67,
-   "pts": 9,
+   "xpts": 13.67,
+   "pts": 12,
    "series": [
     {
      "gw": 1,
@@ -2698,17 +2658,68 @@
      "gw": 6,
      "xpts": 10.67,
      "pts": 9
+    },
+    {
+     "gw": 7,
+     "xpts": 13.67,
+     "pts": 12
+    }
+   ],
+   "luck": -1.67
+  },
+  {
+   "le": 263989,
+   "w": 40,
+   "d": 3,
+   "l": 20,
+   "xpts": 13.67,
+   "pts": 12,
+   "series": [
+    {
+     "gw": 1,
+     "xpts": 3.0,
+     "pts": 3
+    },
+    {
+     "gw": 2,
+     "xpts": 4.67,
+     "pts": 3
+    },
+    {
+     "gw": 3,
+     "xpts": 6.22,
+     "pts": 3
+    },
+    {
+     "gw": 4,
+     "xpts": 7.89,
+     "pts": 6
+    },
+    {
+     "gw": 5,
+     "xpts": 8.56,
+     "pts": 6
+    },
+    {
+     "gw": 6,
+     "xpts": 11.0,
+     "pts": 9
+    },
+    {
+     "gw": 7,
+     "xpts": 13.67,
+     "pts": 12
     }
    ],
    "luck": -1.67
   },
   {
    "le": 274299,
-   "w": 29,
+   "w": 36,
    "d": 3,
-   "l": 22,
-   "xpts": 10.0,
-   "pts": 9,
+   "l": 24,
+   "xpts": 12.33,
+   "pts": 12,
    "series": [
     {
      "gw": 1,
@@ -2739,16 +2750,21 @@
      "gw": 6,
      "xpts": 10.0,
      "pts": 9
+    },
+    {
+     "gw": 7,
+     "xpts": 12.33,
+     "pts": 12
     }
    ],
-   "luck": -1.0
+   "luck": -0.33
   },
   {
    "le": 294024,
-   "w": 25,
+   "w": 30,
    "d": 4,
-   "l": 25,
-   "xpts": 8.78,
+   "l": 29,
+   "xpts": 10.44,
    "pts": 6,
    "series": [
     {
@@ -2780,17 +2796,22 @@
      "gw": 6,
      "xpts": 8.78,
      "pts": 6
+    },
+    {
+     "gw": 7,
+     "xpts": 10.44,
+     "pts": 6
     }
    ],
-   "luck": -2.78
+   "luck": -4.44
   },
   {
    "le": 265639,
-   "w": 22,
+   "w": 28,
    "d": 3,
-   "l": 29,
-   "xpts": 7.67,
-   "pts": 4,
+   "l": 32,
+   "xpts": 9.67,
+   "pts": 7,
    "series": [
     {
      "gw": 1,
@@ -2821,15 +2842,112 @@
      "gw": 6,
      "xpts": 7.67,
      "pts": 4
+    },
+    {
+     "gw": 7,
+     "xpts": 9.67,
+     "pts": 7
     }
    ],
-   "luck": -3.67
+   "luck": -2.67
+  },
+  {
+   "le": 205703,
+   "w": 26,
+   "d": 0,
+   "l": 37,
+   "xpts": 8.67,
+   "pts": 9,
+   "series": [
+    {
+     "gw": 1,
+     "xpts": 2.0,
+     "pts": 3
+    },
+    {
+     "gw": 2,
+     "xpts": 3.33,
+     "pts": 6
+    },
+    {
+     "gw": 3,
+     "xpts": 3.33,
+     "pts": 6
+    },
+    {
+     "gw": 4,
+     "xpts": 5.67,
+     "pts": 9
+    },
+    {
+     "gw": 5,
+     "xpts": 7.33,
+     "pts": 9
+    },
+    {
+     "gw": 6,
+     "xpts": 7.33,
+     "pts": 9
+    },
+    {
+     "gw": 7,
+     "xpts": 8.67,
+     "pts": 9
+    }
+   ],
+   "luck": 0.33
+  },
+  {
+   "le": 33708,
+   "w": 25,
+   "d": 0,
+   "l": 38,
+   "xpts": 8.33,
+   "pts": 12,
+   "series": [
+    {
+     "gw": 1,
+     "xpts": 1.33,
+     "pts": 3
+    },
+    {
+     "gw": 2,
+     "xpts": 4.0,
+     "pts": 6
+    },
+    {
+     "gw": 3,
+     "xpts": 4.33,
+     "pts": 6
+    },
+    {
+     "gw": 4,
+     "xpts": 4.33,
+     "pts": 6
+    },
+    {
+     "gw": 5,
+     "xpts": 5.33,
+     "pts": 9
+    },
+    {
+     "gw": 6,
+     "xpts": 7.33,
+     "pts": 12
+    },
+    {
+     "gw": 7,
+     "xpts": 8.33,
+     "pts": 12
+    }
+   ],
+   "luck": 3.67
   },
   {
    "le": 243916,
    "w": 22,
    "d": 1,
-   "l": 31,
+   "l": 40,
    "xpts": 7.44,
    "pts": 9,
    "series": [
@@ -2862,98 +2980,21 @@
      "gw": 6,
      "xpts": 7.44,
      "pts": 9
+    },
+    {
+     "gw": 7,
+     "xpts": 7.44,
+     "pts": 9
     }
    ],
    "luck": 1.56
   },
   {
-   "le": 33708,
-   "w": 22,
-   "d": 0,
-   "l": 32,
-   "xpts": 7.33,
-   "pts": 12,
-   "series": [
-    {
-     "gw": 1,
-     "xpts": 1.33,
-     "pts": 3
-    },
-    {
-     "gw": 2,
-     "xpts": 4.0,
-     "pts": 6
-    },
-    {
-     "gw": 3,
-     "xpts": 4.33,
-     "pts": 6
-    },
-    {
-     "gw": 4,
-     "xpts": 4.33,
-     "pts": 6
-    },
-    {
-     "gw": 5,
-     "xpts": 5.33,
-     "pts": 9
-    },
-    {
-     "gw": 6,
-     "xpts": 7.33,
-     "pts": 12
-    }
-   ],
-   "luck": 4.67
-  },
-  {
-   "le": 205703,
-   "w": 22,
-   "d": 0,
-   "l": 32,
-   "xpts": 7.33,
-   "pts": 9,
-   "series": [
-    {
-     "gw": 1,
-     "xpts": 2.0,
-     "pts": 3
-    },
-    {
-     "gw": 2,
-     "xpts": 3.33,
-     "pts": 6
-    },
-    {
-     "gw": 3,
-     "xpts": 3.33,
-     "pts": 6
-    },
-    {
-     "gw": 4,
-     "xpts": 5.67,
-     "pts": 9
-    },
-    {
-     "gw": 5,
-     "xpts": 7.33,
-     "pts": 9
-    },
-    {
-     "gw": 6,
-     "xpts": 7.33,
-     "pts": 9
-    }
-   ],
-   "luck": 1.67
-  },
-  {
    "le": 50414,
-   "w": 15,
+   "w": 16,
    "d": 1,
-   "l": 38,
-   "xpts": 5.11,
+   "l": 46,
+   "xpts": 5.45,
    "pts": 6,
    "series": [
     {
@@ -2985,24 +3026,29 @@
      "gw": 6,
      "xpts": 5.11,
      "pts": 6
+    },
+    {
+     "gw": 7,
+     "xpts": 5.45,
+     "pts": 6
     }
    ],
-   "luck": 0.89
+   "luck": 0.55
   }
  ],
  "streaks": {
   "1850": {
    "current": {
     "kind": "W",
-    "n": 1
+    "n": 2
    },
    "best_win": 2,
    "worst_loss": 2
   },
   "33708": {
    "current": {
-    "kind": "W",
-    "n": 2
+    "kind": "L",
+    "n": 1
    },
    "best_win": 2,
    "worst_loss": 2
@@ -3010,7 +3056,7 @@
   "50414": {
    "current": {
     "kind": "L",
-    "n": 1
+    "n": 2
    },
    "best_win": 1,
    "worst_loss": 2
@@ -3018,46 +3064,46 @@
   "205703": {
    "current": {
     "kind": "L",
-    "n": 2
+    "n": 3
    },
    "best_win": 2,
-   "worst_loss": 2
+   "worst_loss": 3
   },
   "239612": {
    "current": {
     "kind": "W",
-    "n": 4
+    "n": 5
    },
-   "best_win": 4,
+   "best_win": 5,
    "worst_loss": 0
   },
   "243916": {
    "current": {
     "kind": "L",
-    "n": 3
+    "n": 4
    },
    "best_win": 3,
-   "worst_loss": 3
+   "worst_loss": 4
   },
   "263989": {
    "current": {
     "kind": "W",
-    "n": 1
+    "n": 2
    },
-   "best_win": 1,
+   "best_win": 2,
    "worst_loss": 2
   },
   "265639": {
    "current": {
     "kind": "W",
-    "n": 1
+    "n": 2
    },
-   "best_win": 1,
+   "best_win": 2,
    "worst_loss": 3
   },
   "274299": {
    "current": {
-    "kind": "L",
+    "kind": "W",
     "n": 1
    },
    "best_win": 3,
@@ -3066,7 +3112,7 @@
   "294024": {
    "current": {
     "kind": "L",
-    "n": 1
+    "n": 2
    },
    "best_win": 1,
    "worst_loss": 2
@@ -3131,11 +3177,11 @@
     "pa": 45
    },
    "294024": {
-    "w": 0,
+    "w": 1,
     "d": 0,
     "l": 0,
-    "pf": 0,
-    "pa": 0
+    "pf": 68,
+    "pa": 47
    }
   },
   "33708": {
@@ -3191,9 +3237,9 @@
    "274299": {
     "w": 0,
     "d": 0,
-    "l": 0,
-    "pf": 0,
-    "pa": 0
+    "l": 1,
+    "pf": 38,
+    "pa": 51
    },
    "294024": {
     "w": 0,
@@ -3249,9 +3295,9 @@
    "265639": {
     "w": 0,
     "d": 0,
-    "l": 0,
-    "pf": 0,
-    "pa": 0
+    "l": 1,
+    "pf": 30,
+    "pa": 50
    },
    "274299": {
     "w": 0,
@@ -3307,9 +3353,9 @@
    "263989": {
     "w": 0,
     "d": 0,
-    "l": 0,
-    "pf": 0,
-    "pa": 0
+    "l": 1,
+    "pf": 43,
+    "pa": 58
    },
    "265639": {
     "w": 0,
@@ -3363,11 +3409,11 @@
     "pa": 41
    },
    "243916": {
-    "w": 0,
+    "w": 1,
     "d": 0,
     "l": 0,
-    "pf": 0,
-    "pa": 0
+    "pf": 37,
+    "pa": 29
    },
    "263989": {
     "w": 0,
@@ -3430,9 +3476,9 @@
    "239612": {
     "w": 0,
     "d": 0,
-    "l": 0,
-    "pf": 0,
-    "pa": 0
+    "l": 1,
+    "pf": 29,
+    "pa": 37
    },
    "263989": {
     "w": 1,
@@ -3486,11 +3532,11 @@
     "pa": 0
    },
    "205703": {
-    "w": 0,
+    "w": 1,
     "d": 0,
     "l": 0,
-    "pf": 0,
-    "pa": 0
+    "pf": 58,
+    "pa": 43
    },
    "239612": {
     "w": 0,
@@ -3544,11 +3590,11 @@
     "pa": 0
    },
    "50414": {
-    "w": 0,
+    "w": 1,
     "d": 0,
     "l": 0,
-    "pf": 0,
-    "pa": 0
+    "pf": 50,
+    "pa": 30
    },
    "205703": {
     "w": 0,
@@ -3602,11 +3648,11 @@
     "pa": 38
    },
    "33708": {
-    "w": 0,
+    "w": 1,
     "d": 0,
     "l": 0,
-    "pf": 0,
-    "pa": 0
+    "pf": 51,
+    "pa": 38
    },
    "50414": {
     "w": 0,
@@ -3662,9 +3708,9 @@
    "1850": {
     "w": 0,
     "d": 0,
-    "l": 0,
-    "pf": 0,
-    "pa": 0
+    "l": 1,
+    "pf": 47,
+    "pa": 68
    },
    "33708": {
     "w": 0,
@@ -3726,26 +3772,26 @@
  },
  "schedule_swap": {
   "1850": {
-   "1850": 9,
-   "33708": 15,
-   "50414": 12,
-   "205703": 12,
-   "239612": 9,
-   "243916": 9,
-   "263989": 9,
-   "265639": 9,
-   "274299": 6,
-   "294024": 15
+   "1850": 12,
+   "33708": 18,
+   "50414": 15,
+   "205703": 15,
+   "239612": 12,
+   "243916": 12,
+   "263989": 12,
+   "265639": 12,
+   "274299": 9,
+   "294024": 18
   },
   "33708": {
    "1850": 6,
    "33708": 12,
    "50414": 12,
    "205703": 9,
-   "239612": 6,
-   "243916": 9,
+   "239612": 9,
+   "243916": 12,
    "263989": 6,
-   "265639": 9,
+   "265639": 12,
    "274299": 3,
    "294024": 6
   },
@@ -3754,7 +3800,7 @@
    "33708": 7,
    "50414": 6,
    "205703": 12,
-   "239612": 6,
+   "239612": 9,
    "243916": 6,
    "263989": 3,
    "265639": 0,
@@ -3766,11 +3812,11 @@
    "33708": 12,
    "50414": 9,
    "205703": 9,
-   "239612": 6,
-   "243916": 6,
+   "239612": 9,
+   "243916": 9,
    "263989": 6,
-   "265639": 6,
-   "274299": 9,
+   "265639": 9,
+   "274299": 12,
    "294024": 9
   },
   "239612": {
@@ -3778,10 +3824,10 @@
    "33708": 18,
    "50414": 15,
    "205703": 16,
-   "239612": 16,
-   "243916": 15,
+   "239612": 19,
+   "243916": 18,
    "263989": 12,
-   "265639": 13,
+   "265639": 16,
    "274299": 12,
    "294024": 13
   },
@@ -3798,39 +3844,39 @@
    "294024": 9
   },
   "263989": {
-   "1850": 10,
-   "33708": 12,
-   "50414": 13,
-   "205703": 15,
-   "239612": 9,
-   "243916": 10,
-   "263989": 9,
-   "265639": 9,
-   "274299": 9,
+   "1850": 13,
+   "33708": 15,
+   "50414": 16,
+   "205703": 18,
+   "239612": 12,
+   "243916": 13,
+   "263989": 12,
+   "265639": 12,
+   "274299": 12,
    "294024": 12
   },
   "265639": {
-   "1850": 6,
+   "1850": 9,
    "33708": 9,
-   "50414": 9,
+   "50414": 12,
    "205703": 12,
-   "239612": 7,
-   "243916": 7,
-   "263989": 3,
-   "265639": 4,
-   "274299": 10,
+   "239612": 10,
+   "243916": 10,
+   "263989": 6,
+   "265639": 7,
+   "274299": 13,
    "294024": 6
   },
   "274299": {
-   "1850": 12,
-   "33708": 15,
-   "50414": 10,
+   "1850": 15,
+   "33708": 18,
+   "50414": 13,
    "205703": 12,
-   "239612": 9,
-   "243916": 12,
-   "263989": 10,
-   "265639": 3,
-   "274299": 9,
+   "239612": 12,
+   "243916": 15,
+   "263989": 13,
+   "265639": 6,
+   "274299": 12,
    "294024": 7
   },
   "294024": {
@@ -3838,153 +3884,153 @@
    "33708": 12,
    "50414": 9,
    "205703": 10,
-   "239612": 9,
-   "243916": 9,
-   "263989": 6,
-   "265639": 7,
-   "274299": 7,
+   "239612": 12,
+   "243916": 12,
+   "263989": 9,
+   "265639": 10,
+   "274299": 10,
    "294024": 6
   }
  },
  "bench": [
   {
    "le": 50414,
-   "total": 61,
+   "total": 69,
    "worst_gw": 4,
    "worst": 19
   },
   {
    "le": 263989,
-   "total": 59,
+   "total": 68,
    "worst_gw": 1,
    "worst": 16
   },
   {
    "le": 274299,
-   "total": 50,
+   "total": 62,
    "worst_gw": 6,
    "worst": 15
   },
   {
    "le": 205703,
-   "total": 47,
+   "total": 49,
    "worst_gw": 6,
    "worst": 14
   },
   {
    "le": 265639,
-   "total": 39,
+   "total": 45,
    "worst_gw": 5,
    "worst": 14
   },
   {
    "le": 33708,
-   "total": 38,
+   "total": 40,
    "worst_gw": 5,
    "worst": 17
   },
   {
-   "le": 239612,
-   "total": 29,
-   "worst_gw": 4,
-   "worst": 15
-  },
-  {
    "le": 1850,
-   "total": 28,
+   "total": 31,
    "worst_gw": 6,
    "worst": 10
   },
   {
-   "le": 294024,
-   "total": 17,
+   "le": 239612,
+   "total": 31,
    "worst_gw": 4,
-   "worst": 4
+   "worst": 15
+  },
+  {
+   "le": 294024,
+   "total": 30,
+   "worst_gw": 7,
+   "worst": 13
   },
   {
    "le": 243916,
-   "total": 16,
-   "worst_gw": 5,
-   "worst": 7
+   "total": 24,
+   "worst_gw": 7,
+   "worst": 8
   }
  ],
  "waivers": [
   {
    "le": 294024,
-   "pts": 91,
-   "share": 0.354,
+   "pts": 127,
+   "share": 0.418,
    "claims_won": 10,
    "claims_lost": 16,
    "free_agents": 2
   },
   {
-   "le": 50414,
-   "pts": 90,
-   "share": 0.429,
-   "claims_won": 14,
-   "claims_lost": 17,
-   "free_agents": 9
-  },
-  {
    "le": 265639,
-   "pts": 88,
-   "share": 0.393,
+   "pts": 117,
+   "share": 0.427,
    "claims_won": 20,
    "claims_lost": 27,
    "free_agents": 9
   },
   {
-   "le": 243916,
-   "pts": 79,
-   "share": 0.322,
-   "claims_won": 7,
-   "claims_lost": 9,
-   "free_agents": 3
+   "le": 50414,
+   "pts": 104,
+   "share": 0.433,
+   "claims_won": 14,
+   "claims_lost": 17,
+   "free_agents": 9
   },
   {
    "le": 1850,
-   "pts": 71,
-   "share": 0.25,
+   "pts": 103,
+   "share": 0.293,
    "claims_won": 12,
    "claims_lost": 28,
    "free_agents": 6
   },
   {
+   "le": 243916,
+   "pts": 96,
+   "share": 0.35,
+   "claims_won": 7,
+   "claims_lost": 9,
+   "free_agents": 3
+  },
+  {
    "le": 33708,
-   "pts": 60,
-   "share": 0.244,
+   "pts": 86,
+   "share": 0.303,
    "claims_won": 6,
    "claims_lost": 13,
    "free_agents": 2
   },
   {
    "le": 239612,
-   "pts": 56,
-   "share": 0.174,
+   "pts": 67,
+   "share": 0.187,
    "claims_won": 8,
    "claims_lost": 13,
    "free_agents": 8
   },
   {
    "le": 263989,
-   "pts": 26,
-   "share": 0.094,
+   "pts": 53,
+   "share": 0.158,
    "claims_won": 8,
    "claims_lost": 6,
    "free_agents": 2
   },
   {
    "le": 274299,
-   "pts": 16,
-   "share": 0.062,
+   "pts": 31,
+   "share": 0.101,
    "claims_won": 1,
    "claims_lost": 4,
    "free_agents": 3
   },
   {
    "le": 205703,
-   "pts": 13,
-   "share": 0.053,
+   "pts": 25,
+   "share": 0.087,
    "claims_won": 4,
    "claims_lost": 8,
    "free_agents": 0
@@ -3992,26 +4038,8 @@
  ],
  "best_pickups": [
   {
-   "pts": 29,
+   "pts": 40,
    "starts": 6,
-   "le": 1850,
-   "name": "Muharemović",
-   "pos": "DEF",
-   "club": "LEE",
-   "acq": "waiver"
-  },
-  {
-   "pts": 28,
-   "starts": 5,
-   "le": 33708,
-   "name": "Hall",
-   "pos": "DEF",
-   "club": "NEW",
-   "acq": "waiver"
-  },
-  {
-   "pts": 28,
-   "starts": 5,
    "le": 294024,
    "name": "Kostoulas",
    "pos": "FWD",
@@ -4019,8 +4047,8 @@
    "acq": "free"
   },
   {
-   "pts": 26,
-   "starts": 3,
+   "pts": 37,
+   "starts": 4,
    "le": 265639,
    "name": "Vuskovic",
    "pos": "DEF",
@@ -4028,8 +4056,26 @@
    "acq": "waiver"
   },
   {
-   "pts": 25,
-   "starts": 4,
+   "pts": 34,
+   "starts": 7,
+   "le": 1850,
+   "name": "Muharemović",
+   "pos": "DEF",
+   "club": "LEE",
+   "acq": "waiver"
+  },
+  {
+   "pts": 32,
+   "starts": 6,
+   "le": 33708,
+   "name": "Hall",
+   "pos": "DEF",
+   "club": "NEW",
+   "acq": "waiver"
+  },
+  {
+   "pts": 27,
+   "starts": 5,
    "le": 239612,
    "name": "Barnes",
    "pos": "MID",
@@ -4037,13 +4083,40 @@
    "acq": "free"
   },
   {
-   "pts": 23,
-   "starts": 4,
+   "pts": 26,
+   "starts": 5,
    "le": 50414,
    "name": "Jacquet",
    "pos": "DEF",
    "club": "LIV",
    "acq": "free"
+  },
+  {
+   "pts": 24,
+   "starts": 5,
+   "le": 274299,
+   "name": "Konsa",
+   "pos": "DEF",
+   "club": "ARS",
+   "acq": "waiver"
+  },
+  {
+   "pts": 23,
+   "starts": 6,
+   "le": 33708,
+   "name": "Lewis-Potter",
+   "pos": "MID",
+   "club": "BRE",
+   "acq": "free"
+  },
+  {
+   "pts": 19,
+   "starts": 3,
+   "le": 243916,
+   "name": "Tzolakis",
+   "pos": "GKP",
+   "club": "HUL",
+   "acq": "waiver"
   },
   {
    "pts": 19,
@@ -4052,33 +4125,6 @@
    "name": "King",
    "pos": "MID",
    "club": "FUL",
-   "acq": "waiver"
-  },
-  {
-   "pts": 18,
-   "starts": 4,
-   "le": 1850,
-   "name": "Khalaili",
-   "pos": "DEF",
-   "club": "CRY",
-   "acq": "free"
-  },
-  {
-   "pts": 17,
-   "starts": 3,
-   "le": 243916,
-   "name": "Davis",
-   "pos": "DEF",
-   "club": "IPS",
-   "acq": "waiver"
-  },
-  {
-   "pts": 16,
-   "starts": 2,
-   "le": 243916,
-   "name": "Tzolakis",
-   "pos": "GKP",
-   "club": "HUL",
    "acq": "waiver"
   }
  ],
@@ -4133,9 +4179,10 @@
   "1850": {
    "unluckiest_loss": 1,
    "waiver_hero": 1,
-   "top_score": 2,
-   "biggest_win": 2,
-   "luckiest_win": 1
+   "top_score": 3,
+   "biggest_win": 3,
+   "luckiest_win": 1,
+   "best_player": 1
   },
   "33708": {
    "biggest_win": 1,
@@ -4157,14 +4204,15 @@
   },
   "239612": {
    "best_player": 2,
-   "luckiest_win": 1,
+   "luckiest_win": 2,
    "top_score": 1
   },
   "243916": {
    "biggest_win": 1,
    "luckiest_win": 1,
    "top_score": 1,
-   "waiver_hero": 1
+   "waiver_hero": 1,
+   "low_score": 1
   },
   "263989": {
    "top_score": 1,
@@ -4187,11 +4235,12 @@
   },
   "294024": {
    "luckiest_win": 1,
-   "unluckiest_loss": 3,
-   "waiver_hero": 3,
+   "unluckiest_loss": 4,
+   "waiver_hero": 4,
    "biggest_win": 1,
-   "best_player": 1
+   "best_player": 1,
+   "bench_shame": 1
   }
  },
- "updated": "2026-10-20T00:21+00:00"
+ "updated": "2026-10-20T08:34+00:00"
 }
