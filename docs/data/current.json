@@ -1226,7 +1226,7 @@
     "out": 5,
     "injured": 5,
     "suspended": 0,
-    "doubtful": 3,
+    "doubtful": 2,
     "players": [
      {
       "id": 208,
@@ -1278,14 +1278,6 @@
        "news": "Achilles injury - Unknown return date",
        "chance": 0
       }
-     },
-     {
-      "id": 411,
-      "name": "Haaland",
-      "club": "MCI",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
      }
     ],
     "now_out": 2,
@@ -4595,5 +4587,5 @@
    "bench_shame": 1
   }
  },
- "updated": "2026-10-20T23:53+00:00"
+ "updated": "2026-10-21T04:50+00:00"
 }
