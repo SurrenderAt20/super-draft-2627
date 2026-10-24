@@ -10,8 +10,8 @@ const ADV_STATE = { cat: "overblik", period: "season", per90: false, pos: "ALL",
 
 const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 
-async function advDecrypt(password) {
-  const enc = await getJSON("data/adv.enc.json");
+async function advDecrypt(password, path = "data/adv.enc.json") {
+  const enc = await getJSON(path);
   const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"]);
   const key = await crypto.subtle.deriveKey(
     { name: "PBKDF2", hash: "SHA-256", salt: b64(enc.salt), iterations: enc.iter },
