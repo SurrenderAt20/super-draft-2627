@@ -18,8 +18,9 @@ ESPN and football-data is only accepted when both teams match well.
 
 A card is published once a day for matches kicking off in the next 24 hours that no earlier card
 has tipped. Published legs and prices never change; only their results are filled in later.
-Everything is stored AES-encrypted in docs/data/tips.enc.json with the Advanced tab's password
-(ADV_PASSWORD), since it contains bookmaker prices.
+Everything shown is stored openly in docs/data/tips.json. The goalscorer chances kept between runs
+come from the password-protected Advanced data, so they stay encrypted (scripts/cache/
+tips_private.enc.json, ADV_PASSWORD); only the 20 shown on the page are public.
 
 Ladder: start at 100 kr, bet the whole payout on the next single at bet365 odds 1.10-1.20, restart at
 100 kr after a loss. One bet a day; on Saturdays and Sundays a chain of bets the same day, each
@@ -61,7 +62,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import advanced  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = os.path.join(ROOT, "docs", "data", "tips.enc.json")
+OUT = os.path.join(ROOT, "docs", "data", "tips.json")
+OLD_ENC = os.path.join(ROOT, "docs", "data", "tips.enc.json")   # before the tab was opened up: read once, then removed
+PRIVATE = os.path.join(ROOT, "scripts", "cache", "tips_private.enc.json")
 ADV = os.path.join(ROOT, "docs", "data", "adv.enc.json")
 SCORER_CHECK = os.path.join(ROOT, "scripts", "cache", "scorer_check.json")
 FD = os.path.join(ROOT, "scripts", "cache", "fd")
@@ -774,29 +777,53 @@ def scorer_results(legs_):
 # ---------------------------------------------------------------- storage
 
 def load_state(password):
-    if not os.path.exists(OUT):
-        return {"cards": []}
-    with open(OUT, encoding="utf-8") as f:
-        enc = json.load(f)
-    try:
-        return decrypt(enc, password)
-    except Exception:
-        # a changed password: the old record cannot be read, so it starts again
-        print("  tips: existing file cannot be decrypted with this password, starting a new record", flush=True)
-        return {"cards": []}
+    state = {"cards": []}
+    if os.path.exists(OUT):
+        with open(OUT, encoding="utf-8") as f:
+            state = json.load(f)
+    elif os.path.exists(OLD_ENC) and password:
+        try:
+            with open(OLD_ENC, encoding="utf-8") as f:
+                state = decrypt(json.load(f), password)
+        except Exception:
+            print("  tips: old encrypted record unreadable, starting a new record", flush=True)
+    if os.path.exists(PRIVATE) and password:
+        try:
+            with open(PRIVATE, encoding="utf-8") as f:
+                state["scorer_cache"] = decrypt(json.load(f), password)
+        except Exception:
+            print("  tips: private scorer cache unreadable, starting it again", flush=True)
+    return state
 
 
 def save_state(state, password):
-    digest = hashlib.sha256(json.dumps(state, sort_keys=True).encode("utf-8")).hexdigest()
+    """The public file, and the scorer cache encrypted apart. Written only when changed."""
+    changed = False
+    cache = state.pop("scorer_cache", {})
+    text = json.dumps(state, ensure_ascii=False, separators=(",", ":")) + "\n"
+    old = None
     if os.path.exists(OUT):
         with open(OUT, encoding="utf-8") as f:
-            old = json.load(f)
-        if old.get("hash") == digest:
-            return False
-    with open(OUT, "w", encoding="utf-8", newline="\n") as f:
-        json.dump({**advanced.encrypt(state, password), "hash": digest}, f)
-        f.write("\n")
-    return True
+            old = f.read()
+    if text != old:
+        with open(OUT, "w", encoding="utf-8", newline="\n") as f:
+            f.write(text)
+        changed = True
+    if os.path.exists(OLD_ENC):
+        os.remove(OLD_ENC)
+        changed = True
+    if password:
+        digest = hashlib.sha256(json.dumps(cache, sort_keys=True).encode("utf-8")).hexdigest()
+        old = {}
+        if os.path.exists(PRIVATE):
+            with open(PRIVATE, encoding="utf-8") as f:
+                old = json.load(f)
+        if old.get("hash") != digest:
+            with open(PRIVATE, "w", encoding="utf-8", newline="\n") as f:
+                json.dump({**advanced.encrypt(cache, password), "hash": digest}, f)
+                f.write("\n")
+            changed = True
+    return changed
 
 
 # ---------------------------------------------------------------- run
@@ -807,8 +834,7 @@ def main():
     a = ap.parse_args()
     password = os.environ.get("ADV_PASSWORD")
     if not password:
-        print("tips: ADV_PASSWORD not set, nothing written", flush=True)
-        return
+        print("tips: ADV_PASSWORD not set, running without goalscorers", flush=True)
     now = datetime.now(timezone.utc)
     today = now.astimezone(CPH).date()
     state = load_state(password)
@@ -833,7 +859,7 @@ def main():
     cache = state.get("scorer_cache", {})
     try:
         boot = _get_json(f"{DRAFT}bootstrap-static")
-        gw, chances = scorer_chances(password, boot)
+        gw, chances = scorer_chances(password, boot) if password else (None, [])
         if gw and chances:
             cache[str(gw)] = chances
     except Exception as e:

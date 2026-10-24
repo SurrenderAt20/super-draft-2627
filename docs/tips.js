@@ -1,7 +1,6 @@
 "use strict";
 // Betting: daily singles and accas for fun, a ladder challenge and Premier League goalscorers, with a
-// track record. data/tips.enc.json is encrypted with the same password as the Advanced tab (it holds
-// bookmaker prices); see scripts/tips.py.
+// track record, from data/tips.json (scripts/tips.py).
 
 let TIPS = null;
 const TIPS_STATE = { done: "singles", ladderLog: "live" };
@@ -61,47 +60,14 @@ function reasons(l) {
 
 async function viewBetting() {
   if (!TIPS) {
-    const saved = store.get();
-    if (saved) {
-      try { TIPS = await advDecrypt(saved, "data/tips.enc.json"); } catch { /* ask for the password below */ }
+    try {
+      TIPS = await getJSON("data/tips.json");
+    } catch (e) {
+      app.innerHTML = `<h1>Betting</h1><p class="lede">${e.message.includes("404") ? "Der er ingen tips endnu. Første kupon kommer kl. 11 eller 15." : `Tips kunne ikke hentes (${esc(e.message)}). Prøv at genindlæse.`}</p>`;
+      return;
     }
   }
-  if (!TIPS) return renderTipsLock();
   renderTips();
-}
-
-function renderTipsLock(error) {
-  app.innerHTML = `
-    <h1>Betting</h1>
-    <p class="lede">Dagens singler og kombi'er, stigen og målscorere, og hvordan det er gået. Samme kodeord som Avanceret.</p>
-    <form class="panel lock" id="bt-lock" autocomplete="on">
-      <svg class="lock-ic" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
-      <label for="bt-pw">Kodeord</label>
-      <div class="lock-row">
-        <input id="bt-pw" name="password" type="password" autocomplete="current-password" required>
-        <button type="submit">Lås op</button>
-      </div>
-      <p class="lock-err" aria-live="polite">${error || ""}</p>
-    </form>`;
-  const form = app.querySelector("#bt-lock");
-  const input = form.querySelector("input");
-  input.focus({ preventScroll: true });
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const btn = form.querySelector("button");
-    btn.disabled = true;
-    btn.textContent = "Låser op…";
-    try {
-      TIPS = await advDecrypt(input.value, "data/tips.enc.json");
-      store.set(input.value);
-      renderTips();
-      enhance(app);
-    } catch (err) {
-      console.error(err);
-      renderTipsLock(err.message === "wrong-password" ? "Forkert kodeord. Prøv igen."
-        : err.message.includes("404") ? "Der er ingen tips endnu." : "Data kunne ikke åbnes. Genindlæs siden.");
-    }
-  });
 }
 
 function renderTips() {
@@ -113,7 +79,7 @@ function renderTips() {
   const legsAcc = L.legs >= 30 ? { hit: L.leg_hit, exp: L.leg_expected, n: L.legs, live: true } : { hit: H.leg_hit, exp: H.leg_expected, n: H.legs };
 
   app.innerHTML = `
-    <div class="adv-head"><h1>Betting</h1><button class="ghost" id="bt-relock" type="button">Lås igen</button></div>
+    <h1>Betting</h1>
     <p class="lede">For sjov. Chancerne er Betfair Exchanges priser uden margin, den skarpeste vurdering vi har; vores egen målmodel slog den ikke. Odds er bet365's. Ingen tips har en fordel: bet365's margin gør, at en single i snit taber omkring 3–5%, og en kombi omkring 11–13%. Tryk på et spil for begrundelsen.</p>
 
     <div class="recs" style="margin-top:20px">
@@ -145,7 +111,6 @@ function renderTips() {
     </section>
     <p class="small muted" style="margin-top:20px">Opdateret ${dateOnly(TIPS.updated)}. Kun til underholdning. Spil ansvarligt; hjælp på stopspillet.dk.</p>`;
 
-  app.querySelector("#bt-relock").addEventListener("click", () => { TIPS = null; ADV = null; store.clear(); renderTipsLock(); });
   app.querySelectorAll("#bt-done button").forEach((b) => b.addEventListener("click", () => { TIPS_STATE.done = b.dataset.done; drawDone(); }));
   app.querySelectorAll("#bt-lad-log button").forEach((b) => b.addEventListener("click", () => { TIPS_STATE.ladderLog = b.dataset.log; drawLadderLog(); }));
   drawDone();
