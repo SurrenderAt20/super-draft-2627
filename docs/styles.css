@@ -908,3 +908,9 @@ td.blank { color: var(--dim); }
 .bt-steps { display: inline-block; width: 70px; height: 6px; border-radius: 3px; background: rgba(255,255,255,.06); vertical-align: middle; overflow: hidden; }
 .bt-steps i { display: block; height: 100%; background: linear-gradient(90deg, var(--violet), var(--emerald)); }
 .tip:has(.bt-why) { max-width: 340px; }
+.bt-acca-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.bt-odds { text-align: right; flex: none; }
+.bt-odds b { display: block; font-size: 34px; font-weight: 800; letter-spacing: -0.04em; line-height: 1;
+  background: linear-gradient(180deg, #fde68a, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.bt-odds span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.bt-odds small { display: block; font-size: 12px; color: var(--dim); margin-top: 4px; }
