@@ -607,7 +607,7 @@ def leg_result(leg, score):
 def settle_leg(leg, scores, today):
     if leg.get("res"):
         return
-    r = scores.get(leg["id"])
+    r = scores.get(leg["id"]) if leg["mkt"] != "manual" else None   # a free-text bet is settled on the page
     if leg["mkt"] == "scorer":
         if r:      # (goals, minutes) once the match is finished
             leg["res"] = "void" if r[1] == 0 else "won" if r[0] > 0 else "lost"
@@ -707,7 +707,7 @@ def ladder_walk(lad):
                 run["peak"] = max(run["peak"], stake)
             elif b.get("res") == "lost":
                 broken = True
-                run["broke"] = {"day": b["day"], "legs": [{k: l.get(k) for k in ("mkt", "sel", "home", "away", "score", "res")} for l in b["legs"]],
+                run["broke"] = {"day": b["day"], "legs": [{k: l.get(k) for k in ("mkt", "sel", "home", "away", "score", "res", "text", "player")} for l in b["legs"]],
                                 "price": b["price"]}
             elif b.get("res") != "void":
                 waiting, current = True, stake
@@ -739,14 +739,98 @@ def ladder_step(lad, matches, now, today, why):
     print(f"  tips: ladder attempt {run['id']}, {len(plan)} step(s) today", flush=True)
 
 
+def find_step(lad, ref):
+    """A ladder step by its reference on the page, "attempt:day:order"."""
+    try:
+        rid, day, order = ref.split(":")
+    except ValueError:
+        return None, None
+    for r in lad["runs"]:
+        if str(r["id"]) == rid:
+            for i, b in enumerate(r["bets"]):
+                if b["day"] == day and str(b["order"]) == order:
+                    return r, i
+    return None, None
+
+
+def _summary(b):
+    return {"legs": [{k: l.get(k) for k in ("mkt", "sel", "home", "away", "text", "price")} for l in b["legs"]],
+            "price": b["price"], "manual": bool(b.get("manual"))}
+
+
+def ladder_action(lad, a, matches, now, why):
+    """A change asked for on the page (through the workflow's inputs): swap a step for the next best one
+    that fits the chain, put in the user's own bet, or settle the user's own free-text bet. A swap keeps
+    what it replaced. Only steps not yet settled or kicked off can be swapped."""
+    run, i = find_step(lad, a.get("step", ""))
+    if run is None:
+        print(f"  tips: ladder step {a.get('step')!r} not found", flush=True)
+        return
+    b = run["bets"][i]
+    if a["action"] == "result":
+        if b.get("manual") and a.get("res") in ("won", "lost", "void"):
+            for l in b["legs"]:
+                if l["mkt"] == "manual":
+                    l["res"] = a["res"]
+            print(f"  tips: ladder step {a['step']} marked {a['res']}", flush=True)
+        return
+    if b.get("res") or any(l.get("ko") and datetime.fromisoformat(l["ko"]) <= now for l in b["legs"]):
+        print(f"  tips: ladder step {a['step']} is settled or has kicked off; not swapped", flush=True)
+        return
+    keep = {"day": b["day"], "order": b["order"], "of": b["of"], "replaced": b.get("replaced", []) + [_summary(b)]}
+
+    if a["action"] == "replace":
+        same_day = lambda j: 0 <= j < len(run["bets"]) and run["bets"][j]["day"] == b["day"]
+        prev = run["bets"][i - 1] if same_day(i - 1) and all(l.get("ko") for l in run["bets"][i - 1]["legs"]) else None
+        nxt = run["bets"][i + 1] if same_day(i + 1) and all(l.get("ko") for l in run["bets"][i + 1]["legs"]) else None
+        lo = max(now + timedelta(minutes=10), _end(prev) + LADDER_GAP if prev else now)
+        day_end = datetime.combine(date.fromisoformat(b["day"]) + timedelta(days=1), datetime.min.time(), CPH)
+        used = {leg_key(l) for x in run["bets"] for l in x["legs"]} | {f"{l['home']}|{l['mkt']}|{l['sel']}" for r in keep["replaced"] for l in r["legs"]}
+        ms = [m for m in matches if m["ko"] and lo <= datetime.fromisoformat(m["ko"]) < day_end]
+        cands = [s for s in ladder_steps(ms) if _start(s) >= lo and (_end(s) + LADDER_GAP <= _start(nxt) if nxt else True)
+                 and not any(leg_key(l) in used or f"{l['home']}|{l['mkt']}|{l['sel']}" in used for l in s["legs"])]
+        if not cands:
+            b["note"] = f"Ingen anden bet passer ind ({now.astimezone(CPH):%d/%m %H:%M})."
+            print(f"  tips: no other bet fits ladder step {a['step']}", flush=True)
+            return
+        s = max(cands, key=lambda s: (s["ev"], s["p"]))
+        run["bets"][i] = {**s, "legs": [why(l) for l in s["legs"]], **keep}
+        print(f"  tips: ladder step {a['step']} swapped", flush=True)
+        return
+
+    if a["action"] == "manual":
+        try:
+            odds = round(float(str(a.get("odds", "")).replace(",", ".")), 2)
+        except ValueError:
+            odds = 0
+        if not 1.01 <= odds <= 1000:
+            print(f"  tips: odds {a.get('odds')!r} not accepted", flush=True)
+            return
+        m = next((m for m in matches if match_id(m) == a.get("match")), None)
+        base = {"p": None, "price": odds, "est": False, "ev": None, "manual": True, "why": ["Dit eget valg."], "conf": None}
+        if m and (a.get("mkt"), a.get("sel")) in WINS:
+            leg = {"id": match_id(m), "div": m["div"], "date": m["date"], "ko": m["ko"], "home": m["home"], "away": m["away"],
+                   "mkt": a["mkt"], "sel": a["sel"], **base}
+        elif a.get("text", "").strip():
+            leg = {"id": f"manual|{now.isoformat(timespec='seconds')}", "div": "", "date": b["day"], "ko": None, "home": "", "away": "",
+                   "mkt": "manual", "sel": "", "text": a["text"].strip()[:120], **base}
+        else:
+            print("  tips: own bet needs a match and market, or a text", flush=True)
+            return
+        run["bets"][i] = {"legs": [leg], "price": odds, "p": None, "ev": None, "est": False, "manual": True, **keep}
+        print(f"  tips: ladder step {a['step']} set to own bet at {odds}", flush=True)
+
+
 def ladder_summary(lad):
     runs = lad["runs"]
     done = [r for r in runs if r["status"] == "broken"]
     bets = [b for r in runs for b in r["bets"] if b.get("res") in ("won", "lost")]
+    ours = [b for b in bets if b.get("p") is not None]   # the user's own bets have no chance of ours
     best = max(runs, key=lambda r: (r["steps"], r["peak"]), default=None)
     return {"runs": len(runs), "broken": len(done), "bets": len(bets),
             "hit": round(sum(b["res"] == "won" for b in bets) / len(bets), 4) if bets else None,
-            "expected": round(sum(b["p"] for b in bets) / len(bets), 4) if bets else None,
+            "expected": round(sum(b["p"] for b in ours) / len(ours), 4) if ours else None,
+            "manual": sum(1 for r in runs for b in r["bets"] if b.get("manual")),
             "doubles": sum(len(b["legs"]) > 1 for r in runs for b in r["bets"]),
             "avg_steps": round(sum(r["steps"] for r in done) / len(done), 2) if done else None,
             "best": {"steps": best["steps"], "peak": best["peak"], "start": best["start"], "end": best["end"]} if best else None,
@@ -1067,10 +1151,13 @@ def main():
             print(f"  tips: no card ({len(soon)} matches with prices in the next 24 hours)", flush=True)
 
     if slot is not None:
-        n_before = sum(len(r["bets"]) for r in lad["runs"])
         ladder_step(lad, upcoming, now, today, lambda l: {**why(l), "odds_as_of": modified})
-        if sum(len(r["bets"]) for r in lad["runs"]) != n_before:
-            ladder_walk(lad)
+
+    # a change asked for on the page arrives as the workflow's inputs
+    action = {k: os.environ.get(f"TIPS_{k.upper()}", "") for k in ("action", "step", "match", "mkt", "sel", "odds", "text", "res")}
+    if action["action"] in ("replace", "manual", "result"):
+        ladder_action(lad, action, upcoming, now, lambda l: {**why(l), "odds_as_of": modified})
+    ladder_walk(lad)
 
     # the most likely scorers of the soonest gameweek with matches to come, with reasons
     gw_list = None
@@ -1087,6 +1174,10 @@ def main():
     state = {"cards": cards, "live": summarise(cards), "history": hist, "ladder": lad, "ladder_live": ladder_summary(lad),
              "scorers": gw_list, "scorer_test": scorer_test, "scorer_cache": cache, "updated": now.isoformat(timespec="minutes"),
              "started": min((c["day"] for c in cards), default=today.isoformat()),
+             # matches the page offers for an own ladder bet: the next two days
+             "fixtures": [{"id": match_id(m), "div": m["div"], "home": m["home"], "away": m["away"], "ko": m["ko"]}
+                          for m in sorted(upcoming, key=lambda m: m["ko"] or "")
+                          if m["ko"] and now < datetime.fromisoformat(m["ko"]) < now + timedelta(hours=48)],
              "rules": {"ladder_start": LADDER_START, "ladder_odds": LADDER_ODDS, "ladder_max": LADDER_MAX, "slots": SLOTS}}
     print(f"  tips: {'written' if save_state(state, password) else 'unchanged'}", flush=True)
 

@@ -6,7 +6,16 @@ on:
     # decides what is due: settle every run, publish the 11:00 card once it is past 11 and the 15:00
     # update once it is past 15 (Copenhagen). The league update runs it too.
     - cron: "17 * * * *"
-  workflow_dispatch:          # "Run workflow" button
+  workflow_dispatch:          # "Run workflow" button, and the ladder buttons on the Betting page
+    inputs:
+      action: { description: "replace, manual or result (empty: a normal run)", required: false, default: "" }
+      step: { description: "ladder step, attempt:day:order", required: false, default: "" }
+      match: { description: "own bet: match id", required: false, default: "" }
+      mkt: { description: "own bet: market", required: false, default: "" }
+      sel: { description: "own bet: selection", required: false, default: "" }
+      odds: { description: "own bet: odds", required: false, default: "" }
+      text: { description: "own bet: free text when the match is not in the list", required: false, default: "" }
+      res: { description: "result of an own free-text bet: won, lost or void", required: false, default: "" }
 
 concurrency:
   group: update-data          # shared with the league update, so the two never push at once
@@ -26,8 +35,17 @@ jobs:
       - name: Install libraries
         run: pip install --quiet cryptography==48.0.0 numpy==2.3.2
       - name: Build tips
+        # inputs reach the script as environment variables only, never inside the shell command
         env:
           ADV_PASSWORD: ${{ secrets.ADV_PASSWORD }}
+          TIPS_ACTION: ${{ inputs.action }}
+          TIPS_STEP: ${{ inputs.step }}
+          TIPS_MATCH: ${{ inputs.match }}
+          TIPS_MKT: ${{ inputs.mkt }}
+          TIPS_SEL: ${{ inputs.sel }}
+          TIPS_ODDS: ${{ inputs.odds }}
+          TIPS_TEXT: ${{ inputs.text }}
+          TIPS_RES: ${{ inputs.res }}
         run: python scripts/tips.py
       - name: Commit changes
         run: |
@@ -38,7 +56,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes."
           else
-            git commit -m "Update betting tips"
+            git commit -m "Update betting tips${{ inputs.action && ' (ladder change)' || '' }}"
             git pull --rebase
             git push
           fi

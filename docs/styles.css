@@ -614,13 +614,13 @@ section.sec { scroll-margin-top: calc(var(--top, 64px) + 60px); }
 .lock-ic { width: 34px; height: 34px; color: var(--violet); filter: drop-shadow(0 0 12px rgba(167,139,250,.6)); }
 .lock label { font-weight: 600; margin-top: 6px; }
 .lock-row { display: flex; gap: 8px; }
-.lock input, .adv-filters input, .adv-filters select {
+.lock input, .adv-filters input, .adv-filters select, .bt-form input, .bt-form select, #bt-key input {
   font: inherit; color: var(--text); background: rgba(255,255,255,.04); border: 1px solid var(--border-2);
   border-radius: 10px; padding: 9px 12px; min-width: 0;
 }
 .lock input { flex: 1; }
-.lock input:focus, .adv-filters input:focus, .adv-filters select:focus { outline: 2px solid var(--violet); outline-offset: 1px; }
-.lock button[type="submit"] {
+.lock input:focus, .adv-filters input:focus, .adv-filters select:focus, .bt-form input:focus, .bt-form select:focus, #bt-key input:focus { outline: 2px solid var(--violet); outline-offset: 1px; }
+.lock button[type="submit"], .bt-form button[type="submit"], #bt-key button[type="submit"] {
   padding: 9px 18px; border-radius: 10px; border: 0; cursor: pointer; font-weight: 600; color: #fff;
   background: linear-gradient(135deg, var(--violet-deep), #5b21b6); box-shadow: 0 8px 24px -10px rgba(124,58,237,.9);
 }
@@ -914,3 +914,12 @@ td.blank { color: var(--dim); }
   background: linear-gradient(180deg, #fde68a, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .bt-odds span { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
 .bt-odds small { display: block; font-size: 12px; color: var(--dim); margin-top: 4px; }
+.bt-acts { white-space: nowrap; text-align: right; }
+.bt-acts .ghost { padding: 4px 9px; font-size: 12px; margin-left: 4px; }
+.bt-form { display: grid; gap: 10px; }
+.bt-form label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.bt-form select, .bt-form input { width: 100%; box-sizing: border-box; }
+.bt-form select option, .bt-form select optgroup { background: #11141b; color: var(--text); }
+.bt-steps-list { padding-left: 18px; margin: 8px 0 12px; }
+.bt-steps-list li { margin: 4px 0; }
+.bt-form label[hidden] { display: none; }
