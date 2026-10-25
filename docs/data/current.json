@@ -1433,7 +1433,7 @@
       "gws": [],
       "now": {
        "status": "d",
-       "news": "Groin injury - 75% chance of playing",
+       "news": "Unspecified injury - 75% chance of playing",
        "chance": 75
       }
      },
@@ -4719,5 +4719,5 @@
    "bench_shame": 1
   }
  },
- "updated": "2026-10-25T04:43+00:00"
+ "updated": "2026-10-25T11:32+00:00"
 }
