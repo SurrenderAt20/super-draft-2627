@@ -2,10 +2,11 @@ name: Update betting tips
 
 on:
   schedule:
-    # 11:00 and 15:00 in Copenhagen. Cron runs in UTC and Denmark switches between UTC+1 and UTC+2,
-    # so both UTC hours are scheduled and the job skips the pair that isn't 11 or 15 locally.
-    - cron: "7 9,10,13,14 * * *"
-  workflow_dispatch:          # "Run workflow" button: runs whatever the time
+    # Every hour. GitHub starts scheduled runs late (often hours) or skips them, so the script itself
+    # decides what is due: settle every run, publish the 11:00 card once it is past 11 and the 15:00
+    # update once it is past 15 (Copenhagen). The league update runs it too.
+    - cron: "17 * * * *"
+  workflow_dispatch:          # "Run workflow" button
 
 concurrency:
   group: update-data          # shared with the league update, so the two never push at once
@@ -18,31 +19,17 @@ jobs:
   tips:
     runs-on: ubuntu-latest
     steps:
-      - name: Check the local time
-        id: when
-        run: |
-          h=$(TZ=Europe/Copenhagen date +%H)
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$h" = "11" ] || [ "$h" = "15" ]; then
-            echo "run=yes" >> "$GITHUB_OUTPUT"
-          else
-            echo "Copenhagen hour is $h: not a tips run."
-          fi
       - uses: actions/checkout@v4
-        if: steps.when.outputs.run == 'yes'
       - uses: actions/setup-python@v5
-        if: steps.when.outputs.run == 'yes'
         with:
           python-version: "3.12"
       - name: Install libraries
-        if: steps.when.outputs.run == 'yes'
         run: pip install --quiet cryptography==48.0.0 numpy==2.3.2
       - name: Build tips
-        if: steps.when.outputs.run == 'yes'
         env:
           ADV_PASSWORD: ${{ secrets.ADV_PASSWORD }}
         run: python scripts/tips.py
       - name: Commit changes
-        if: steps.when.outputs.run == 'yes'
         run: |
           git config user.name "league-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

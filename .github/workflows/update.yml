@@ -27,6 +27,13 @@ jobs:
           ADV_PASSWORD: ${{ secrets.ADV_PASSWORD }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: python scripts/build_data.py
+      # betting tips catch up here too, since scheduled runs of their own workflow are unreliable;
+      # a failure there must not stop the league data from being committed
+      - name: Build tips
+        continue-on-error: true
+        env:
+          ADV_PASSWORD: ${{ secrets.ADV_PASSWORD }}
+        run: python scripts/tips.py
       - name: Commit changes
         run: |
           git config user.name "league-bot"

@@ -962,14 +962,19 @@ def load_state(password):
 
 
 def save_state(state, password):
-    """The public file, and the scorer cache encrypted apart. Written only when changed."""
+    """The public file, and the scorer cache encrypted apart. Written only when changed: an hourly run
+    that settles nothing keeps the file, and its time stamp, as they were."""
     changed = False
     cache = state.pop("scorer_cache", {})
-    text = json.dumps(state, ensure_ascii=False, separators=(",", ":")) + "\n"
     old = None
     if os.path.exists(OUT):
         with open(OUT, encoding="utf-8") as f:
             old = f.read()
+        prev = json.loads(old)
+        now_ = json.loads(json.dumps(state))   # tuples as lists, like the file
+        if {k: v for k, v in prev.items() if k != "updated"} == {k: v for k, v in now_.items() if k != "updated"}:
+            state["updated"] = prev.get("updated", state["updated"])
+    text = json.dumps(state, ensure_ascii=False, separators=(",", ":")) + "\n"
     if text != old:
         with open(OUT, "w", encoding="utf-8", newline="\n") as f:
             f.write(text)
@@ -1003,7 +1008,9 @@ def main():
     now = datetime.now(timezone.utc)
     local = now.astimezone(CPH)
     today = local.date()
-    slot = max((h for h in SLOTS if local.hour >= h), default=SLOTS[0])
+    # the latest publishing hour that has passed today (None before 11:00: settle only). GitHub starts
+    # scheduled runs late or not at all, so every run catches up on whatever is due.
+    slot = max((h for h in SLOTS if local.hour >= h), default=None)
     state = load_state(password)
     cards = state["cards"]
     lad = state.get("ladder") or {"runs": []}
@@ -1044,7 +1051,7 @@ def main():
     # this run's card: 11:00 the day's first, 15:00 an update. Matches in the next 24 hours, leaving out
     # bets already tipped today and matches about to start.
     card_id = f"{today.isoformat()}-{slot}"
-    if not any(c["id"] == card_id for c in cards):
+    if slot is not None and not any(c["id"] == card_id for c in cards):
         skip = {leg_key(l) for c in cards if c["id"].startswith(today.isoformat()) for l in c["singles"] + [x for a in c["accas"] for x in a["legs"]]}
         window = lambda ko: now + timedelta(minutes=15) < datetime.fromisoformat(ko) <= now + WINDOW
         soon = [m for m in upcoming if m["ko"] and window(m["ko"])]
@@ -1059,10 +1066,11 @@ def main():
         else:
             print(f"  tips: no card ({len(soon)} matches with prices in the next 24 hours)", flush=True)
 
-    n_before = sum(len(r["bets"]) for r in lad["runs"])
-    ladder_step(lad, upcoming, now, today, lambda l: {**why(l), "odds_as_of": modified})
-    if sum(len(r["bets"]) for r in lad["runs"]) != n_before:
-        ladder_walk(lad)
+    if slot is not None:
+        n_before = sum(len(r["bets"]) for r in lad["runs"])
+        ladder_step(lad, upcoming, now, today, lambda l: {**why(l), "odds_as_of": modified})
+        if sum(len(r["bets"]) for r in lad["runs"]) != n_before:
+            ladder_walk(lad)
 
     # the most likely scorers of the soonest gameweek with matches to come, with reasons
     gw_list = None
