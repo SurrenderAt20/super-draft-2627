@@ -8,7 +8,7 @@ on:
     - cron: "17 * * * *"
   workflow_dispatch:          # "Run workflow" button, and the ladder buttons on the Betting page
     inputs:
-      action: { description: "replace, manual or result (empty: a normal run)", required: false, default: "" }
+      action: { description: "replace, manual, result, or publish for an extra card (empty: a normal run)", required: false, default: "" }
       step: { description: "ladder step, attempt:day:order", required: false, default: "" }
       match: { description: "own bet: match id", required: false, default: "" }
       mkt: { description: "own bet: market", required: false, default: "" }

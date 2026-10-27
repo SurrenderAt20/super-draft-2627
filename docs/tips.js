@@ -55,6 +55,7 @@ function league(l) {
 }
 const kickoff = (l) => (l.ko ? new Intl.DateTimeFormat("da-DK", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Copenhagen" }).format(new Date(l.ko)) : l.date);
 const day = (iso) => new Intl.DateTimeFormat("da-DK", { weekday: "long", day: "numeric", month: "long", timeZone: "Europe/Copenhagen" }).format(new Date(iso));
+const clock = (iso) => new Intl.DateTimeFormat("da-DK", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Copenhagen" }).format(new Date(iso));
 const shortDay = (iso) => new Intl.DateTimeFormat("da-DK", { day: "numeric", month: "short" }).format(new Date(iso));
 
 function status(x) {
@@ -112,8 +113,8 @@ function renderTips() {
     ${ladderHtml()}
 
     ${todays.map((c) => `<section class="sec">
-      <div class="sec-head"><div><h2>${c.slot === 15 ? "Opdatering kl. 15" : "Kupon kl. 11"}, ${day(c.published)}</h2>
-        <p class="lede">Kampe de næste 24 timer${c.slot === 15 ? ", uden spil der allerede er givet i dag" : ""}. Offentliggjort ${dateOnly(c.published)}, odds hentet ${c.odds_as_of ? dateOnly(c.odds_as_of) : "ukendt"}; bet365 kan have flyttet dem. Ændres aldrig, når den er lagt ud.</p></div></div>
+      <div class="sec-head"><div><h2>${c.extra ? `Ekstra kupon kl. ${clock(c.published)}` : c.slot === 15 ? "Opdatering kl. 15" : "Kupon kl. 11"}, ${day(c.published)}</h2>
+        <p class="lede">Kampe de næste 24 timer${c.slot !== 11 ? ", uden spil og kampe der allerede er givet i dag" : ""}. Offentliggjort ${dateOnly(c.published)}, odds hentet ${c.odds_as_of ? dateOnly(c.odds_as_of) : "ukendt"}; bet365 kan have flyttet dem. Ændres aldrig, når den er lagt ud.</p></div></div>
       ${cardHtml(c)}
     </section>`).join("") || `<section class="sec"><h2>Ingen kupon endnu</h2><p class="lede">Første kupon kommer kl. 11 eller 15.</p></section>`}
 

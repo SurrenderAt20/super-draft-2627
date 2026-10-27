@@ -1338,8 +1338,10 @@ def main():
 
     # this run's card: 11:00 the day's first, 15:00 an update. Matches in the next 24 hours, leaving out
     # bets already tipped today and matches about to start.
-    card_id = f"{today.isoformat()}-{slot}"
-    if slot is not None and not any(c["id"] == card_id for c in cards):
+    # an extra card asked for on the page or by hand ("publish"): the same rules, whatever the time
+    extra = os.environ.get("TIPS_ACTION") == "publish"
+    card_id = f"{today.isoformat()}-e{local:%H%M}" if extra else f"{today.isoformat()}-{slot}"
+    if (extra or slot is not None) and not any(c["id"] == card_id for c in cards):
         skip = {leg_key(l) for c in cards if c["id"].startswith(today.isoformat()) for l in c["singles"] + [x for a in c["accas"] for x in a["legs"]]}
         window = lambda ko: now + timedelta(minutes=15) < datetime.fromisoformat(ko) <= now + WINDOW
         soon = [m for m in upcoming if m["ko"] and window(m["ko"])]
@@ -1358,7 +1360,8 @@ def main():
         if singles or accas or watch:
             singles = [why(l) for l in singles]
             accas = [{**x, "legs": [why(l) for l in x["legs"]]} for x in accas]
-            cards.append({"id": card_id, "day": today.isoformat(), "slot": slot, "published": now.isoformat(timespec="minutes"),
+            cards.append({"id": card_id, "day": today.isoformat(), "slot": None if extra else slot, "extra": extra,
+                          "published": now.isoformat(timespec="minutes"),
                           "odds_as_of": modified, "matches": len(soon), "singles": singles, "accas": accas, "watch": watch})
             print(f"  tips: card {card_id} with {len(singles)} singles, {len(accas)} accas and {len(watch)} matches to watch "
                   f"from {len(soon)} matches ({len(news)} news items)", flush=True)
