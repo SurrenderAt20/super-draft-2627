@@ -15,7 +15,10 @@ const KIND = {
   safe: ["Sikker kombi", "Fire sandsynlige ben fra hver sin kamp, blandede markeder."],
   mix: ["Mix-kombi", "Ben omkring 55–78% fra forskellige markeder, samlet odds omkring 4."],
   long: ["Langskud-kombi", "Ben omkring 40–65%, samlet odds 8 eller mere."],
+  watch: ["Hold øje", "Kampe med en historie: nyheder, fravær, tabel, form mod marked, målfest, markedsbevægelser."],
 };
+const STORY = { skade: "Skade", udelukket: "Udelukket", comeback: "Comeback", træner: "Træner", krise: "Krise", fravær: "Fravær",
+  tabel: "Tabel", form: "Form", mål: "Mål", marked: "Marked" };
 const SINGLE_KINDS = ["banker", "goals", "sgm", "value", "edge", "scorer"];
 const pct = (x, d = 0) => `${num(x * 100, d)}%`;
 const odds = (x) => (x ? num(x, 2) : "–");
@@ -263,6 +266,19 @@ function legRow(l) {
 }
 const LEG_HEAD = `<thead><tr><th class="l">Spil</th><th>Odds</th><th>Chance</th><th class="opt">Forventet</th><th>Status</th></tr></thead>`;
 
+function watchHtml(c) {
+  if (!c.watch || !c.watch.length) return "";
+  return `<div class="panel bt-block"><h3>Kampe at holde øje med</h3>
+    <p class="small muted">Kampe med en historie, mest interessante først. Nyheder er baggrund: markedet når som regel at regne dem ind, så forslaget følger de målbare tegn (form mod marked, mål, markedsbevægelser, fravær) og ellers kampens mest sandsynlige spil til mindst odds 1,30. Logges som de andre tips, så vi kan se, om historierne giver noget.</p>
+    <div class="bt-watch">${c.watch.map((w) => `<div class="bt-watch-item">
+      <div class="bt-watch-head"><b>${esc(w.home)} – ${esc(w.away)}</b><span class="bt-sub">${esc(league(w))} · ${kickoff(w)}</span></div>
+      <ul class="bt-stories">${w.stories.map((s) => `<li><span class="tag" style="margin-left:0">${STORY[s.type] || esc(s.type)}</span> ${s.link
+        ? `<a class="link" href="${esc(s.link)}" target="_blank" rel="noopener">${esc(s.text)}</a>` : esc(s.text)}</li>`).join("")}</ul>
+      <div class="bt-watch-bet"><span>Forslag: <b data-tip="${esc(reasons(w.leg))}">${esc(pick(w.leg))}</b> ${price(w.leg)} · chance ${pct(w.leg.p)}${w.leg.conf ? ` (ramte ${pct(w.leg.conf.obs)})` : ""}</span>
+        <span>${w.leg.score ? `<span class="muted">${esc(w.leg.score)}</span> ` : ""}${status(w.leg)}</span></div>
+    </div>`).join("")}</div></div>`;
+}
+
 function cardHtml(c) {
   const singles = SINGLE_KINDS.map((k) => {
     const ls = c.singles.filter((l) => l.kind === k);
@@ -274,7 +290,7 @@ function cardHtml(c) {
       <div class="bt-acca-head"><div><h3>${KIND[a.kind][0]} ${status(a)}</h3><p class="small muted">${KIND[a.kind][1]}</p></div>
         <div class="bt-odds"><b>${a.est ? "≈" : ""}${odds(a.price)}</b><span>samlet odds</span><small>100 kr. giver ${kr(100 * a.price)} · chance ${pct(a.p, 1)}</small></div></div>
       <div class="scroll"><table class="advt">${LEG_HEAD}<tbody>${a.legs.map(legRow).join("")}</tbody></table></div></div>`).join("");
-  return `<div class="bt-card">${singles}${accas}</div>`;
+  return `<div class="bt-card">${watchHtml(c)}${singles}${accas}</div>`;
 }
 
 // ---------------------------------------------------------------- ladder
@@ -345,7 +361,7 @@ function drawDone() {
   app.querySelectorAll("#bt-done button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.done === TIPS_STATE.done));
   const cards = [...TIPS.cards].reverse();
   if (TIPS_STATE.done === "singles") {
-    const all = cards.flatMap((c) => c.singles);
+    const all = cards.flatMap((c) => [...c.singles, ...(c.watch || []).map((w) => w.leg)]);
     const col = (res, title) => {
       const ls = all.filter((l) => l.res === res);
       return `<div class="panel bt-bracket ${res}"><h3>${title} <span class="muted">${ls.length}</span></h3>
@@ -379,6 +395,7 @@ function accuracyHtml(L, H) {
       const T = TIPS.scorer_test;
       return T ? `<tr><td class="l">${KIND[k][0]}</td><td>${live(l)}</td><td class="muted">${pct(T.top3.hit, 1)} / ${pct(T.top3.expected, 1)} · ${T.top3.n}</td><td class="muted">–</td></tr>` : "";
     }
+    if (k === "watch") return `<tr><td class="l">${KIND[k][0]}</td><td>${live(l)}</td><td class="muted">ny, ingen test</td><td class="muted">–</td></tr>`;
     if (!h || !h.n) return "";
     return `<tr><td class="l">${KIND[k][0]}</td><td>${live(l)}</td><td class="muted">${pct(h.hit, 1)} / ${pct(h.expected, 1)} · ${h.n.toLocaleString("da-DK")}</td>
       <td class="muted">${roiTxt(h.roi)} <span class="small">(forventet ${roiTxt(h.exp_roi)})</span></td></tr>`;
@@ -389,7 +406,7 @@ function accuracyHtml(L, H) {
   return `
     <div class="panel"><div class="scroll"><table class="advt">
       <thead><tr><th class="l">Type</th><th>Live: ramt / lovet · antal</th><th>Baggrund: ramt / lovet · antal</th><th>Baggrund: afkast</th></tr></thead>
-      <tbody>${["banker", "goals", "sgm", "value", "edge", "safe", "mix", "long", "scorer"].map(row).join("")}</tbody></table></div></div>
+      <tbody>${["watch", "banker", "goals", "sgm", "value", "edge", "safe", "mix", "long", "scorer"].map(row).join("")}</tbody></table></div></div>
     <p class="small muted" style="margin-top:10px">Afkast er per enhed ved bet365's odds; for skønnede odds er det et skøn. "Forventet" er det, chancerne siger, man taber i snit; forskellen er held.${E && E.n ? ` Value-spillene lovede ${roiTxt(E.exp_roi)}, men gav ${roiTxt(E.roi)}: når bet365 ligger over den rigtige chance, er det oftest bet365, der har ret.` : ""}${TIPS.scorer_test ? ` Målscorere er testet på runde ${TIPS.scorer_test.rounds[0]}–${TIPS.scorer_test.rounds[1]} af 2025/26 (modellens tre bedste bud per runde).` : ""}</p>
     <div class="cols2" style="margin-top:16px">
       <div class="panel"><h3 style="margin:0 0 4px">Holder chancerne? Live</h3><p class="small muted">Alle afgjorte ben siden ${shortDay(TIPS.started)}, grupperet efter chance. <span class="key-dot p"></span>lovet <span class="key-dot o"></span>ramt.</p>

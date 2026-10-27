@@ -923,3 +923,8 @@ td.blank { color: var(--dim); }
 .bt-steps-list { padding-left: 18px; margin: 8px 0 12px; }
 .bt-steps-list li { margin: 4px 0; }
 .bt-form label[hidden] { display: none; }
+.bt-watch { display: grid; gap: 10px; margin-top: 10px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.bt-watch-item { padding: 12px 14px; border-radius: var(--r-md); border: 1px solid var(--border); background: rgba(255,255,255,.025); display: grid; gap: 8px; }
+.bt-stories { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13.5px; color: var(--muted); }
+.bt-stories .link { color: var(--text); }
+.bt-watch-bet { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid var(--border); font-size: 14px; }

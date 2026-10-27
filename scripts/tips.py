@@ -526,6 +526,196 @@ def ladder_plan(matches, chain):
 
 # ---------------------------------------------------------------- reasons and confidence
 
+# ---------------------------------------------------------------- watchlist: matches with a story
+
+ESPN_NEWS = "https://site.api.espn.com/apis/site/v2/sports/soccer/{slug}/news?limit=50"
+NEWS_AGE = timedelta(hours=72)
+WATCH_N, WATCH_MIN = 6, 2.0
+# headline words -> kind of news, checked in this order; transfer gossip is left out
+NEWS_KINDS = [
+    ("udelukket", ("suspend", " ban ", "banned", "red card")),
+    ("skade", ("injur", "hamstring", "knee", "ankle", "ruled out", "sidelined", "doubt", "fitness", "fit to", "surgery", "setback", "out for")),
+    ("comeback", ("return", "back in training", "back from", "available again")),
+    ("træner", ("sack", "fired", "interim", "appoint", "new manager", "new coach", "replace", "job ")),
+    ("krise", ("crisis", "pressure", "blast", "slump", "turmoil", " row", "unrest")),
+]
+NEWS_SKIP = ("transfer", "rumor", "rumour", "eye ", "target", "linked")
+
+
+def fetch_news(divs, now):
+    """ESPN headlines of the last three days per league, with the teams each is tagged with."""
+    out = []
+    for div in divs:
+        if div not in ESPN_SLUG:
+            continue
+        try:
+            data = _get_json(ESPN_NEWS.format(slug=ESPN_SLUG[div]))
+        except Exception as e:
+            print(f"  tips: ESPN news {div} unavailable ({e})", flush=True)
+            continue
+        for a in data.get("articles", []):
+            try:
+                t = datetime.fromisoformat(a["published"].replace("Z", "+00:00"))
+            except (KeyError, ValueError):
+                continue
+            head = a.get("headline") or ""
+            low = f" {head.lower()} "
+            if now - t > NEWS_AGE or any(w in low for w in NEWS_SKIP):
+                continue
+            kind = next((k for k, words in NEWS_KINDS if any(w in low for w in words)), None)
+            if not kind:
+                continue
+            out.append({"div": div, "kind": kind, "headline": head, "link": (a.get("links") or {}).get("web", {}).get("href"),
+                        "published": t.isoformat(timespec="minutes"),
+                        "teams": [c["description"] for c in a.get("categories", []) if c.get("type") == "team" and c.get("description")]})
+    return out
+
+
+def fpl_absences(boot):
+    """Premier League players who matter and may miss the next match: injured, suspended or at most 50%
+    to play. "Matter": in the top four of his team on points this season, or drafted in the top 80."""
+    if not boot:
+        return {}
+    teams = {t["id"]: t["name"] for t in boot["teams"]}
+    by_team = {}
+    for e in boot["elements"]:
+        by_team.setdefault(e["team"], []).append(e)
+    out = {}
+    for tid, es in by_team.items():
+        top = sorted(es, key=lambda e: -(e.get("total_points") or 0))[:4]
+        for e in es:
+            chance = e.get("chance_of_playing_next_round")
+            out_now = e["status"] in ("i", "s") or (e["status"] == "d" and chance is not None and chance <= 50)
+            if out_now and (e in top or (e.get("draft_rank") or 999) <= 80):
+                out.setdefault(teams[tid], []).append(f"{e['web_name']} ({e.get('news') or 'ude'})")
+    return out
+
+
+def standings(rows):
+    t = {}
+    for m in rows:
+        hg, ag = m["score"]
+        for team, gf, ga in ((m["home"], hg, ag), (m["away"], ag, hg)):
+            s = t.setdefault(team, {"pts": 0, "gd": 0, "gp": 0})
+            s["pts"] += 3 if gf > ga else 1 if gf == ga else 0
+            s["gd"] += gf - ga
+            s["gp"] += 1
+    for pos, team in enumerate(sorted(t, key=lambda x: (-t[x]["pts"], -t[x]["gd"])), 1):
+        t[team]["pos"] = pos
+    return t
+
+
+def _side(team, home, away):
+    sh, sa = similar(team, home), similar(team, away)
+    if max(sh, sa) < 0.85:
+        return None
+    return "H" if sh >= sa else "A"
+
+
+def watch_match(m, rows, news, absences, seen):
+    """The stories around one match, a score for how notable it is, and which way they lean:
+    news (ESPN), missing players (FPL, Premier League), a top or bottom clash, form against the market's
+    view, a goals tendency, and the exchange moving since we first saw the match."""
+    ls = legs(m)
+    if not ls:
+        return None
+    by = {(l["mkt"], l["sel"]): l for l in ls}
+    name = {"H": m["home"], "A": m["away"]}
+    stories, lean, score = [], [], 0.0
+
+    for side in "HA":
+        kinds = {}
+        for a in news:
+            if a["div"] == m["div"] and any(_side(t, m["home"], m["away"]) == side for t in a["teams"]) and a["kind"] not in kinds:
+                kinds[a["kind"]] = a
+        # news is context: a headline can't tell which way it moves the match, so it doesn't pick the bet
+        for kind, a in kinds.items():
+            stories.append({"type": kind, "side": side, "text": f"{name[side]}: “{a['headline']}”", "link": a["link"]})
+            score += 2 if len(kinds) < 3 else 0.5
+    if m["div"] == "E0":
+        for team, players in absences.items():
+            side = _side(team, m["home"], m["away"])
+            if side:
+                stories.append({"type": "fravær", "side": side, "text": f"{name[side]} mangler måske: {', '.join(players[:3])}."})
+                score += 2
+                lean.append(("dc", "A" if side == "H" else "H"))
+
+    played = [r for r in rows if r["date"] < m["date"]]
+    if played:
+        tab = standings(played)
+        th, ta = tab.get(m["home"]), tab.get(m["away"])
+        n = len(tab)
+        if th and ta and min(th["gp"], ta["gp"]) >= 5:
+            if th["pos"] <= 4 and ta["pos"] <= 4:
+                stories.append({"type": "tabel", "text": f"Topopgør: nr. {th['pos']} mod nr. {ta['pos']}."})
+                score += 1.5
+            elif th["pos"] > n - 4 and ta["pos"] > n - 4:
+                stories.append({"type": "tabel", "text": f"Bundopgør: nr. {th['pos']} mod nr. {ta['pos']} af {n}."})
+                score += 1.5
+        p_win = {"H": by.get(("1x2", "H"), {}).get("p"), "A": by.get(("1x2", "A"), {}).get("p")}
+        forms = {s: form_of(played, name[s], m["date"]) for s in "HA"}
+        for side in "HA":
+            f5 = forms[side][-5:]
+            if len(f5) < 5 or p_win[side] is None:
+                continue
+            pts = sum(3 if x["r"] == "V" else 1 if x["r"] == "U" else 0 for x in f5)
+            seq = " ".join(x["r"] for x in f5)
+            if pts >= 10 and p_win[side] <= 0.35:
+                stories.append({"type": "form", "side": side, "text": f"{name[side]} er i stærk form ({seq}), men markedet giver kun {round(p_win[side] * 100)}% for sejr."})
+                score += 2
+                lean.insert(0, ("dc", side))
+            elif pts <= 2 and p_win[side] >= 0.55:
+                other = "A" if side == "H" else "H"
+                stories.append({"type": "form", "side": side, "text": f"{name[side]} er favorit ({round(p_win[side] * 100)}%) trods dårlig form ({seq})."})
+                score += 2
+                lean.insert(0, ("dc", other))
+        if all(len(forms[s]) >= 5 for s in "HA"):
+            avg = {s: sum(x["gf"] + x["ga"] for x in forms[s]) / len(forms[s]) for s in "HA"}
+            btts = {s: sum(x["gf"] > 0 and x["ga"] > 0 for x in forms[s]) / len(forms[s]) for s in "HA"}
+            if min(avg.values()) >= 3.0:
+                stories.append({"type": "mål", "text": f"Målrige hold: {_fmt(avg['H'])} og {_fmt(avg['A'])} mål i snit i deres kampe."})
+                score += 1.5
+                lean.append(("ou", "O2.5"))
+            elif min(btts.values()) >= 0.65:
+                stories.append({"type": "mål", "text": f"Begge hold scorede i {round(btts['H'] * 100)}% og {round(btts['A'] * 100)}% af deres kampe."})
+                score += 1.5
+                lean.append(("btts", "Y"))
+            elif max(avg.values()) <= 2.1:
+                stories.append({"type": "mål", "text": f"Målfattige hold: {_fmt(avg['H'])} og {_fmt(avg['A'])} mål i snit."})
+                score += 1.5
+                lean.append(("ou", "U2.5"))
+        # no rest days: the data has league matches only, so cup and European games would look like rest
+
+    first = seen.get(match_id(m))
+    if first:
+        for side in "HA":
+            now_p, was = by.get(("1x2", side), {}).get("p"), first["p"][0 if side == "H" else 2]
+            if now_p is not None and abs(now_p - was) >= 0.06:
+                up = now_p > was
+                stories.append({"type": "marked", "side": side, "text": f"Markedet har flyttet sig: {name[side]} fra {round(was * 100)}% til {round(now_p * 100)}% for sejr."})
+                score += 2
+                lean.insert(0, ("dc", side if up else ("A" if side == "H" else "H")))
+    if score < WATCH_MIN:
+        return None
+
+    # the bet the stories point to: the first lean that has a price worth playing, else the most likely
+    # double chance or goals bet at odds of at least 1.30
+    pick_ = None
+    for mkt, sel in lean:
+        sel = {"H": "1X", "A": "X2"}.get(sel, sel) if mkt == "dc" else sel
+        l = by.get((mkt, sel))
+        if l and l["price"] >= 1.20 and l["p"] >= 0.45:
+            pick_ = l
+            break
+    if not pick_:
+        pool = [l for l in ls if l["mkt"] in ("dc", "ou", "btts") and l["price"] >= 1.30]
+        pick_ = max(pool, key=lambda l: l["p"], default=None)
+    if not pick_:
+        return None
+    return {"id": match_id(m), "div": m["div"], "date": m["date"], "ko": m["ko"], "home": m["home"], "away": m["away"],
+            "score": round(score, 1), "stories": stories, "leg": {**pick_, "kind": "watch"}}
+
+
 def form_of(rows, team, before):
     """A team's league matches this season before a date: results, goals."""
     out = []
@@ -634,7 +824,7 @@ def settle_acca(a):
 
 
 def all_legs(cards, ladder=None):
-    out = [l for c in cards for l in c["singles"] + [x for a in c["accas"] for x in a["legs"]]]
+    out = [l for c in cards for l in c["singles"] + [x for a in c["accas"] for x in a["legs"]] + [w["leg"] for w in c.get("watch", [])]]
     if ladder:
         out += [l for r in ladder["runs"] for b in r["bets"] for l in b["legs"]]
     return out
@@ -659,7 +849,7 @@ def results(open_legs, now, seasons, espn):
 
 def settle(cards, scores, today):
     for c in cards:
-        for l in c["singles"]:
+        for l in c["singles"] + [w["leg"] for w in c.get("watch", [])]:
             settle_leg(l, scores, today)
         for a in c["accas"]:
             for l in a["legs"]:
@@ -861,6 +1051,8 @@ def summarise(cards):
     out = {"singles": block([l for l in singles if l.get("price")], profit_single), "accas": block(accas, profit_acca), "kinds": {}}
     for k in ("banker", "value", "edge", "goals", "sgm", "scorer"):
         out["kinds"][k] = block([l for l in singles if l["kind"] == k], profit_single)
+    # the watchlist's bets: do matches with a story do better than the rest?
+    out["kinds"]["watch"] = block([w["leg"] for c in cards for w in c.get("watch", [])], profit_single)
     for k in ("safe", "mix", "long"):
         out["kinds"][k] = block([a for a in accas if a["kind"] == k], profit_acca)
     # every distinct settled leg, singles and acca legs alike: are the probabilities honest?
@@ -1117,11 +1309,23 @@ def main():
     text, modified = _get(FIXTURES)
     upcoming = parse(text)
 
+    # the exchange's first chances per match, so the watchlist can see the market move
+    seen = {i: v for i, v in state.get("seen", {}).items() if v["ko"] and datetime.fromisoformat(v["ko"]) > now - timedelta(days=1)}
+    for m in upcoming:
+        f1 = fair(m["bfe"]["1x2"])
+        if f1 and m["ko"] and match_id(m) not in seen:
+            seen[match_id(m)] = {"p": [round(x, 4) for x in f1], "t": now.isoformat(timespec="minutes"), "ko": m["ko"]}
+
+    boot = None
+    try:
+        boot = _get_json(f"{DRAFT}bootstrap-static")
+    except Exception as e:
+        print(f"  tips: FPL bootstrap unavailable ({e})", flush=True)
+
     # scorer chances, kept after the deadline moves the projection on
     cache = state.get("scorer_cache", {})
-    if password:
+    if password and boot:
         try:
-            boot = _get_json(f"{DRAFT}bootstrap-static")
             for gw, chances in scorer_chances(password, boot, upcoming, now).items():
                 if chances:
                     cache[str(gw)] = chances
@@ -1141,12 +1345,23 @@ def main():
         soon = [m for m in upcoming if m["ko"] and window(m["ko"])]
         scorers = [l for v in cache.values() for l in v if window(l["ko"])]
         singles, accas = build_card(soon, scorers, skip)
-        if singles or accas:
+        # matches with a story: news, absences, table, form against the market, goals, rest, market moves.
+        # A match already on today's watchlist is not repeated at 15:00.
+        watched = {w["id"] for c in cards if c["day"] == today.isoformat() for w in c.get("watch", [])}
+        news = fetch_news(sorted({m["div"] for m in soon}), now)
+        absences = fpl_absences(boot)
+        watch = [w for m in soon if match_id(m) not in watched
+                 for w in [watch_match(m, rows_for(m), news, absences, seen)] if w]
+        watch = sorted(watch, key=lambda w: -w["score"])[:WATCH_N]
+        for w in watch:
+            w["leg"] = why(w["leg"])
+        if singles or accas or watch:
             singles = [why(l) for l in singles]
             accas = [{**x, "legs": [why(l) for l in x["legs"]]} for x in accas]
             cards.append({"id": card_id, "day": today.isoformat(), "slot": slot, "published": now.isoformat(timespec="minutes"),
-                          "odds_as_of": modified, "matches": len(soon), "singles": singles, "accas": accas})
-            print(f"  tips: card {card_id} with {len(singles)} singles and {len(accas)} accas from {len(soon)} matches", flush=True)
+                          "odds_as_of": modified, "matches": len(soon), "singles": singles, "accas": accas, "watch": watch})
+            print(f"  tips: card {card_id} with {len(singles)} singles, {len(accas)} accas and {len(watch)} matches to watch "
+                  f"from {len(soon)} matches ({len(news)} news items)", flush=True)
         else:
             print(f"  tips: no card ({len(soon)} matches with prices in the next 24 hours)", flush=True)
 
@@ -1172,7 +1387,7 @@ def main():
         with open(SCORER_CHECK, encoding="utf-8") as f:
             scorer_test = json.load(f)
     state = {"cards": cards, "live": summarise(cards), "history": hist, "ladder": lad, "ladder_live": ladder_summary(lad),
-             "scorers": gw_list, "scorer_test": scorer_test, "scorer_cache": cache, "updated": now.isoformat(timespec="minutes"),
+             "scorers": gw_list, "scorer_test": scorer_test, "scorer_cache": cache, "seen": seen, "updated": now.isoformat(timespec="minutes"),
              "started": min((c["day"] for c in cards), default=today.isoformat()),
              # matches the page offers for an own ladder bet: the next two days
              "fixtures": [{"id": match_id(m), "div": m["div"], "home": m["home"], "away": m["away"], "ko": m["ko"]}
