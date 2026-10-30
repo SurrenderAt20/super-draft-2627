@@ -110,6 +110,8 @@ function renderTips() {
       ${panel(`<span class="v">${L.singles.staked + L.accas.staked ? units(L.singles.profit + L.accas.profit) : "0"}</span><span class="t">Enheder siden ${shortDay(TIPS.started)}</span><span class="d">1 enhed per tip med odds.${L.singles.n ? ` Forventet: ${roiTxt(L.singles.exp_roi)} per single.` : ""}</span>`, "rec")}
     </div>
 
+    ${moneyHtml()}
+
     ${ladderHtml()}
 
     ${todays.map((c) => `<section class="sec">
@@ -261,6 +263,50 @@ async function dispatch(inputs, what) {
   }
 }
 
+// ---------------------------------------------------------------- 100 kr. on everything
+
+const STAKE = 100;
+const MONEY_KINDS = ["watch", "banker", "goals", "sgm", "value", "edge", "safe", "mix", "long"];
+const krSigned = (x) => `${x > 0 ? "+" : x < 0 ? "−" : "±"}${num(Math.abs(x), 0)} kr.`;
+const moneyCls = (x) => (x > 0 ? "delta-up" : x < 0 ? "delta-down" : "muted");
+
+// one section's result at 100 kr. per settled bet, from the live track record
+function sectionMoney(k) {
+  const s = TIPS.live.kinds[k];
+  if (!s || !s.staked) return null;
+  return { n: s.staked, won: s.won, staked: s.staked * STAKE, result: s.profit * STAKE, est: s.est || 0, pending: s.pending || 0 };
+}
+
+function sectionLine(k) {
+  const m = sectionMoney(k);
+  if (!m) return "";
+  return `<p class="small bt-sofar">Hidtil: ${m.n} afgjorte, ${m.won} vundet · 100 kr. på hver: <b class="${moneyCls(m.result)}">${krSigned(m.result)}</b> af ${kr(m.staked)}${m.est ? ` · ${m.est} med skønnede odds` : ""}</p>`;
+}
+
+function moneyHtml() {
+  const rows = MONEY_KINDS.map((k) => [k, sectionMoney(k)]).filter(([, m]) => m);
+  const tot = rows.reduce((t, [, m]) => ({ n: t.n + m.n, won: t.won + m.won, staked: t.staked + m.staked, result: t.result + m.result, est: t.est + m.est, pending: t.pending + m.pending }),
+    { n: 0, won: 0, staked: 0, result: 0, est: 0, pending: 0 });
+  const LL = TIPS.ladder_live, runs = TIPS.ladder.runs;
+  const alive = runs.length && runs[runs.length - 1].status === "alive" ? runs[runs.length - 1].stake : 0;
+  const ladderResult = alive - LL.spent;
+  const sc = TIPS.live.kinds.scorer;
+  return `<section class="sec">
+    <div class="sec-head"><div><h2>Hvis du havde spillet 100 kr. på alt</h2><p class="lede">100 kr. på hvert afgjort forslag siden ${shortDay(TIPS.started)}, til de odds der stod ved forslaget. Kombi'er tæller som ét spil. Resultater ved skønnede odds (≈) er også et skøn.</p></div></div>
+    <div class="recs">
+      ${panel(`<span class="v ${moneyCls(tot.result)}">${krSigned(tot.result)}</span><span class="t">I alt</span><span class="d">${tot.n} spil, ${tot.won} vundet, ${kr(tot.staked)} indsat (${roiTxt(tot.staked ? tot.result / tot.staked : null)}).${tot.pending ? ` ${tot.pending} afventer.` : ""}</span>`, "rec")}
+      ${panel(`<span class="v ${moneyCls(ladderResult)}">${krSigned(ladderResult)}</span><span class="t">Stigen</span><span class="d">${kr(LL.spent)} sat ind over ${LL.runs} forsøg${alive ? `, ${kr(alive)} står på stigen nu` : ""}. Tæller ikke med i "I alt".</span>`, "rec")}
+    </div>
+    <div class="panel" style="margin-top:12px"><div class="scroll"><table class="advt">
+      <thead><tr><th class="l">Afsnit</th><th>Spil</th><th>Vundet</th><th>Indsat</th><th>Resultat</th><th>Afkast</th></tr></thead>
+      <tbody>${rows.map(([k, m]) => `<tr><td class="l">${KIND[k][0]}${m.est ? ` <span class="muted small">(${m.est} ≈)</span>` : ""}</td><td>${m.n}</td><td>${m.won}</td><td>${kr(m.staked)}</td>
+        <td class="strong ${moneyCls(m.result)}">${krSigned(m.result)}</td><td class="${moneyCls(m.result)}">${roiTxt(m.result / m.staked)}</td></tr>`).join("")}
+      <tr class="sep"><td class="l"><b>I alt</b></td><td>${tot.n}</td><td>${tot.won}</td><td>${kr(tot.staked)}</td><td class="strong ${moneyCls(tot.result)}">${krSigned(tot.result)}</td><td class="${moneyCls(tot.result)}">${roiTxt(tot.staked ? tot.result / tot.staked : null)}</td></tr>
+      </tbody></table></div></div>
+    <p class="small muted" style="margin-top:8px">${sc && sc.n ? `Målscorere er ikke med: data har ikke deres odds (${sc.won} af ${sc.n} gik hjem). ` : ""}Efter få uger er resultatet mest held; se "Nøjagtighed" for, om chancerne holder.</p>
+  </section>`;
+}
+
 function legRow(l) {
   return `<tr><td class="l"><span data-tip="${esc(reasons(l))}"><b>${esc(pick(l))}</b></span><span class="bt-sub">${esc(l.home)} – ${esc(l.away)} · ${esc(league(l))} · ${kickoff(l)}</span></td>
     <td class="pts">${price(l)}</td><td>${pct(l.p)}${l.conf ? `<span class="bt-sub">ramte ${pct(l.conf.obs)}</span>` : ""}</td><td class="opt">${l.ev == null ? "–" : roiTxt(l.ev)}</td><td>${l.score ? `<span class="muted">${esc(l.score)}</span> ` : ""}${status(l)}</td></tr>`;
@@ -270,7 +316,7 @@ const LEG_HEAD = `<thead><tr><th class="l">Spil</th><th>Odds</th><th>Chance</th>
 function watchHtml(c) {
   if (!c.watch || !c.watch.length) return "";
   return `<div class="panel bt-block"><h3>Kampe at holde øje med</h3>
-    <p class="small muted">Kampe med en historie, mest interessante først. Nyheder er baggrund: markedet når som regel at regne dem ind, så forslaget følger de målbare tegn (form mod marked, mål, markedsbevægelser, fravær) og ellers kampens mest sandsynlige spil til mindst odds 1,30. Logges som de andre tips, så vi kan se, om historierne giver noget.</p>
+    ${sectionLine("watch")}<p class="small muted">Kampe med en historie, mest interessante først. Nyheder er baggrund: markedet når som regel at regne dem ind, så forslaget følger de målbare tegn (form mod marked, mål, markedsbevægelser, fravær) og ellers kampens mest sandsynlige spil til mindst odds 1,30. Logges som de andre tips, så vi kan se, om historierne giver noget.</p>
     <div class="bt-watch">${c.watch.map((w) => `<div class="bt-watch-item">
       <div class="bt-watch-head"><b>${esc(w.home)} – ${esc(w.away)}</b><span class="bt-sub">${esc(league(w))} · ${kickoff(w)}</span></div>
       <ul class="bt-stories">${w.stories.map((s) => `<li><span class="tag" style="margin-left:0">${STORY[s.type] || esc(s.type)}</span> ${s.link
@@ -284,11 +330,11 @@ function cardHtml(c) {
   const singles = SINGLE_KINDS.map((k) => {
     const ls = c.singles.filter((l) => l.kind === k);
     if (!ls.length) return "";
-    return `<div class="panel bt-block"><h3>${KIND[k][0]}</h3><p class="small muted">${KIND[k][1]}</p>
+    return `<div class="panel bt-block"><h3>${KIND[k][0]}</h3><p class="small muted">${KIND[k][1]}</p>${sectionLine(k)}
       <div class="scroll"><table class="advt">${LEG_HEAD}<tbody>${ls.map(legRow).join("")}</tbody></table></div></div>`;
   }).join("");
   const accas = c.accas.map((a) => `<div class="panel bt-block">
-      <div class="bt-acca-head"><div><h3>${KIND[a.kind][0]} ${status(a)}</h3><p class="small muted">${KIND[a.kind][1]}</p></div>
+      <div class="bt-acca-head"><div><h3>${KIND[a.kind][0]} ${status(a)}</h3><p class="small muted">${KIND[a.kind][1]}</p>${sectionLine(a.kind)}</div>
         <div class="bt-odds"><b>${a.est ? "≈" : ""}${odds(a.price)}</b><span>samlet odds</span><small>100 kr. giver ${kr(100 * a.price)} · chance ${pct(a.p, 1)}</small></div></div>
       <div class="scroll"><table class="advt">${LEG_HEAD}<tbody>${a.legs.map(legRow).join("")}</tbody></table></div></div>`).join("");
   return `<div class="bt-card">${watchHtml(c)}${singles}${accas}</div>`;

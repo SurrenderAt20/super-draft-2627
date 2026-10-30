@@ -1044,6 +1044,7 @@ def summarise(cards):
                 "expected": round(sum(x["p"] for x in done) / len(done), 4),
                 "staked": len(pr), "profit": round(sum(pr), 2), "roi": round(sum(pr) / len(pr), 4) if pr else None,
                 "exp_roi": round(sum(x["ev"] for x in done if x.get("ev") is not None) / len(done), 4),
+                "est": sum(1 for x in done if x.get("est") and prof(x) is not None),   # results at estimated odds
                 "pending": sum(1 for x in items if not x.get("res"))}
 
     singles = [l for c in cards for l in c["singles"]]

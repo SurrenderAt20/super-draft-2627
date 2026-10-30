@@ -928,3 +928,7 @@ td.blank { color: var(--dim); }
 .bt-stories { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13.5px; color: var(--muted); }
 .bt-stories .link { color: var(--text); }
 .bt-watch-bet { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 8px; border-top: 1px solid var(--border); font-size: 14px; }
+.bt-sofar { margin: 4px 0 8px; color: var(--muted); }
+.rec .v.delta-up, .rec .v.delta-down { background: none; -webkit-text-fill-color: currentColor; }
+.rec .v.delta-up { color: var(--emerald); }
+.rec .v.delta-down { color: var(--rose); }
