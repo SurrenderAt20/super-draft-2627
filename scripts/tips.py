@@ -334,6 +334,59 @@ WINS = {
 GOAL_TYPES = ("ou", "btts", "ts", "t2")
 
 
+# Chances from the score grid are a little off per market (checked on 2024-26 results: e.g. "over 1.5"
+# said 80% happened 81.6%). Each market gets a correction fitted on the history's results,
+# logit(p) -> a + b * logit(p), refitted with the weekly historical test. 1X2, double chance and
+# over/under 2.5 come straight from the exchange and are not corrected.
+CALIB = {}
+CALIB_MIN = 300   # results needed to fit a market's correction
+
+
+def calibrate(key, p):
+    ab = CALIB.get(key)
+    if not ab or not 0 < p < 1:
+        return p
+    z = ab[0] + ab[1] * math.log(p / (1 - p))
+    return 1 / (1 + math.exp(-z))
+
+
+def _platt(ps, ys):
+    x = np.log(ps / (1 - ps))
+    a, b = 0.0, 1.0
+    for _ in range(30):
+        q = 1 / (1 + np.exp(-(a + b * x)))
+        w = q * (1 - q)
+        g = np.array([np.sum(q - ys), np.sum((q - ys) * x)])
+        H = np.array([[w.sum(), (w * x).sum()], [(w * x).sum(), (w * x * x).sum()]])
+        step = np.linalg.solve(H + 1e-9 * np.eye(2), g)
+        a, b = a - step[0], b - step[1]
+        if np.abs(step).max() < 1e-8:
+            break
+    return [round(float(a), 4), round(float(b), 4)]
+
+
+def fit_calibration(matches):
+    """Corrections per derived market from played matches, fitted on the uncorrected chances."""
+    global CALIB
+    saved, CALIB = CALIB, {}
+    data = {}
+    try:
+        for m in matches:
+            for l in legs(m) + same_match(m):
+                if l["mkt"] in ("1x2", "dc") or (l["mkt"], l["sel"]) in (("ou", "O2.5"), ("ou", "U2.5")):
+                    continue
+                key = f"sgm|{l['sel'].split('+')[1]}" if l["mkt"] == "sgm" else f"{l['mkt']}|{l['sel']}"
+                data.setdefault(key, []).append((min(max(l["p"], 0.001), 0.999), float(leg_result(l, m["score"]))))
+    finally:
+        CALIB = saved
+    out = {}
+    for key, v in data.items():
+        if len(v) >= CALIB_MIN:
+            a = np.array(v)
+            out[key] = _platt(a[:, 0], a[:, 1])
+    return out
+
+
 def legs(m):
     """Every single bet of a match: probability, bet365 price (real or estimated) and expected return."""
     f1, fo = fair(m["bfe"]["1x2"]), fair(m["bfe"]["ou"])
@@ -362,7 +415,7 @@ def legs(m):
             i = 0 if sel == "O2.5" else 1
             p, price = fo[i], bo[i]
         else:
-            p = float(P[win(x, y)].sum())
+            p = calibrate(f"{mkt}|{sel}", float(P[win(x, y)].sum()))
         if price is None and p > 0:
             price, est = 1 / (p * margin), True
         if not price or price < 1.01:
@@ -393,6 +446,7 @@ def same_match(m):
         p_grid = float(P[wa(x, y)].sum())
         p_exch = f1["HDA".index(s_a)] if m_a == "1x2" else sum(f1["1X2".index(c)] for c in s_a)
         p = min(float(P[wa(x, y) & wb(x, y)].sum()) * p_exch / p_grid, p_exch, float(P[wb(x, y)].sum()))
+        p = calibrate(f"sgm|{m_b}:{s_b}", p)
         if p <= 0.05:
             continue
         price = round(1 / (p * m1 * mo), 2)
@@ -747,6 +801,20 @@ def _team_line(team, f, side, goals):
     return f"{team}: " + ", ".join(bits) + "."
 
 
+def market_line(l):
+    """First reason of a tip: where the chance comes from, and the price against it."""
+    if l["mkt"] in ("1x2", "dc") or (l["mkt"], l["sel"]) in (("ou", "O2.5"), ("ou", "U2.5")):
+        src = "Betfair Exchange"
+    else:
+        src = "Markedets forventede mål (fra Betfair Exchange, justeret efter testen)"
+    line = f"{src}: {round(l['p'] * 100)}% (fair odds {_fmt(1 / l['p'], 2)})."
+    if l.get("est"):
+        line += f" bet365 ca. {_fmt(l['price'], 2)} (skønnet med bet365's margin; tjek prisen)."
+    else:
+        line += f" bet365 giver {_fmt(l['price'], 2)}, {'over' if l['ev'] > 0 else 'under'} fair med {_fmt(abs(l['ev']) * 100)}%."
+    return line
+
+
 def explain(l, rows, cal):
     """Reasons behind a tip (frozen with it) and how often tips like it hit in the historical test."""
     why = []
@@ -759,18 +827,7 @@ def explain(l, rows, cal):
             why.append("Førstevalg til straffespark.")
         why.append(f"Fair odds {_fmt(1 / l['p'], 2)}: bet365 skal give mere end det, før spillet er pengene værd.")
     else:
-        if l["mkt"] in ("1x2", "dc"):
-            src = "Betfair Exchange"
-        elif (l["mkt"], l["sel"]) in (("ou", "O2.5"), ("ou", "U2.5")):
-            src = "Betfair Exchange"
-        else:
-            src = "Markedets forventede mål (fra Betfair Exchange)"
-        line = f"{src}: {round(l['p'] * 100)}% (fair odds {_fmt(1 / l['p'], 2)})."
-        if l.get("est"):
-            line += f" bet365 ca. {_fmt(l['price'], 2)} (skønnet med bet365's margin; tjek prisen)."
-        else:
-            line += f" bet365 giver {_fmt(l['price'], 2)}, {'over' if l['ev'] > 0 else 'under'} fair med {_fmt(abs(l['ev']) * 100)}%."
-        why.append(line)
+        why.append(market_line(l))
         if l.get("xg"):
             lh, la = l["xg"]
             why.append(f"Markedet venter {_fmt(lh)}–{_fmt(la)} i mål ({_fmt(lh + la)} i alt).")
@@ -1011,6 +1068,46 @@ def ladder_action(lad, a, matches, now, why):
         print(f"  tips: ladder step {a['step']} set to own bet at {odds}", flush=True)
 
 
+def reprice(cards, lad, cal_bins):
+    """Once: bets published before the per-market corrections get the corrected chance and, where the
+    odds were estimated from that chance, the odds that follow from it. The originals are kept."""
+    def fix(l):
+        if not l.get("est") or l["mkt"] in ("1x2", "dc", "scorer", "manual") or (l["mkt"], l["sel"]) in (("ou", "O2.5"), ("ou", "U2.5")):
+            return
+        key = f"sgm|{l['sel'].split('+')[1]}" if l["mkt"] == "sgm" else f"{l['mkt']}|{l['sel']}"
+        p_new = calibrate(key, l["p"])
+        l["p_raw"], l["price_orig"] = l["p"], l["price"]
+        l["price"] = round(l["price"] * l["p"] / p_new, 2)
+        l["p"] = round(p_new, 4)
+        l["ev"] = round(l["p"] * l["price"] - 1, 4)
+        if l.get("why"):
+            l["why"][0] = market_line(l)
+        for b in cal_bins or []:
+            if b["lo"] <= l["p"] < b["hi"] or (b["hi"] == 1.0 and l["p"] >= 1.0):
+                l["conf"] = {"lo": b["lo"], "hi": b["hi"], "obs": b["obs"], "n": b["n"]}
+
+    def total(x):
+        x["price"] = round(math.prod(l["price"] for l in x["legs"]), 2)
+        x["p"] = round(math.prod(l["p"] for l in x["legs"]), 4)
+        x["ev"] = round(x["p"] * x["price"] - 1, 4)
+
+    for c in cards:
+        for l in c["singles"] + [w["leg"] for w in c.get("watch", [])]:
+            fix(l)
+        for a in c["accas"]:
+            for l in a["legs"]:
+                fix(l)
+            total(a)
+            settle_acca(a)
+    for r in lad["runs"]:
+        for b in r["bets"]:
+            if b.get("manual"):
+                continue
+            for l in b["legs"]:
+                fix(l)
+            total(b)
+
+
 def ladder_summary(lad):
     runs = lad["runs"]
     done = [r for r in runs if r["status"] == "broken"]
@@ -1080,8 +1177,11 @@ def summarise(cards):
 
 
 def history(today, seasons):
-    """The tip and ladder rules run over every match day of the seasons in the data, with pre-match prices."""
+    """The tip and ladder rules run over every match day of the seasons in the data, with pre-match prices.
+    Fits the per-market corrections first (on the same matches), which the live tips then use too."""
+    global CALIB
     matches = [m for s in HISTORY_SEASONS for div in LEAGUES for m in seasons.get(div, s)]
+    CALIB = fit_calibration(matches)
     by_day = {}
     for m in matches:
         by_day.setdefault(m["date"], []).append(m)
@@ -1109,7 +1209,7 @@ def history(today, seasons):
     lsum = ladder_summary(lad)
     lsum.pop("log")
     s["ladder"] = lsum
-    s.update({"seasons": HISTORY_SEASONS, "days": len(cards), "matches": len(matches), "computed": today.isoformat(),
+    s.update({"calib": CALIB, "seasons": HISTORY_SEASONS, "days": len(cards), "matches": len(matches), "computed": today.isoformat(),
               "first": min(by_day), "last": max(by_day)})
     return s
 
@@ -1293,10 +1393,16 @@ def main():
     lad = state.get("ladder") or {"runs": []}
     seasons, espn = Seasons(today), Espn()
 
+    global CALIB
     hist = state.get("history")
-    if a.history or not hist or (today - date.fromisoformat(hist["computed"])).days >= 7:
+    if a.history or not hist or "calib" not in hist or (today - date.fromisoformat(hist["computed"])).days >= 7:
         hist = history(today, seasons)
-        print(f"  tips: historical test over {hist['days']} match days", flush=True)
+        print(f"  tips: historical test over {hist['days']} match days, {len(hist['calib'])} market corrections", flush=True)
+    CALIB = hist["calib"]
+    if not state.get("calibrated"):
+        reprice(cards, lad, hist.get("cal"))
+        state["calibrated"] = now.isoformat(timespec="minutes")
+        print("  tips: record repriced with the market corrections", flush=True)
 
     # settle first: the ladder needs yesterday's result before it plans today
     scores = results([l for l in all_legs(cards, lad) if not l.get("res")], now, seasons, espn)
@@ -1391,7 +1497,8 @@ def main():
         with open(SCORER_CHECK, encoding="utf-8") as f:
             scorer_test = json.load(f)
     state = {"cards": cards, "live": summarise(cards), "history": hist, "ladder": lad, "ladder_live": ladder_summary(lad),
-             "scorers": gw_list, "scorer_test": scorer_test, "scorer_cache": cache, "seen": seen, "updated": now.isoformat(timespec="minutes"),
+             "scorers": gw_list, "scorer_test": scorer_test, "scorer_cache": cache, "seen": seen, "calibrated": state["calibrated"],
+             "updated": now.isoformat(timespec="minutes"),
              "started": min((c["day"] for c in cards), default=today.isoformat()),
              # matches the page offers for an own ladder bet: the next two days
              "fixtures": [{"id": match_id(m), "div": m["div"], "home": m["home"], "away": m["away"], "ko": m["ko"]}
