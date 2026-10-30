@@ -438,11 +438,11 @@
    {
     "a": 243916,
     "b": 1850,
-    "ea": 39.5,
+    "ea": 39.4,
     "eb": 45.6,
     "pa": 0.323,
     "pd": 0.026,
-    "pb": 0.651
+    "pb": 0.652
    },
    {
     "a": 263989,
@@ -457,10 +457,10 @@
     "a": 265639,
     "b": 205703,
     "ea": 40.8,
-    "eb": 39.0,
-    "pa": 0.536,
-    "pd": 0.029,
-    "pb": 0.435
+    "eb": 38.5,
+    "pa": 0.551,
+    "pd": 0.028,
+    "pb": 0.421
    },
    {
     "a": 274299,
@@ -485,202 +485,202 @@
   "season": [
    {
     "le": 1850,
-    "exp_pts": 69.5,
-    "exp_rank": 2.81,
-    "p_first": 0.317,
-    "p_top3": 0.709,
+    "exp_pts": 69.1,
+    "exp_rank": 2.88,
+    "p_first": 0.306,
+    "p_top3": 0.695,
     "p_last": 0.003,
     "dist": [
-     0.317,
-     0.23,
-     0.162,
-     0.113,
-     0.073,
-     0.047,
-     0.03,
+     0.306,
+     0.223,
+     0.166,
+     0.116,
+     0.078,
+     0.049,
+     0.032,
      0.017,
-     0.007,
+     0.009,
      0.003
     ]
    },
    {
     "le": 239612,
-    "exp_pts": 67.7,
-    "exp_rank": 3.22,
+    "exp_pts": 67.6,
+    "exp_rank": 3.23,
     "p_first": 0.245,
-    "p_top3": 0.625,
-    "p_last": 0.004,
+    "p_top3": 0.623,
+    "p_last": 0.005,
     "dist": [
      0.245,
-     0.211,
+     0.209,
      0.169,
-     0.13,
-     0.095,
+     0.131,
+     0.094,
      0.067,
      0.041,
-     0.025,
+     0.026,
      0.013,
-     0.004
+     0.005
     ]
    },
    {
     "le": 263989,
-    "exp_pts": 67.0,
-    "exp_rank": 3.28,
-    "p_first": 0.227,
-    "p_top3": 0.616,
+    "exp_pts": 67.1,
+    "exp_rank": 3.26,
+    "p_first": 0.231,
+    "p_top3": 0.619,
     "p_last": 0.005,
     "dist": [
-     0.227,
-     0.211,
-     0.178,
-     0.135,
+     0.231,
+     0.212,
+     0.176,
+     0.133,
      0.097,
-     0.064,
-     0.043,
-     0.027,
+     0.066,
+     0.042,
+     0.026,
      0.013,
      0.005
     ]
    },
    {
     "le": 33708,
-    "exp_pts": 62.1,
-    "exp_rank": 4.29,
-    "p_first": 0.111,
-    "p_top3": 0.417,
+    "exp_pts": 62.3,
+    "exp_rank": 4.25,
+    "p_first": 0.115,
+    "p_top3": 0.425,
     "p_last": 0.016,
     "dist": [
-     0.111,
-     0.148,
-     0.158,
-     0.157,
-     0.133,
-     0.107,
-     0.081,
-     0.055,
-     0.035,
+     0.115,
+     0.152,
+     0.159,
+     0.155,
+     0.13,
+     0.106,
+     0.078,
+     0.056,
+     0.033,
      0.016
     ]
    },
    {
     "le": 274299,
-    "exp_pts": 56.5,
-    "exp_rank": 5.51,
-    "p_first": 0.045,
-    "p_top3": 0.222,
+    "exp_pts": 56.7,
+    "exp_rank": 5.47,
+    "p_first": 0.047,
+    "p_top3": 0.228,
     "p_last": 0.045,
     "dist": [
-     0.045,
-     0.074,
-     0.104,
-     0.133,
-     0.146,
-     0.144,
-     0.122,
-     0.11,
+     0.047,
      0.077,
+     0.104,
+     0.135,
+     0.145,
+     0.142,
+     0.123,
+     0.109,
+     0.074,
      0.045
     ]
    },
    {
     "le": 265639,
-    "exp_pts": 52.9,
-    "exp_rank": 6.29,
+    "exp_pts": 52.8,
+    "exp_rank": 6.31,
     "p_first": 0.021,
-    "p_top3": 0.141,
-    "p_last": 0.087,
+    "p_top3": 0.139,
+    "p_last": 0.09,
     "dist": [
      0.021,
      0.046,
-     0.074,
+     0.072,
      0.1,
-     0.126,
+     0.124,
      0.143,
      0.146,
-     0.14,
-     0.116,
-     0.087
+     0.141,
+     0.117,
+     0.09
     ]
    },
    {
     "le": 294024,
-    "exp_pts": 50.7,
-    "exp_rank": 6.67,
+    "exp_pts": 50.8,
+    "exp_rank": 6.66,
     "p_first": 0.015,
-    "p_top3": 0.107,
-    "p_last": 0.117,
+    "p_top3": 0.108,
+    "p_last": 0.116,
     "dist": [
      0.015,
-     0.032,
+     0.031,
      0.061,
      0.086,
-     0.117,
-     0.133,
-     0.148,
+     0.119,
+     0.132,
      0.15,
+     0.149,
      0.141,
-     0.117
+     0.116
     ]
    },
    {
     "le": 50414,
-    "exp_pts": 49.5,
-    "exp_rank": 6.98,
+    "exp_pts": 49.6,
+    "exp_rank": 6.97,
     "p_first": 0.011,
     "p_top3": 0.09,
-    "p_last": 0.145,
+    "p_last": 0.143,
     "dist": [
      0.011,
-     0.027,
+     0.028,
      0.052,
-     0.072,
-     0.101,
-     0.124,
-     0.144,
-     0.162,
-     0.163,
-     0.145
-    ]
-   },
-   {
-    "le": 205703,
-    "exp_pts": 45.5,
-    "exp_rank": 7.77,
-    "p_first": 0.006,
-    "p_top3": 0.045,
-    "p_last": 0.253,
-    "dist": [
-     0.006,
-     0.013,
-     0.026,
-     0.045,
-     0.065,
-     0.093,
-     0.13,
+     0.073,
+     0.1,
+     0.123,
+     0.147,
      0.159,
-     0.21,
-     0.253
+     0.165,
+     0.143
     ]
    },
    {
     "le": 243916,
-    "exp_pts": 43.6,
-    "exp_rank": 8.19,
-    "p_first": 0.003,
-    "p_top3": 0.028,
-    "p_last": 0.324,
+    "exp_pts": 45.5,
+    "exp_rank": 7.85,
+    "p_first": 0.005,
+    "p_top3": 0.041,
+    "p_last": 0.255,
     "dist": [
-     0.003,
+     0.005,
+     0.012,
+     0.023,
+     0.042,
+     0.059,
+     0.093,
+     0.127,
+     0.166,
+     0.219,
+     0.255
+    ]
+   },
+   {
+    "le": 205703,
+    "exp_pts": 43.6,
+    "exp_rank": 8.13,
+    "p_first": 0.004,
+    "p_top3": 0.032,
+    "p_last": 0.323,
+    "dist": [
+     0.004,
      0.009,
-     0.016,
-     0.029,
-     0.048,
-     0.077,
+     0.019,
+     0.031,
+     0.054,
+     0.079,
      0.114,
-     0.156,
-     0.224,
-     0.324
+     0.151,
+     0.217,
+     0.323
     ]
    }
   ],
@@ -689,11 +689,11 @@
    "from": 7,
    "to": 12,
    "p_win": {
-    "205703": 0.038,
-    "243916": 0.028,
+    "205703": 0.03,
+    "243916": 0.035,
     "294024": 0.486,
     "50414": 0.141,
-    "265639": 0.307
+    "265639": 0.308
    }
   },
   "calibration": {
@@ -850,13 +850,12 @@
       "id": 554,
       "name": "Tzolis",
       "club": "ARS",
-      "out": 4,
-      "doubtful": 0,
+      "out": 3,
+      "doubtful": 1,
       "gws": [
        5,
        6,
-       7,
-       8
+       7
       ],
       "now": {
        "status": "d",
@@ -901,6 +900,16 @@
       ]
      },
      {
+      "id": 200,
+      "name": "Lacroix",
+      "club": "CHE",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       8
+      ]
+     },
+     {
       "id": 480,
       "name": "Gibbs-White",
       "club": "NFO",
@@ -920,14 +929,6 @@
       "id": 401,
       "name": "Marmoush",
       "club": "TOT",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 200,
-      "name": "Lacroix",
-      "club": "CHE",
       "out": 0,
       "doubtful": 1,
       "gws": []
@@ -1026,173 +1027,11 @@
     "now_doubtful": 0
    },
    {
-    "le": 1850,
+    "le": 274299,
     "out": 7,
     "injured": 7,
     "suspended": 0,
-    "doubtful": 3,
-    "players": [
-     {
-      "id": 368,
-      "name": "Szoboszlai",
-      "club": "LIV",
-      "out": 2,
-      "doubtful": 1,
-      "gws": [
-       7,
-       8
-      ],
-      "now": {
-       "status": "d",
-       "news": "Hamstring injury - 50% chance of playing",
-       "chance": 50
-      }
-     },
-     {
-      "id": 208,
-      "name": "Sarr",
-      "club": "CRY",
-      "out": 2,
-      "doubtful": 0,
-      "gws": [
-       1,
-       2
-      ]
-     },
-     {
-      "id": 380,
-      "name": "Ekitiké",
-      "club": "LIV",
-      "out": 2,
-      "doubtful": 0,
-      "gws": [
-       7,
-       8
-      ],
-      "now": {
-       "status": "i",
-       "news": "Achilles injury - Unknown return date",
-       "chance": 0
-      }
-     },
-     {
-      "id": 499,
-      "name": "Pedro Porro",
-      "club": "TOT",
-      "out": 1,
-      "doubtful": 1,
-      "gws": [
-       5
-      ]
-     },
-     {
-      "id": 16,
-      "name": "Madueke",
-      "club": "ARS",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     }
-    ],
-    "now_out": 1,
-    "now_doubtful": 1
-   },
-   {
-    "le": 294024,
-    "out": 6,
-    "injured": 6,
-    "suspended": 0,
-    "doubtful": 11,
-    "players": [
-     {
-      "id": 465,
-      "name": "Osula",
-      "club": "NEW",
-      "out": 4,
-      "doubtful": 2,
-      "gws": [
-       1,
-       2,
-       3,
-       4
-      ],
-      "now": {
-       "status": "d",
-       "news": "Ankle injury - 50% chance of playing",
-       "chance": 50
-      }
-     },
-     {
-      "id": 397,
-      "name": "Semenyo",
-      "club": "MCI",
-      "out": 2,
-      "doubtful": 1,
-      "gws": [
-       7,
-       8
-      ],
-      "now": {
-       "status": "i",
-       "news": "Knee injury - Unknown return date",
-       "chance": 0
-      }
-     },
-     {
-      "id": 389,
-      "name": "Matheus N.",
-      "club": "MCI",
-      "out": 0,
-      "doubtful": 3,
-      "gws": []
-     },
-     {
-      "id": 452,
-      "name": "Bruno G.",
-      "club": "ARS",
-      "out": 0,
-      "doubtful": 2,
-      "gws": []
-     },
-     {
-      "id": 56,
-      "name": "Abraham",
-      "club": "AVL",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 429,
-      "name": "Rashford",
-      "club": "MUN",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 533,
-      "name": "Mukiele",
-      "club": "SUN",
-      "out": 0,
-      "doubtful": 1,
-      "gws": [],
-      "now": {
-       "status": "d",
-       "news": "Knock - 75% chance of playing",
-       "chance": 75
-      }
-     }
-    ],
-    "now_out": 1,
-    "now_doubtful": 2
-   },
-   {
-    "le": 274299,
-    "out": 6,
-    "injured": 6,
-    "suspended": 0,
-    "doubtful": 6,
+    "doubtful": 5,
     "players": [
      {
       "id": 400,
@@ -1237,17 +1076,19 @@
       ]
      },
      {
-      "id": 31,
-      "name": "Konsa",
-      "club": "ARS",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
       "id": 148,
       "name": "Hato",
       "club": "CHE",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       8
+      ]
+     },
+     {
+      "id": 31,
+      "name": "Konsa",
+      "club": "ARS",
       "out": 0,
       "doubtful": 1,
       "gws": []
@@ -1270,16 +1111,117 @@
     "now_doubtful": 1
    },
    {
-    "le": 243916,
-    "out": 5,
-    "injured": 5,
+    "le": 294024,
+    "out": 6,
+    "injured": 6,
     "suspended": 0,
     "doubtful": 10,
     "players": [
      {
-      "id": 28,
-      "name": "Martinez",
-      "club": "CHE",
+      "id": 465,
+      "name": "Osula",
+      "club": "NEW",
+      "out": 4,
+      "doubtful": 2,
+      "gws": [
+       1,
+       2,
+       3,
+       4
+      ],
+      "now": {
+       "status": "d",
+       "news": "Ankle injury - 50% chance of playing",
+       "chance": 50
+      }
+     },
+     {
+      "id": 397,
+      "name": "Semenyo",
+      "club": "MCI",
+      "out": 2,
+      "doubtful": 1,
+      "gws": [
+       7,
+       8
+      ],
+      "now": {
+       "status": "i",
+       "news": "Knee injury - Unknown return date",
+       "chance": 0
+      }
+     },
+     {
+      "id": 389,
+      "name": "Matheus N.",
+      "club": "MCI",
+      "out": 0,
+      "doubtful": 2,
+      "gws": []
+     },
+     {
+      "id": 452,
+      "name": "Bruno G.",
+      "club": "ARS",
+      "out": 0,
+      "doubtful": 2,
+      "gws": []
+     },
+     {
+      "id": 56,
+      "name": "Abraham",
+      "club": "AVL",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 429,
+      "name": "Rashford",
+      "club": "MUN",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 533,
+      "name": "Mukiele",
+      "club": "SUN",
+      "out": 0,
+      "doubtful": 1,
+      "gws": [],
+      "now": {
+       "status": "d",
+       "news": "Knock - 75% chance of playing",
+       "chance": 75
+      }
+     }
+    ],
+    "now_out": 1,
+    "now_doubtful": 2
+   },
+   {
+    "le": 1850,
+    "out": 6,
+    "injured": 6,
+    "suspended": 0,
+    "doubtful": 4,
+    "players": [
+     {
+      "id": 208,
+      "name": "Sarr",
+      "club": "CRY",
+      "out": 2,
+      "doubtful": 0,
+      "gws": [
+       1,
+       2
+      ]
+     },
+     {
+      "id": 380,
+      "name": "Ekitiké",
+      "club": "LIV",
       "out": 2,
       "doubtful": 0,
       "gws": [
@@ -1288,75 +1230,46 @@
       ],
       "now": {
        "status": "i",
-       "news": "Head injury - Unknown return date",
+       "news": "Achilles injury - Unknown return date",
        "chance": 0
       }
      },
      {
-      "id": 367,
-      "name": "Gakpo",
+      "id": 368,
+      "name": "Szoboszlai",
       "club": "LIV",
       "out": 1,
       "doubtful": 2,
+      "gws": [
+       7
+      ],
+      "now": {
+       "status": "d",
+       "news": "Hamstring injury - 50% chance of playing",
+       "chance": 50
+      }
+     },
+     {
+      "id": 499,
+      "name": "Pedro Porro",
+      "club": "TOT",
+      "out": 1,
+      "doubtful": 1,
       "gws": [
        5
       ]
      },
      {
-      "id": 454,
-      "name": "Elanga",
-      "club": "NEW",
-      "out": 1,
-      "doubtful": 0,
-      "gws": [
-       4
-      ]
-     },
-     {
-      "id": 403,
-      "name": "Sávio",
-      "club": "TOT",
-      "out": 1,
-      "doubtful": 0,
-      "gws": [
-       7
-      ]
-     },
-     {
-      "id": 125,
-      "name": "Georginio",
-      "club": "BHA",
-      "out": 0,
-      "doubtful": 3,
-      "gws": []
-     },
-     {
-      "id": 515,
-      "name": "Maddison",
-      "club": "TOT",
-      "out": 0,
-      "doubtful": 3,
-      "gws": []
-     },
-     {
-      "id": 431,
-      "name": "Amad",
-      "club": "MUN",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 512,
-      "name": "Kudus",
-      "club": "TOT",
+      "id": 16,
+      "name": "Madueke",
+      "club": "ARS",
       "out": 0,
       "doubtful": 1,
       "gws": []
      }
     ],
     "now_out": 1,
-    "now_doubtful": 0
+    "now_doubtful": 1
    },
    {
     "le": 50414,
@@ -1468,6 +1381,95 @@
     "now_doubtful": 1
    },
    {
+    "le": 243916,
+    "out": 5,
+    "injured": 5,
+    "suspended": 0,
+    "doubtful": 9,
+    "players": [
+     {
+      "id": 28,
+      "name": "Martinez",
+      "club": "CHE",
+      "out": 2,
+      "doubtful": 0,
+      "gws": [
+       7,
+       8
+      ],
+      "now": {
+       "status": "i",
+       "news": "Head injury - Unknown return date",
+       "chance": 0
+      }
+     },
+     {
+      "id": 367,
+      "name": "Gakpo",
+      "club": "LIV",
+      "out": 1,
+      "doubtful": 2,
+      "gws": [
+       5
+      ]
+     },
+     {
+      "id": 454,
+      "name": "Elanga",
+      "club": "NEW",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       4
+      ]
+     },
+     {
+      "id": 403,
+      "name": "Sávio",
+      "club": "TOT",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       7
+      ]
+     },
+     {
+      "id": 125,
+      "name": "Georginio",
+      "club": "BHA",
+      "out": 0,
+      "doubtful": 3,
+      "gws": []
+     },
+     {
+      "id": 515,
+      "name": "Maddison",
+      "club": "TOT",
+      "out": 0,
+      "doubtful": 2,
+      "gws": []
+     },
+     {
+      "id": 431,
+      "name": "Amad",
+      "club": "MUN",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 512,
+      "name": "Kudus",
+      "club": "TOT",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     }
+    ],
+    "now_out": 1,
+    "now_doubtful": 0
+   },
+   {
     "le": 265639,
     "out": 4,
     "injured": 4,
@@ -1534,7 +1536,7 @@
     "out": 1,
     "injured": 0,
     "suspended": 1,
-    "doubtful": 5,
+    "doubtful": 6,
     "players": [
      {
       "id": 371,
@@ -1555,25 +1557,25 @@
       "gws": []
      },
      {
-      "id": 26,
-      "name": "Havertz",
-      "club": "ARS",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
       "id": 230,
       "name": "Branthwaite",
       "club": "EVE",
       "out": 0,
-      "doubtful": 1,
+      "doubtful": 2,
       "gws": [],
       "now": {
        "status": "d",
        "news": "Concussion - 75% chance of playing",
        "chance": 75
       }
+     },
+     {
+      "id": 26,
+      "name": "Havertz",
+      "club": "ARS",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
      },
      {
       "id": 53,
@@ -4606,7 +4608,7 @@
    "share": 0.357,
    "claims_won": 9,
    "claims_lost": 12,
-   "free_agents": 3
+   "free_agents": 5
   },
   {
    "le": 33708,
@@ -4859,5 +4861,5 @@
    "bench_shame": 1
   }
  },
- "updated": "2026-10-30T18:01+00:00"
+ "updated": "2026-10-30T22:21+00:00"
 }
