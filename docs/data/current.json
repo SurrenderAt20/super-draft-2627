@@ -62,7 +62,7 @@
   "current": 9,
   "current_finished": true,
   "next": 10,
-  "waivers_processed": false,
+  "waivers_processed": true,
   "next_trades": "2026-11-04T18:30:00Z",
   "next_waivers": "2026-11-05T18:30:00Z",
   "next_deadline": "2026-11-06T18:30:00Z",
@@ -103,7 +103,7 @@
   },
   {
    "gw": 9,
-   "final": false
+   "final": true
   }
  ],
  "latest_gw": 9,
@@ -449,248 +449,248 @@
     "a": 263989,
     "b": 1850,
     "ea": 49.4,
-    "eb": 47.4,
-    "pa": 0.538,
-    "pd": 0.027,
-    "pb": 0.435
+    "eb": 46.0,
+    "pa": 0.575,
+    "pd": 0.026,
+    "pb": 0.399
    },
    {
     "a": 265639,
     "b": 243916,
-    "ea": 41.0,
+    "ea": 42.1,
     "eb": 38.4,
-    "pa": 0.555,
-    "pd": 0.027,
-    "pb": 0.418
+    "pa": 0.586,
+    "pd": 0.028,
+    "pb": 0.387
    },
    {
     "a": 274299,
     "b": 239612,
-    "ea": 45.7,
-    "eb": 42.7,
-    "pa": 0.565,
+    "ea": 44.2,
+    "eb": 39.4,
+    "pa": 0.614,
     "pd": 0.026,
-    "pb": 0.409
+    "pb": 0.361
    },
    {
     "a": 294024,
     "b": 205703,
-    "ea": 41.3,
-    "eb": 39.8,
-    "pa": 0.521,
-    "pd": 0.028,
-    "pb": 0.45
+    "ea": 42.0,
+    "eb": 40.9,
+    "pa": 0.508,
+    "pd": 0.029,
+    "pb": 0.463
    },
    {
     "a": 33708,
     "b": 50414,
-    "ea": 38.5,
-    "eb": 42.2,
-    "pa": 0.392,
-    "pd": 0.024,
-    "pb": 0.584
+    "ea": 37.9,
+    "eb": 43.7,
+    "pa": 0.338,
+    "pd": 0.023,
+    "pb": 0.64
    }
   ],
   "next_gw": 10,
   "season": [
    {
     "le": 1850,
-    "exp_pts": 70.4,
-    "exp_rank": 2.68,
-    "p_first": 0.336,
-    "p_top3": 0.734,
+    "exp_pts": 71.3,
+    "exp_rank": 2.48,
+    "p_first": 0.373,
+    "p_top3": 0.777,
     "p_last": 0.001,
     "dist": [
-     0.336,
-     0.238,
-     0.161,
-     0.107,
-     0.069,
-     0.046,
-     0.025,
-     0.012,
-     0.006,
+     0.373,
+     0.252,
+     0.152,
+     0.093,
+     0.059,
+     0.036,
+     0.02,
+     0.009,
+     0.005,
      0.001
     ]
    },
    {
     "le": 263989,
-    "exp_pts": 70.1,
-    "exp_rank": 2.72,
-    "p_first": 0.32,
-    "p_top3": 0.725,
-    "p_last": 0.002,
+    "exp_pts": 70.9,
+    "exp_rank": 2.54,
+    "p_first": 0.355,
+    "p_top3": 0.766,
+    "p_last": 0.001,
     "dist": [
-     0.32,
-     0.239,
-     0.167,
-     0.114,
-     0.071,
-     0.044,
-     0.025,
-     0.014,
-     0.006,
-     0.002
-    ]
-   },
-   {
-    "le": 239612,
-    "exp_pts": 64.4,
-    "exp_rank": 3.82,
-    "p_first": 0.145,
-    "p_top3": 0.501,
-    "p_last": 0.008,
-    "dist": [
-     0.145,
-     0.173,
-     0.182,
-     0.159,
-     0.123,
-     0.092,
-     0.061,
+     0.355,
+     0.254,
+     0.157,
+     0.099,
+     0.06,
      0.036,
-     0.02,
-     0.008
+     0.021,
+     0.011,
+     0.005,
+     0.001
     ]
    },
    {
     "le": 274299,
-    "exp_pts": 62.1,
-    "exp_rank": 4.34,
-    "p_first": 0.098,
-    "p_top3": 0.399,
+    "exp_pts": 62.4,
+    "exp_rank": 4.24,
+    "p_first": 0.103,
+    "p_top3": 0.427,
     "p_last": 0.013,
     "dist": [
-     0.098,
-     0.142,
-     0.159,
-     0.16,
-     0.143,
-     0.114,
-     0.084,
-     0.058,
+     0.103,
+     0.152,
+     0.173,
+     0.154,
+     0.137,
+     0.108,
+     0.08,
+     0.051,
      0.029,
      0.013
     ]
    },
    {
-    "le": 33708,
-    "exp_pts": 57.4,
-    "exp_rank": 5.31,
-    "p_first": 0.044,
-    "p_top3": 0.24,
-    "p_last": 0.032,
+    "le": 239612,
+    "exp_pts": 58.0,
+    "exp_rank": 5.16,
+    "p_first": 0.051,
+    "p_top3": 0.267,
+    "p_last": 0.03,
     "dist": [
-     0.044,
-     0.082,
-     0.114,
-     0.141,
-     0.154,
-     0.149,
-     0.122,
-     0.097,
-     0.065,
-     0.032
+     0.051,
+     0.092,
+     0.124,
+     0.146,
+     0.148,
+     0.142,
+     0.119,
+     0.088,
+     0.061,
+     0.03
     ]
    },
    {
     "le": 265639,
-    "exp_pts": 55.6,
-    "exp_rank": 5.72,
-    "p_first": 0.032,
-    "p_top3": 0.189,
-    "p_last": 0.046,
+    "exp_pts": 57.9,
+    "exp_rank": 5.18,
+    "p_first": 0.047,
+    "p_top3": 0.269,
+    "p_last": 0.033,
     "dist": [
-     0.032,
-     0.06,
-     0.097,
-     0.124,
-     0.149,
+     0.047,
+     0.09,
+     0.131,
+     0.148,
+     0.145,
+     0.136,
+     0.117,
+     0.088,
+     0.064,
+     0.033
+    ]
+   },
+   {
+    "le": 33708,
+    "exp_pts": 57.7,
+    "exp_rank": 5.22,
+    "p_first": 0.046,
+    "p_top3": 0.258,
+    "p_last": 0.033,
+    "dist": [
+     0.046,
+     0.09,
+     0.123,
+     0.148,
      0.15,
-     0.142,
+     0.137,
      0.116,
-     0.083,
-     0.046
+     0.096,
+     0.062,
+     0.033
     ]
    },
    {
     "le": 294024,
-    "exp_pts": 50.4,
-    "exp_rank": 6.77,
-    "p_first": 0.013,
-    "p_top3": 0.094,
-    "p_last": 0.107,
+    "exp_pts": 51.5,
+    "exp_rank": 6.54,
+    "p_first": 0.015,
+    "p_top3": 0.116,
+    "p_last": 0.097,
     "dist": [
-     0.013,
-     0.03,
-     0.051,
-     0.078,
-     0.108,
+     0.015,
+     0.035,
+     0.066,
+     0.092,
+     0.118,
      0.135,
-     0.16,
-     0.169,
-     0.149,
-     0.107
+     0.151,
+     0.154,
+     0.136,
+     0.097
     ]
    },
    {
     "le": 50414,
-    "exp_pts": 49.5,
-    "exp_rank": 6.98,
-    "p_first": 0.009,
-    "p_top3": 0.077,
-    "p_last": 0.124,
+    "exp_pts": 47.6,
+    "exp_rank": 7.37,
+    "p_first": 0.005,
+    "p_top3": 0.06,
+    "p_last": 0.179,
     "dist": [
-     0.009,
-     0.024,
-     0.044,
-     0.07,
-     0.099,
-     0.133,
-     0.163,
-     0.171,
-     0.164,
-     0.124
+     0.005,
+     0.019,
+     0.036,
+     0.059,
+     0.08,
+     0.115,
+     0.144,
+     0.173,
+     0.19,
+     0.179
     ]
    },
    {
     "le": 205703,
-    "exp_pts": 42.7,
-    "exp_rank": 8.3,
-    "p_first": 0.002,
-    "p_top3": 0.022,
-    "p_last": 0.334,
+    "exp_pts": 44.8,
+    "exp_rank": 7.93,
+    "p_first": 0.004,
+    "p_top3": 0.036,
+    "p_last": 0.27,
     "dist": [
-     0.002,
-     0.006,
-     0.014,
-     0.026,
-     0.044,
-     0.069,
-     0.113,
-     0.161,
-     0.232,
-     0.334
+     0.004,
+     0.01,
+     0.022,
+     0.037,
+     0.06,
+     0.086,
+     0.126,
+     0.169,
+     0.216,
+     0.27
     ]
    },
    {
     "le": 243916,
-    "exp_pts": 42.7,
-    "exp_rank": 8.36,
-    "p_first": 0.001,
-    "p_top3": 0.018,
-    "p_last": 0.333,
+    "exp_pts": 43.1,
+    "exp_rank": 8.33,
+    "p_first": 0.002,
+    "p_top3": 0.023,
+    "p_last": 0.344,
     "dist": [
-     0.001,
-     0.005,
-     0.012,
-     0.022,
-     0.041,
-     0.067,
-     0.105,
-     0.166,
-     0.247,
-     0.333
+     0.002,
+     0.006,
+     0.015,
+     0.024,
+     0.043,
+     0.069,
+     0.106,
+     0.159,
+     0.232,
+     0.344
     ]
    }
   ],
@@ -699,11 +699,11 @@
    "from": 7,
    "to": 12,
    "p_win": {
-    "205703": 0.019,
+    "205703": 0.023,
     "243916": 0.001,
-    "294024": 0.397,
-    "50414": 0.122,
-    "265639": 0.461
+    "294024": 0.374,
+    "50414": 0.109,
+    "265639": 0.493
    }
   },
   "calibration": {
@@ -1018,12 +1018,7 @@
       "doubtful": 0,
       "gws": [
        9
-      ],
-      "now": {
-       "status": "s",
-       "news": "Suspended until 21 Nov",
-       "chance": 0
-      }
+      ]
      },
      {
       "id": 480,
@@ -1050,7 +1045,7 @@
       "gws": []
      }
     ],
-    "now_out": 1,
+    "now_out": 0,
     "now_doubtful": 0
    },
    {
@@ -1112,12 +1107,7 @@
       "club": "SUN",
       "out": 0,
       "doubtful": 2,
-      "gws": [],
-      "now": {
-       "status": "d",
-       "news": "Concussion - 75% chance of playing",
-       "chance": 75
-      }
+      "gws": []
      },
      {
       "id": 56,
@@ -1137,14 +1127,14 @@
      }
     ],
     "now_out": 1,
-    "now_doubtful": 1
+    "now_doubtful": 0
    },
    {
     "le": 274299,
     "out": 7,
     "injured": 7,
     "suspended": 0,
-    "doubtful": 5,
+    "doubtful": 6,
     "players": [
      {
       "id": 400,
@@ -1203,8 +1193,13 @@
       "name": "Konsa",
       "club": "ARS",
       "out": 0,
-      "doubtful": 1,
-      "gws": []
+      "doubtful": 2,
+      "gws": [],
+      "now": {
+       "status": "d",
+       "news": "Knee injury - 75% chance of playing",
+       "chance": 75
+      }
      },
      {
       "id": 8,
@@ -1216,14 +1211,14 @@
      }
     ],
     "now_out": 0,
-    "now_doubtful": 0
+    "now_doubtful": 1
    },
    {
     "le": 1850,
     "out": 7,
     "injured": 7,
     "suspended": 0,
-    "doubtful": 4,
+    "doubtful": 5,
     "players": [
      {
       "id": 380,
@@ -1280,10 +1275,23 @@
       "out": 0,
       "doubtful": 1,
       "gws": []
+     },
+     {
+      "id": 346,
+      "name": "Calvert-Lewin",
+      "club": "LEE",
+      "out": 0,
+      "doubtful": 1,
+      "gws": [],
+      "now": {
+       "status": "d",
+       "news": "Foot injury - 75% chance of playing",
+       "chance": 75
+      }
      }
     ],
     "now_out": 1,
-    "now_doubtful": 0
+    "now_doubtful": 1
    },
    {
     "le": 243916,
@@ -1377,10 +1385,10 @@
    },
    {
     "le": 50414,
-    "out": 6,
-    "injured": 3,
+    "out": 5,
+    "injured": 2,
     "suspended": 3,
-    "doubtful": 9,
+    "doubtful": 10,
     "players": [
      {
       "id": 223,
@@ -1413,21 +1421,6 @@
       "gws": [
        7
       ]
-     },
-     {
-      "id": 491,
-      "name": "Igor Jesus",
-      "club": "NFO",
-      "out": 1,
-      "doubtful": 0,
-      "gws": [
-       9
-      ],
-      "now": {
-       "status": "d",
-       "news": "Calf injury - 75% chance of playing",
-       "chance": 75
-      }
      },
      {
       "id": 233,
@@ -1476,6 +1469,19 @@
       "out": 0,
       "doubtful": 1,
       "gws": []
+     },
+     {
+      "id": 491,
+      "name": "Igor Jesus",
+      "club": "NFO",
+      "out": 0,
+      "doubtful": 1,
+      "gws": [],
+      "now": {
+       "status": "d",
+       "news": "Calf injury - 75% chance of playing",
+       "chance": 75
+      }
      }
     ],
     "now_out": 0,
@@ -1548,7 +1554,7 @@
     "out": 1,
     "injured": 0,
     "suspended": 1,
-    "doubtful": 6,
+    "doubtful": 7,
     "players": [
      {
       "id": 371,
@@ -1561,25 +1567,25 @@
       ]
      },
      {
-      "id": 11,
-      "name": "Mosquera",
-      "club": "ARS",
-      "out": 0,
-      "doubtful": 2,
-      "gws": []
-     },
-     {
       "id": 230,
       "name": "Branthwaite",
       "club": "EVE",
       "out": 0,
-      "doubtful": 2,
+      "doubtful": 3,
       "gws": [],
       "now": {
        "status": "d",
        "news": "Unspecified injury - 75% chance of playing",
        "chance": 75
       }
+     },
+     {
+      "id": 11,
+      "name": "Mosquera",
+      "club": "ARS",
+      "out": 0,
+      "doubtful": 2,
+      "gws": []
      },
      {
       "id": 26,
@@ -2084,6 +2090,58 @@
    ]
   },
   {
+   "id": 492,
+   "name": "Awoniyi",
+   "club": "COV",
+   "pos": "FWD",
+   "pts": 14,
+   "ins": 3,
+   "outs": 3,
+   "moves": 6,
+   "managers": 3,
+   "owner": 33708,
+   "history": [
+    {
+     "gw": 0,
+     "type": "draft",
+     "le": 265639
+    },
+    {
+     "gw": 1,
+     "type": "out",
+     "le": 265639
+    },
+    {
+     "gw": 3,
+     "type": "in",
+     "le": 50414,
+     "kind": "waiver"
+    },
+    {
+     "gw": 6,
+     "type": "out",
+     "le": 50414
+    },
+    {
+     "gw": 8,
+     "type": "in",
+     "le": 50414,
+     "kind": "waiver"
+    },
+    {
+     "gw": 9,
+     "type": "out",
+     "le": 50414
+    },
+    {
+     "gw": 10,
+     "type": "in",
+     "le": 33708,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
    "id": 403,
    "name": "Sávio",
    "club": "TOT",
@@ -2178,6 +2236,48 @@
    ]
   },
   {
+   "id": 114,
+   "name": "Boscagli",
+   "club": "BHA",
+   "pos": "DEF",
+   "pts": 39,
+   "ins": 3,
+   "outs": 2,
+   "moves": 5,
+   "managers": 3,
+   "owner": 50414,
+   "history": [
+    {
+     "gw": 4,
+     "type": "in",
+     "le": 1850,
+     "kind": "free"
+    },
+    {
+     "gw": 5,
+     "type": "out",
+     "le": 1850
+    },
+    {
+     "gw": 6,
+     "type": "in",
+     "le": 294024,
+     "kind": "waiver"
+    },
+    {
+     "gw": 9,
+     "type": "out",
+     "le": 294024
+    },
+    {
+     "gw": 10,
+     "type": "in",
+     "le": 50414,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
    "id": 116,
    "name": "Dunk",
    "club": "BHA",
@@ -2216,6 +2316,52 @@
      "type": "in",
      "le": 243916,
      "kind": "free"
+    }
+   ]
+  },
+  {
+   "id": 472,
+   "name": "Murillo",
+   "club": "NFO",
+   "pos": "DEF",
+   "pts": 31,
+   "ins": 2,
+   "outs": 3,
+   "moves": 5,
+   "managers": 3,
+   "owner": null,
+   "history": [
+    {
+     "gw": 0,
+     "type": "draft",
+     "le": 239612
+    },
+    {
+     "gw": 3,
+     "type": "out",
+     "le": 239612
+    },
+    {
+     "gw": 5,
+     "type": "in",
+     "le": 205703,
+     "kind": "waiver"
+    },
+    {
+     "gw": 7,
+     "type": "out",
+     "le": 205703
+    },
+    {
+     "gw": 8,
+     "type": "in",
+     "le": 50414,
+     "kind": "waiver"
+    },
+    {
+     "gw": 10,
+     "type": "out",
+     "le": 50414
     }
    ]
   },
@@ -2262,93 +2408,6 @@
    ]
   },
   {
-   "id": 492,
-   "name": "Awoniyi",
-   "club": "COV",
-   "pos": "FWD",
-   "pts": 14,
-   "ins": 2,
-   "outs": 3,
-   "moves": 5,
-   "managers": 2,
-   "owner": null,
-   "history": [
-    {
-     "gw": 0,
-     "type": "draft",
-     "le": 265639
-    },
-    {
-     "gw": 1,
-     "type": "out",
-     "le": 265639
-    },
-    {
-     "gw": 3,
-     "type": "in",
-     "le": 50414,
-     "kind": "waiver"
-    },
-    {
-     "gw": 6,
-     "type": "out",
-     "le": 50414
-    },
-    {
-     "gw": 8,
-     "type": "in",
-     "le": 50414,
-     "kind": "waiver"
-    },
-    {
-     "gw": 9,
-     "type": "out",
-     "le": 50414
-    }
-   ]
-  },
-  {
-   "id": 472,
-   "name": "Murillo",
-   "club": "NFO",
-   "pos": "DEF",
-   "pts": 31,
-   "ins": 2,
-   "outs": 2,
-   "moves": 4,
-   "managers": 3,
-   "owner": 50414,
-   "history": [
-    {
-     "gw": 0,
-     "type": "draft",
-     "le": 239612
-    },
-    {
-     "gw": 3,
-     "type": "out",
-     "le": 239612
-    },
-    {
-     "gw": 5,
-     "type": "in",
-     "le": 205703,
-     "kind": "waiver"
-    },
-    {
-     "gw": 7,
-     "type": "out",
-     "le": 205703
-    },
-    {
-     "gw": 8,
-     "type": "in",
-     "le": 50414,
-     "kind": "waiver"
-    }
-   ]
-  },
-  {
    "id": 67,
    "name": "Rayan",
    "club": "BOU",
@@ -2390,6 +2449,47 @@
    ]
   },
   {
+   "id": 152,
+   "name": "Palestra",
+   "club": "CHE",
+   "pos": "DEF",
+   "pts": 8,
+   "ins": 2,
+   "outs": 2,
+   "moves": 4,
+   "managers": 3,
+   "owner": 239612,
+   "history": [
+    {
+     "gw": 0,
+     "type": "draft",
+     "le": 50414
+    },
+    {
+     "gw": 2,
+     "type": "out",
+     "le": 50414
+    },
+    {
+     "gw": 6,
+     "type": "in",
+     "le": 1850,
+     "kind": "free"
+    },
+    {
+     "gw": 7,
+     "type": "out",
+     "le": 1850
+    },
+    {
+     "gw": 10,
+     "type": "in",
+     "le": 239612,
+     "kind": "waiver"
+    }
+   ]
+  },
+  {
    "id": 332,
    "name": "Justin",
    "club": "LEE",
@@ -2426,11 +2526,11 @@
    ]
   },
   {
-   "id": 114,
-   "name": "Boscagli",
-   "club": "BHA",
+   "id": 279,
+   "name": "Ajayi",
+   "club": "HUL",
    "pos": "DEF",
-   "pts": 39,
+   "pts": 36,
    "ins": 2,
    "outs": 2,
    "moves": 4,
@@ -2438,26 +2538,26 @@
    "owner": null,
    "history": [
     {
-     "gw": 4,
+     "gw": 7,
      "type": "in",
-     "le": 1850,
-     "kind": "free"
-    },
-    {
-     "gw": 5,
-     "type": "out",
-     "le": 1850
-    },
-    {
-     "gw": 6,
-     "type": "in",
-     "le": 294024,
+     "le": 243916,
      "kind": "waiver"
     },
     {
-     "gw": 9,
+     "gw": 8,
      "type": "out",
-     "le": 294024
+     "le": 243916
+    },
+    {
+     "gw": 9,
+     "type": "in",
+     "le": 50414,
+     "kind": "waiver"
+    },
+    {
+     "gw": 10,
+     "type": "out",
+     "le": 50414
     }
    ]
   },
@@ -2720,83 +2820,6 @@
      "gw": 6,
      "type": "out",
      "le": 33708
-    }
-   ]
-  },
-  {
-   "id": 429,
-   "name": "Rashford",
-   "club": "MUN",
-   "pos": "MID",
-   "pts": 11,
-   "ins": 2,
-   "outs": 2,
-   "moves": 4,
-   "managers": 2,
-   "owner": null,
-   "history": [
-    {
-     "gw": 3,
-     "type": "in",
-     "le": 263989,
-     "kind": "waiver"
-    },
-    {
-     "gw": 4,
-     "type": "out",
-     "le": 263989
-    },
-    {
-     "gw": 5,
-     "type": "in",
-     "le": 294024,
-     "kind": "waiver"
-    },
-    {
-     "gw": 6,
-     "type": "out",
-     "le": 294024
-    }
-   ]
-  },
-  {
-   "id": 504,
-   "name": "Vuskovic",
-   "club": "BHA",
-   "pos": "DEF",
-   "pts": 58,
-   "ins": 2,
-   "outs": 2,
-   "moves": 4,
-   "managers": 1,
-   "owner": 265639,
-   "history": [
-    {
-     "gw": 0,
-     "type": "draft",
-     "le": 265639
-    },
-    {
-     "gw": 1,
-     "type": "out",
-     "le": 265639
-    },
-    {
-     "gw": 2,
-     "type": "in",
-     "le": 265639,
-     "kind": "waiver"
-    },
-    {
-     "gw": 5,
-     "type": "out",
-     "le": 265639
-    },
-    {
-     "gw": 6,
-     "type": "in",
-     "le": 265639,
-     "kind": "waiver"
     }
    ]
   }
@@ -4660,33 +4683,33 @@
    "le": 294024,
    "pts": 190,
    "share": 0.479,
-   "claims_won": 13,
-   "claims_lost": 19,
+   "claims_won": 14,
+   "claims_lost": 21,
    "free_agents": 3
   },
   {
    "le": 265639,
    "pts": 172,
    "share": 0.474,
-   "claims_won": 25,
-   "claims_lost": 30,
+   "claims_won": 26,
+   "claims_lost": 31,
    "free_agents": 10
   },
   {
    "le": 50414,
    "pts": 153,
    "share": 0.462,
-   "claims_won": 22,
-   "claims_lost": 20,
+   "claims_won": 24,
+   "claims_lost": 23,
    "free_agents": 10
   },
   {
    "le": 1850,
    "pts": 146,
    "share": 0.336,
-   "claims_won": 15,
-   "claims_lost": 35,
-   "free_agents": 7
+   "claims_won": 16,
+   "claims_lost": 38,
+   "free_agents": 8
   },
   {
    "le": 243916,
@@ -4700,7 +4723,7 @@
    "le": 33708,
    "pts": 106,
    "share": 0.317,
-   "claims_won": 6,
+   "claims_won": 7,
    "claims_lost": 14,
    "free_agents": 2
   },
@@ -4708,8 +4731,8 @@
    "le": 239612,
    "pts": 95,
    "share": 0.216,
-   "claims_won": 9,
-   "claims_lost": 14,
+   "claims_won": 11,
+   "claims_lost": 15,
    "free_agents": 9
   },
   {
@@ -4732,8 +4755,8 @@
    "le": 205703,
    "pts": 36,
    "share": 0.101,
-   "claims_won": 6,
-   "claims_lost": 11,
+   "claims_won": 8,
+   "claims_lost": 15,
    "free_agents": 1
   }
  ],
@@ -4948,5 +4971,5 @@
    "bench_shame": 1
   }
  },
- "updated": "2026-11-05T17:25+00:00"
+ "updated": "2026-11-05T23:38+00:00"
 }
