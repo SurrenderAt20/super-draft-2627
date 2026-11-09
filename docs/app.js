@@ -565,7 +565,7 @@ function cupHtml(T) {
         ${c.matches.map((m) => cupMatch(m, c.gws, C.stages)).join("")}
       </div>`;
     }).join("")}</div>
-    <p class="small muted" style="margin-top:10px">Kilde: ligaens fælles regneark, opdateret hver tredje time.</p>
+    <p class="small muted" style="margin-top:10px">Kilde: ligaens fælles regneark, tjekket hver time.</p>
   </section>`;
 }
 
@@ -976,8 +976,8 @@ window.addEventListener("resize", () => moveThumb(nav, nav.querySelector('[aria-
     app.innerHTML = `<p class="error">Ligadata kunne ikke hentes (${esc(e.message)}). Prøv at genindlæse siden.</p>`;
     return;
   }
-  document.getElementById("updated").textContent = `Senest opdateret ${dateOnly(D.updated)}.`;
-  document.getElementById("stamp").textContent = `Opdateret ${dateOnly(D.updated)}`;
+  document.getElementById("updated").textContent = `Data senest ændret ${dateOnly(D.updated)}.`;
+  document.getElementById("stamp").textContent = `Data fra ${dateOnly(D.updated)}`;
   window.addEventListener("hashchange", route);
   if (document.fonts) await document.fonts.ready;
   route();

@@ -5,7 +5,7 @@ Liga-site for FPL Draft-ligaen 780: tabeller, bundpokal, held og uheld, runde-lo
 ## Sådan virker det
 
 - `scripts/build_data.py` henter data fra det offentlige Draft-API og skriver JSON-filer til `docs/data/`.
-- GitHub Actions (`.github/workflows/update.yml`) kører scriptet hver tredje time og committer kun, hvis noget har ændret sig. Brug "Run workflow" under Actions for at opdatere med det samme.
+- GitHub Actions (`.github/workflows/update.yml`) kører scriptet hver time (kl. :47 UTC) og committer kun, hvis noget har ændret sig. Brug "Run workflow" under Actions for at opdatere med det samme.
 - GitHub Pages serverer `docs/`.
 
 ## Data
