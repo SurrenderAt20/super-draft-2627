@@ -2,7 +2,7 @@ name: Update league data
 
 on:
   schedule:
-    - cron: "17 */3 * * *"   # every 3 hours (UTC), off the hour to avoid GitHub's busiest minute
+    - cron: "47 * * * *"     # every hour (UTC), at :47 so it never collides with the betting workflow at :17: GitHub drops scheduled runs at busy times, so hourly keeps gaps short
   workflow_dispatch:          # "Run workflow" button for a manual update
 
 concurrency:
@@ -44,5 +44,7 @@ jobs:
             echo "No changes."
           else
             git commit -m "Update league data"
+            # another workflow (betting tips) also pushes to main: take its commits first
+            git pull --rebase -X theirs origin main
             git push
           fi
