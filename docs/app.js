@@ -581,7 +581,7 @@ function bestGwHtml(T) {
     ? `${names(leaders.map((r) => r.le))} deler førstepladsen med ${top.best} point og lige mange rundesejre.`
     : `${esc(mgr(leaders[0].le))} fører med ${top.best} point i runde ${leaders[0].best_gw}${tied.length > 1 ? `. ${tied.length} hold har ${top.best} point, og flest rundesejre afgør` : ""}.`;
   return `<section class="sec" data-chip="Bedste runde">
-    <div class="sec-head"><div><h2>Bedste runde</h2><p class="lede">Præmien${prize ? ` (${prize.amount.toLocaleString("da-DK")} kr.)` : ""} går til holdet med sæsonens højeste score i én runde. Står flere lige, vinder den med flest rundesejre. I en dobbeltrunde tæller kun hver spillers bedste enkeltkamp. Beregnet fra FPL.</p></div></div>
+    <div class="sec-head"><div><h2>Bedste runde</h2><p class="lede">Præmien${prize ? ` (${prize.amount.toLocaleString("da-DK")} kr.)` : ""} går til holdet med sæsonens højeste score i én runde. Står flere lige, vinder den med flest rundesejre. I en dobbeltrunde tæller kun hver spillers første kamp, så ingen får en kunstig høj score. Beregnet fra FPL.</p></div></div>
     <div class="panel spot beam best-lead"><span class="muted small">Fører lige nu</span><b>${top.best} point</b><span>${leadText}</span></div>
     <div class="cols2 tight" style="margin-top:12px">
       <div class="panel"><div class="scroll"><table class="advt"><thead><tr><th>#</th><th class="l">Hold</th><th>Bedste runde</th><th>Rundesejre</th><th>Point</th></tr></thead><tbody>

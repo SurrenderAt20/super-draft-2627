@@ -180,12 +180,15 @@ def acquisition_lookup(choices, transactions, entry_to_le):
 def build_snapshot(gw, ctx):
     live = fetch(f"event/{gw}/live")
     pts = {int(k): v["stats"]["total_points"] for k, v in live["elements"].items()}
-    # points per fixture from FPL's explain data; only kept for players with more than one match this round
+    # points per fixture from FPL's explain data; only kept for players with more than one match this round.
+    # League rule for the best-round prize: in a double round only the player's FIRST match (by kickoff) counts.
+    fx_kick = {f["id"]: (f.get("kickoff_time") or "9999", f["id"]) for f in live.get("fixtures", [])}
     pts_best = {}
     for k, v in live["elements"].items():
-        per = [sum(item["points"] for item in fx[0]) for fx in v.get("explain", [])]
+        per = [(fx_kick.get(fx[1], ("9999", fx[1])), sum(item["points"] for item in fx[0]))
+               for fx in v.get("explain", [])]
         if len(per) > 1:
-            pts_best[int(k)] = max(per)
+            pts_best[int(k)] = min(per)[1]
     kickoffs = [parse_time(f["kickoff_time"]) for f in live.get("fixtures", []) if f.get("kickoff_time")]
     last_kickoff = max(kickoffs) if kickoffs else None
     all_done = all(f.get("finished") for f in live.get("fixtures", []))
@@ -627,8 +630,8 @@ def main():
     injuries = {"rounds": sorted(snapshots), "table": injuries}
 
     # best round (from FPL, not the sheet): the season's highest single-round total wins the prize;
-    # if that total is tied, the most round wins decides. In a double round only each player's best
-    # single match counts (the league's rule), using per-match points from FPL.
+    # if that total is tied, the most round wins decides. In a double round only each player's
+    # first match counts (the league's rule), using per-match points from FPL.
     def rule_score(t):
         return t["score"] - sum(p["pts"] - p["pts1"] for p in t["xi"] if "pts1" in p)
     by_gw = []

@@ -4,7 +4,7 @@ the best single round (højest single GW) and the prize split.
 The sheet is maintained by hand and is the source of truth; it is read on every run (every
 three hours). Where a cup score is still empty but both legs have been played, a provisional
 aggregate is computed from the FPL round scores and marked as such. The sheet's rule for
-double gameweeks (only a player's best single match counts) is not applied to that estimate.
+double gameweeks (only a player's first match counts) is not applied to that estimate.
 """
 
 import csv
