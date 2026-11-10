@@ -755,7 +755,7 @@
     "out": 21,
     "injured": 19,
     "suspended": 2,
-    "doubtful": 7,
+    "doubtful": 8,
     "players": [
      {
       "id": 6,
@@ -860,6 +860,19 @@
       "gws": []
      },
      {
+      "id": 356,
+      "name": "Virgil",
+      "club": "LIV",
+      "out": 0,
+      "doubtful": 1,
+      "gws": [],
+      "now": {
+       "status": "d",
+       "news": "Unspecified injury - 75% chance of playing",
+       "chance": 75
+      }
+     },
+     {
       "id": 544,
       "name": "Xhaka",
       "club": "SUN",
@@ -869,19 +882,6 @@
       "now": {
        "status": "d",
        "news": "Calf injury - 75% chance of playing",
-       "chance": 75
-      }
-     },
-     {
-      "id": 356,
-      "name": "Virgil",
-      "club": "LIV",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "d",
-       "news": "Unspecified injury - 75% chance of playing",
        "chance": 75
       }
      }
@@ -5118,5 +5118,5 @@
    "bench_shame": 2
   }
  },
- "updated": "2026-11-09T18:07+00:00"
+ "updated": "2026-11-10T01:46+00:00"
 }
