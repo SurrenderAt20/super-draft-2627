@@ -1,8 +1,8 @@
 {
  "gw": 10,
- "final": false,
+ "final": true,
  "final_at": "2026-11-11T16:30:00+00:00",
- "updated": "2026-11-11T09:52+00:00",
+ "updated": "2026-11-11T18:05+00:00",
  "matches": [
   {
    "event": 10,
