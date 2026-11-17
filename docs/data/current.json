@@ -1596,7 +1596,7 @@
     "out": 4,
     "injured": 4,
     "suspended": 0,
-    "doubtful": 5,
+    "doubtful": 6,
     "players": [
      {
       "id": 582,
@@ -1662,7 +1662,7 @@
       "name": "N.Williams",
       "club": "NFO",
       "out": 0,
-      "doubtful": 0,
+      "doubtful": 1,
       "gws": [],
       "now": {
        "status": "d",
@@ -5167,5 +5167,5 @@
    "bench_shame": 2
   }
  },
- "updated": "2026-11-16T22:32+00:00"
+ "updated": "2026-11-17T04:48+00:00"
 }
