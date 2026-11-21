@@ -755,7 +755,7 @@
     "out": 23,
     "injured": 21,
     "suspended": 2,
-    "doubtful": 7,
+    "doubtful": 6,
     "players": [
      {
       "id": 6,
@@ -874,14 +874,6 @@
       "out": 0,
       "doubtful": 2,
       "gws": []
-     },
-     {
-      "id": 356,
-      "name": "Virgil",
-      "club": "LIV",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
      }
     ],
     "now_out": 3,
@@ -985,7 +977,7 @@
     "out": 9,
     "injured": 8,
     "suspended": 1,
-    "doubtful": 10,
+    "doubtful": 9,
     "players": [
      {
       "id": 554,
@@ -1086,14 +1078,6 @@
        "news": "Ankle injury - 75% chance of playing",
        "chance": 75
       }
-     },
-     {
-      "id": 151,
-      "name": "Acheampong",
-      "club": "CHE",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
      }
     ],
     "now_out": 0,
@@ -1104,7 +1088,7 @@
     "out": 8,
     "injured": 8,
     "suspended": 0,
-    "doubtful": 11,
+    "doubtful": 12,
     "players": [
      {
       "id": 465,
@@ -1142,7 +1126,7 @@
       "name": "Matheus N.",
       "club": "MCI",
       "out": 0,
-      "doubtful": 2,
+      "doubtful": 3,
       "gws": [],
       "now": {
        "status": "d",
@@ -1191,7 +1175,7 @@
     "out": 8,
     "injured": 8,
     "suspended": 0,
-    "doubtful": 6,
+    "doubtful": 5,
     "players": [
      {
       "id": 380,
@@ -1254,14 +1238,6 @@
       "id": 346,
       "name": "Calvert-Lewin",
       "club": "LEE",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 391,
-      "name": "Gvardiol",
-      "club": "MCI",
       "out": 0,
       "doubtful": 1,
       "gws": []
@@ -1481,14 +1457,14 @@
     "out": 6,
     "injured": 6,
     "suspended": 0,
-    "doubtful": 11,
+    "doubtful": 10,
     "players": [
      {
       "id": 28,
       "name": "Martinez",
       "club": "CHE",
       "out": 3,
-      "doubtful": 1,
+      "doubtful": 0,
       "gws": [
        7,
        8,
@@ -1558,19 +1534,11 @@
       "gws": []
      },
      {
-      "id": 286,
-      "name": "Belloumi",
-      "club": "HUL",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
       "id": 393,
       "name": "Khusanov",
       "club": "MCI",
       "out": 0,
-      "doubtful": 0,
+      "doubtful": 1,
       "gws": [],
       "now": {
        "status": "d",
@@ -1584,10 +1552,10 @@
    },
    {
     "le": 265639,
-    "out": 4,
-    "injured": 4,
+    "out": 5,
+    "injured": 5,
     "suspended": 0,
-    "doubtful": 6,
+    "doubtful": 5,
     "players": [
      {
       "id": 582,
@@ -1612,6 +1580,16 @@
       ]
      },
      {
+      "id": 514,
+      "name": "Tel",
+      "club": "TOT",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       10
+      ]
+     },
+     {
       "id": 649,
       "name": "Fernandez-Pardo",
       "club": "NEW",
@@ -1631,14 +1609,6 @@
       "id": 471,
       "name": "Milenković",
       "club": "NFO",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 514,
-      "name": "Tel",
-      "club": "TOT",
       "out": 0,
       "doubtful": 1,
       "gws": []
@@ -1673,7 +1643,7 @@
     "out": 1,
     "injured": 0,
     "suspended": 1,
-    "doubtful": 8,
+    "doubtful": 7,
     "players": [
      {
       "id": 371,
@@ -1702,17 +1672,17 @@
       "gws": []
      },
      {
-      "id": 53,
-      "name": "Manzambi",
-      "club": "AVL",
-      "out": 0,
-      "doubtful": 2,
-      "gws": []
-     },
-     {
       "id": 26,
       "name": "Havertz",
       "club": "ARS",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 53,
+      "name": "Manzambi",
+      "club": "AVL",
       "out": 0,
       "doubtful": 1,
       "gws": []
@@ -5216,5 +5186,5 @@
    "bench_shame": 2
   }
  },
- "updated": "2026-11-20T18:51+00:00"
+ "updated": "2026-11-21T00:58+00:00"
 }
