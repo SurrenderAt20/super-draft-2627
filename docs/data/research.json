@@ -1,0 +1,36 @@
+{
+  "day": "2026-11-21",
+  "updated": "2026-11-21T12:25:00+01:00",
+  "title": "Stigen 1,10–1,20: dagens tre trin",
+  "lede": "Researchet af Claude: hold scorer i topligaer, valgt først på form og hjemme/ude-rekorder, derefter på pris. Trinene ligger efter hinanden, så hele udbetalingen kan rulles videre; spil kun næste trin, hvis det forrige gik hjem.",
+  "steps": [
+    {
+      "order": 1, "ko": "2026-11-21T15:00:00Z", "div": "SC0", "home": "Falkirk", "away": "St Johnstone",
+      "pick": "Falkirk scorer", "price": 1.17, "est": true, "min": 1.17, "p": 0.85,
+      "short": "Scoret i 5 af 6 hjemmekampe · St Johnstone har lukket ind i 5 af 6 udekampe",
+      "why": ["Falkirk har scoret i 5 af 6 hjemmekampe i år (9 mål) og i 17 af 20 sidste sæson.",
+              "St Johnstone har lukket mål ind i 5 af 6 udekampe (10 mål imod).",
+              "Hjemmehold i Skotland i det her prisleje har scoret ca. 5 procentpoint oftere, end markedet regnede med (77 kampe)."],
+      "alt": "Hibernian scorer mod Dundee United (≈1,13)"
+    },
+    {
+      "order": 2, "ko": "2026-11-21T17:45:00Z", "div": "N1", "home": "Utrecht", "away": "Cambuur",
+      "pick": "Utrecht scorer", "price": 1.11, "est": true, "min": 1.11, "p": 0.90,
+      "short": "Scoret i alle 6 hjemmekampe · Cambuur har lukket ind i 4 af 5 udekampe",
+      "why": ["Utrecht har scoret i alle 6 hjemmekampe i år (11 mål) og i 14 af 17 sidste sæson.",
+              "Oprykkerne Cambuur har lukket mål ind i 4 af 5 udekampe.",
+              "Hjemmehold i Eredivisie i det her prisleje har scoret 5–6 procentpoint oftere, end markedet regnede med (over 200 kampe)."],
+      "alt": "Stuttgart scorer ude mod Schalke (≈1,11)"
+    },
+    {
+      "order": 3, "ko": "2026-11-21T20:00:00Z", "div": "N1", "home": "Telstar", "away": "Zwolle",
+      "pick": "Telstar scorer", "price": 1.15, "est": true, "min": 1.15, "p": 0.87,
+      "short": "Scoret i 5 af 6 hjemmekampe (12 mål) · Zwolle har lukket ind i 37 af 40 udekampe siden 2024",
+      "why": ["Telstar har scoret i 5 af 6 hjemmekampe i år (12 mål) og i 14 af 17 sidste sæson.",
+              "Zwolle har lukket mål ind i 37 af deres seneste 40 udekampe, 5 af 6 i år.",
+              "Hjemmehold i Eredivisie i det her prisleje har scoret 5–6 procentpoint oftere, end markedet regnede med."],
+      "alt": "Groningen scorer mod Heerenveen (≈1,18)"
+    }
+  ],
+  "note": "Foreløbig: nyhedstjek af holdene kører stadig, og listen opdateres før kl. 15. Odds med ≈ er skønnet ud fra DraftKings' priser; tjek bet365 og spil kun til \"Tag ved\" eller bedre. Ingen af trinene er en klar fordel: de ligger omkring fair pris."
+}

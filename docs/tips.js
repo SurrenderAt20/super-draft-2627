@@ -3,6 +3,7 @@
 // with a live track record, from data/tips.json (scripts/tips.py).
 
 let TIPS = null;
+let RESEARCH = null; // hand-made picks, data/research.json; optional
 const TIPS_STATE = { done: "singles" };
 
 const KIND = {
@@ -87,6 +88,7 @@ async function viewBetting() {
       app.innerHTML = `<h1>Betting</h1><p class="lede">${e.message.includes("404") ? "Der er ingen tips endnu. Første kupon kommer kl. 11 eller 15." : `Tips kunne ikke hentes (${esc(e.message)}). Prøv at genindlæse.`}</p>`;
       return;
     }
+    RESEARCH = await getJSON("data/research.json").catch(() => null);
   }
   renderTips();
 }
@@ -119,6 +121,8 @@ function renderTips() {
         <p class="lede">Kampe de næste 24 timer${c.slot !== 11 ? ", uden spil og kampe der allerede er givet i dag" : ""}. Offentliggjort ${dateOnly(c.published)}, odds hentet ${c.odds_as_of ? dateOnly(c.odds_as_of) : "ukendt"}; bet365 kan have flyttet dem. Ændres aldrig, når den er lagt ud.</p></div></div>
       ${cardHtml(c)}
     </section>`).join("") || `<section class="sec"><h2>Ingen kupon endnu</h2><p class="lede">Første kupon kommer kl. 11 eller 15.</p></section>`}
+
+    ${researchHtml()}
 
     ${scorerListHtml()}
 
@@ -384,6 +388,25 @@ function ladderHtml() {
         <td class="l">${r.status === "alive" ? `<span class="bt-res open">Lever</span>` : r.broke ? r.broke.legs.filter((l) => l.res === "lost").map((l) => `${esc(pick(l))}<span class="bt-sub">${esc(l.home)} – ${esc(l.away)} ${esc(l.score || "")}</span>`).join("") : "–"}</td></tr>`).join("")}
       </tbody></table></div>` : `<p class="muted small">Ingen forsøg endnu.</p>`}
     </div>
+  </section>`;
+}
+
+// ---------------------------------------------------------------- research
+// Picks researched by hand (data/research.json, written outside the tips workflow). Shown only on their day.
+
+function researchHtml() {
+  const R = RESEARCH;
+  const today = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Copenhagen" }).format(new Date());
+  if (!R || !R.steps || !R.steps.length || R.day < today) return "";
+  const tip = (s) => `<b>${esc(s.pick)}</b><br>Chance ${pct(s.p)}, fair odds ${num(1 / s.p, 2)}${(s.why || []).length ? `<ul class="bt-why">${s.why.map((w) => `<li>${esc(w)}</li>`).join("")}</ul>` : ""}`;
+  return `<section class="sec">
+    <div class="sec-head"><div><h2>${esc(R.title)}, ${day(R.day)}</h2><p class="lede">${esc(R.lede)}</p></div></div>
+    <div class="panel bt-block">${R.note ? `<p class="small muted">${esc(R.note)}${R.updated ? ` Opdateret ${dateOnly(R.updated)}.` : ""}</p>` : ""}
+      <div class="scroll"><table class="advt">
+      <thead><tr><th class="l">Trin</th><th>Odds</th><th>Tag ved</th><th>Chance</th></tr></thead>
+      <tbody>${R.steps.map((s) => `<tr><td class="l"><b>${s.order}.</b> <span data-tip="${esc(tip(s))}"><b>${esc(s.pick)}</b></span>
+        <span class="bt-sub">${esc(s.home)} – ${esc(s.away)} · ${esc(league(s))} · ${kickoff(s)}</span>${s.short ? `<span class="bt-sub">${esc(s.short)}</span>` : ""}${s.alt ? `<span class="bt-sub">Reserve: ${esc(s.alt)}</span>` : ""}</td>
+        <td class="pts">${s.est ? "≈" : ""}${odds(s.price)}</td><td>${s.min ? `${odds(s.min)}+` : "–"}</td><td>${pct(s.p)}</td></tr>`).join("")}</tbody></table></div></div>
   </section>`;
 }
 

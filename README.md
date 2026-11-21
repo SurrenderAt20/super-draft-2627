@@ -16,6 +16,7 @@ Liga-site for FPL Draft-ligaen 780: tabeller, bundpokal, held og uheld, runde-lo
 | `docs/data/gameweeks/gwNN.json` | Én fil per færdigspillet runde. Fryses (`"final": true`) 72 timer efter rundens sidste kamp og bliver derefter aldrig ændret af scriptet. |
 | `docs/data/blocks.json` | Bundpokalens historik. En blok fryses, når alle dens runder er frosne. |
 | `docs/data/current.json` | Alt, siden viser lige nu. Genberegnes ved hver kørsel. |
+| `docs/data/research.json` | Håndlavede spilforslag (fx dagens stige-trin). Rettes i hånden; vises på Betting efter langskud-kombien, kun på dagen i `day`. |
 
 Skal et frosset resultat rettes, så ret filen i hånden og commit. Historikken i git viser hvem og hvornår.
 
