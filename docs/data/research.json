@@ -1,36 +1,39 @@
 {
   "day": "2026-11-21",
-  "updated": "2026-11-21T12:25:00+01:00",
+  "updated": "2026-11-21T12:40:00+01:00",
   "title": "Stigen 1,10–1,20: dagens tre trin",
   "lede": "Researchet af Claude: hold scorer i topligaer, valgt først på form og hjemme/ude-rekorder, derefter på pris. Trinene ligger efter hinanden, så hele udbetalingen kan rulles videre; spil kun næste trin, hvis det forrige gik hjem.",
   "steps": [
     {
-      "order": 1, "ko": "2026-11-21T15:00:00Z", "div": "SC0", "home": "Falkirk", "away": "St Johnstone",
-      "pick": "Falkirk scorer", "price": 1.17, "est": true, "min": 1.17, "p": 0.85,
-      "short": "Scoret i 5 af 6 hjemmekampe · St Johnstone har lukket ind i 5 af 6 udekampe",
-      "why": ["Falkirk har scoret i 5 af 6 hjemmekampe i år (9 mål) og i 17 af 20 sidste sæson.",
-              "St Johnstone har lukket mål ind i 5 af 6 udekampe (10 mål imod).",
-              "Hjemmehold i Skotland i det her prisleje har scoret ca. 5 procentpoint oftere, end markedet regnede med (77 kampe)."],
-      "alt": "Hibernian scorer mod Dundee United (≈1,13)"
+      "order": 1, "ko": "2026-11-21T14:30:00Z", "div": "D1", "home": "Elversberg", "away": "Freiburg",
+      "pick": "Freiburg scorer", "price": 1.16, "est": true, "min": 1.16, "p": 0.86,
+      "short": "Scoret i alle 9 ligakampe · Elversberg har lukket ind i alle 4 hjemmekampe og mangler tre forsvarere",
+      "why": ["Freiburg har scoret i alle 9 ligakampe i år, 6 mål i 4 udekampe. Kun Freiburg og Augsburg har scoret i hver kamp.",
+              "Oprykkerne Elversberg har lukket mål ind i alle 4 hjemmekampe (8 mål) og mangler sandsynligvis tre forsvarsspillere, bl.a. anfører og midterforsvarer Pinckert.",
+              "Freiburg har næsten hele truppen klar. Udehold i Bundesliga i det her prisleje har scoret ca. 4 procentpoint oftere, end markedet regnede med (70 kampe).",
+              "Svaghed: Freiburg scorede kun i 9 af 17 udekampe sidste sæson."],
+      "alt": "Hoffenheim scorer ude mod Frankfurt kl. 15:30 (≈1,13) eller Falkirk scorer mod St Johnstone kl. 16 (≈1,17)"
     },
     {
       "order": 2, "ko": "2026-11-21T17:45:00Z", "div": "N1", "home": "Utrecht", "away": "Cambuur",
       "pick": "Utrecht scorer", "price": 1.11, "est": true, "min": 1.11, "p": 0.90,
-      "short": "Scoret i alle 6 hjemmekampe · Cambuur har lukket ind i 4 af 5 udekampe",
+      "short": "Scoret i alle 6 hjemmekampe · Cambuur mangler en midterforsvarer og førstemålmanden",
       "why": ["Utrecht har scoret i alle 6 hjemmekampe i år (11 mål) og i 14 af 17 sidste sæson.",
-              "Oprykkerne Cambuur har lukket mål ind i 4 af 5 udekampe.",
-              "Hjemmehold i Eredivisie i det her prisleje har scoret 5–6 procentpoint oftere, end markedet regnede med (over 200 kampe)."],
-      "alt": "Stuttgart scorer ude mod Schalke (≈1,11)"
+              "Cambuur mangler midterforsvarer Amofa resten af sæsonen og førstemålmand Meijster; reserven Jansen står i mål.",
+              "Hjemmehold i Eredivisie i det her prisleje har scoret 5–6 procentpoint oftere, end markedet regnede med (over 200 kampe).",
+              "Svaghed: Utrecht er nr. 14 og har tabt to i træk, og Stepanov har ikke scoret i 5 kampe."],
+      "alt": "Stuttgart scorer ude mod Schalke kl. 18:30 (≈1,11)"
     },
     {
-      "order": 3, "ko": "2026-11-21T20:00:00Z", "div": "N1", "home": "Telstar", "away": "Zwolle",
-      "pick": "Telstar scorer", "price": 1.15, "est": true, "min": 1.15, "p": 0.87,
-      "short": "Scoret i 5 af 6 hjemmekampe (12 mål) · Zwolle har lukket ind i 37 af 40 udekampe siden 2024",
-      "why": ["Telstar har scoret i 5 af 6 hjemmekampe i år (12 mål) og i 14 af 17 sidste sæson.",
-              "Zwolle har lukket mål ind i 37 af deres seneste 40 udekampe, 5 af 6 i år.",
-              "Hjemmehold i Eredivisie i det her prisleje har scoret 5–6 procentpoint oftere, end markedet regnede med."],
-      "alt": "Groningen scorer mod Heerenveen (≈1,18)"
+      "order": 3, "ko": "2026-11-21T20:00:00Z", "div": "N1", "home": "Groningen", "away": "Heerenveen",
+      "pick": "Heerenveen scorer", "price": 1.15, "est": true, "min": 1.13, "p": 0.88,
+      "short": "11 mål i 5 udekampe · Groningen mangler to målmænd, en højreback og cheftræneren",
+      "why": ["Heerenveen har scoret 11 mål i 5 udekampe og vundet 4 af de sidste 5, senest 5-3 over Feyenoord. Hele angrebet er klar.",
+              "Groningen mangler førstemålmand Vaessen og højreback Hateboer (karantæne), den skadede andetmålmand og midterforsvarer Jeng. En midtbanespiller skal spille højreback, og cheftræner Lukkien er væk efter en hofteoperation.",
+              "Groningen har lukket 14 mål ind i 6 hjemmekampe.",
+              "Udehold i Eredivisie i det her prisleje har scoret ca. 6 procentpoint oftere, end markedet regnede med (58 kampe)."],
+      "alt": "Groningen scorer (≈1,18)"
     }
   ],
-  "note": "Foreløbig: nyhedstjek af holdene kører stadig, og listen opdateres før kl. 15. Odds med ≈ er skønnet ud fra DraftKings' priser; tjek bet365 og spil kun til \"Tag ved\" eller bedre. Ingen af trinene er en klar fordel: de ligger omkring fair pris."
+  "note": "Nyhedstjekket kl. 12:40. Opstillingerne kommer ca. en time før kampstart: spring et trin over, hvis Freiburgs Matanović, Utrechts Alarcón og Stepanov eller Heerenveens Trenskow mangler. Odds med ≈ er skønnet ud fra DraftKings' priser; tjek bet365 og spil kun til \"Tag ved\" eller bedre. Ingen af trinene er en klar fordel: de ligger omkring fair pris."
 }
