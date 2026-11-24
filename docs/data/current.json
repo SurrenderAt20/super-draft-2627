@@ -60,7 +60,7 @@
  },
  "game": {
   "current": 11,
-  "current_finished": false,
+  "current_finished": true,
   "next": 12,
   "waivers_processed": false,
   "next_trades": "2026-11-25T18:30:00Z",
@@ -108,59 +108,14 @@
   {
    "gw": 10,
    "final": true
+  },
+  {
+   "gw": 11,
+   "final": false
   }
  ],
- "latest_gw": 10,
- "live": {
-  "gw": 11,
-  "matches": [
-   {
-    "event": 11,
-    "a": 1850,
-    "b": 33708,
-    "pa": 40,
-    "pb": 37,
-    "finished": false,
-    "started": true
-   },
-   {
-    "event": 11,
-    "a": 50414,
-    "b": 294024,
-    "pa": 44,
-    "pb": 48,
-    "finished": false,
-    "started": true
-   },
-   {
-    "event": 11,
-    "a": 205703,
-    "b": 274299,
-    "pa": 57,
-    "pb": 37,
-    "finished": false,
-    "started": true
-   },
-   {
-    "event": 11,
-    "a": 239612,
-    "b": 265639,
-    "pa": 19,
-    "pb": 50,
-    "finished": false,
-    "started": true
-   },
-   {
-    "event": 11,
-    "a": 243916,
-    "b": 263989,
-    "pa": 14,
-    "pb": 18,
-    "finished": false,
-    "started": true
-   }
-  ]
- },
+ "latest_gw": 11,
+ "live": null,
  "next_round": {
   "gw": 12,
   "matches": [
@@ -382,52 +337,57 @@
    "standings": [
     {
      "le": 265639,
-     "total": 194,
+     "total": 244,
      "by_gw": {
       "7": 50,
       "8": 34,
       "9": 55,
-      "10": 55
+      "10": 55,
+      "11": 50
      }
     },
     {
      "le": 294024,
-     "total": 167,
+     "total": 221,
      "by_gw": {
       "7": 47,
       "8": 43,
       "9": 50,
-      "10": 27
+      "10": 27,
+      "11": 54
      }
     },
     {
      "le": 205703,
-     "total": 161,
+     "total": 218,
      "by_gw": {
       "7": 43,
       "8": 25,
       "9": 43,
-      "10": 50
+      "10": 50,
+      "11": 57
      }
     },
     {
      "le": 50414,
-     "total": 152,
+     "total": 196,
      "by_gw": {
       "7": 30,
       "8": 42,
       "9": 49,
-      "10": 31
+      "10": 31,
+      "11": 44
      }
     },
     {
      "le": 243916,
-     "total": 128,
+     "total": 142,
      "by_gw": {
       "7": 29,
       "8": 37,
       "9": 27,
-      "10": 35
+      "10": 35,
+      "11": 14
      }
     }
    ],
@@ -435,7 +395,8 @@
     7,
     8,
     9,
-    10
+    10,
+    11
    ],
    "status": "live",
    "winners": [],
@@ -507,249 +468,249 @@
    {
     "a": 265639,
     "b": 1850,
-    "ea": 43.0,
-    "eb": 44.2,
-    "pa": 0.458,
-    "pd": 0.028,
+    "ea": 42.5,
+    "eb": 43.7,
+    "pa": 0.461,
+    "pd": 0.026,
     "pb": 0.513
    },
    {
     "a": 274299,
     "b": 263989,
-    "ea": 43.1,
-    "eb": 45.1,
-    "pa": 0.434,
-    "pd": 0.027,
-    "pb": 0.539
+    "ea": 42.3,
+    "eb": 42.7,
+    "pa": 0.479,
+    "pd": 0.025,
+    "pb": 0.495
    },
    {
     "a": 294024,
     "b": 243916,
-    "ea": 40.8,
-    "eb": 39.7,
-    "pa": 0.51,
-    "pd": 0.027,
-    "pb": 0.463
+    "ea": 41.0,
+    "eb": 37.8,
+    "pa": 0.567,
+    "pd": 0.026,
+    "pb": 0.407
    },
    {
     "a": 33708,
     "b": 239612,
-    "ea": 35.4,
-    "eb": 38.0,
-    "pa": 0.417,
-    "pd": 0.026,
-    "pb": 0.557
+    "ea": 33.9,
+    "eb": 36.3,
+    "pa": 0.425,
+    "pd": 0.025,
+    "pb": 0.55
    },
    {
     "a": 50414,
     "b": 205703,
-    "ea": 40.6,
-    "eb": 40.3,
-    "pa": 0.493,
-    "pd": 0.026,
-    "pb": 0.481
+    "ea": 40.3,
+    "eb": 40.4,
+    "pa": 0.482,
+    "pd": 0.025,
+    "pb": 0.494
    }
   ],
   "next_gw": 12,
   "season": [
    {
     "le": 263989,
-    "exp_pts": 69.2,
-    "exp_rank": 2.47,
-    "p_first": 0.399,
-    "p_top3": 0.772,
-    "p_last": 0.002,
+    "exp_pts": 68.9,
+    "exp_rank": 2.78,
+    "p_first": 0.337,
+    "p_top3": 0.714,
+    "p_last": 0.003,
     "dist": [
-     0.399,
-     0.225,
-     0.148,
+     0.337,
+     0.221,
+     0.156,
+     0.106,
+     0.072,
+     0.049,
+     0.031,
+     0.017,
+     0.008,
+     0.003
+    ]
+   },
+   {
+    "le": 1850,
+    "exp_pts": 66.0,
+    "exp_rank": 3.28,
+    "p_first": 0.242,
+    "p_top3": 0.615,
+    "p_last": 0.005,
+    "dist": [
+     0.242,
+     0.209,
+     0.164,
+     0.131,
      0.094,
-     0.062,
-     0.035,
-     0.021,
-     0.01,
-     0.005,
-     0.002
+     0.067,
+     0.045,
+     0.028,
+     0.015,
+     0.005
     ]
    },
    {
     "le": 274299,
     "exp_pts": 64.0,
-    "exp_rank": 3.49,
-    "p_first": 0.188,
-    "p_top3": 0.572,
-    "p_last": 0.005,
-    "dist": [
-     0.188,
-     0.207,
-     0.177,
-     0.141,
-     0.11,
-     0.076,
-     0.048,
-     0.031,
-     0.017,
-     0.005
-    ]
-   },
-   {
-    "le": 1850,
-    "exp_pts": 63.5,
-    "exp_rank": 3.52,
-    "p_first": 0.19,
-    "p_top3": 0.571,
+    "exp_rank": 3.74,
+    "p_first": 0.171,
+    "p_top3": 0.524,
     "p_last": 0.007,
     "dist": [
-     0.19,
-     0.202,
-     0.179,
-     0.138,
-     0.106,
-     0.079,
-     0.048,
-     0.032,
-     0.018,
+     0.171,
+     0.183,
+     0.171,
+     0.142,
+     0.114,
+     0.089,
+     0.062,
+     0.04,
+     0.023,
      0.007
     ]
    },
    {
-    "le": 239612,
-    "exp_pts": 59.6,
-    "exp_rank": 4.43,
-    "p_first": 0.101,
-    "p_top3": 0.391,
-    "p_last": 0.018,
-    "dist": [
-     0.101,
-     0.136,
-     0.154,
-     0.152,
-     0.139,
-     0.114,
-     0.091,
-     0.057,
-     0.036,
-     0.018
-    ]
-   },
-   {
     "le": 265639,
-    "exp_pts": 57.6,
-    "exp_rank": 4.87,
-    "p_first": 0.07,
-    "p_top3": 0.315,
-    "p_last": 0.028,
+    "exp_pts": 62.2,
+    "exp_rank": 4.15,
+    "p_first": 0.127,
+    "p_top3": 0.45,
+    "p_last": 0.016,
     "dist": [
-     0.07,
-     0.11,
-     0.134,
-     0.156,
-     0.144,
-     0.128,
+     0.127,
+     0.16,
+     0.163,
+     0.15,
+     0.125,
      0.099,
-     0.078,
-     0.053,
-     0.028
+     0.074,
+     0.052,
+     0.034,
+     0.016
     ]
    },
    {
-    "le": 33708,
-    "exp_pts": 52.1,
-    "exp_rank": 6.21,
-    "p_first": 0.023,
-    "p_top3": 0.148,
-    "p_last": 0.082,
+    "le": 239612,
+    "exp_pts": 56.0,
+    "exp_rank": 5.65,
+    "p_first": 0.045,
+    "p_top3": 0.214,
+    "p_last": 0.052,
     "dist": [
-     0.023,
-     0.049,
-     0.076,
-     0.104,
-     0.13,
-     0.143,
-     0.145,
-     0.135,
-     0.113,
-     0.082
+     0.045,
+     0.07,
+     0.1,
+     0.122,
+     0.136,
+     0.142,
+     0.132,
+     0.117,
+     0.085,
+     0.052
     ]
    },
    {
     "le": 294024,
-    "exp_pts": 49.2,
-    "exp_rank": 6.77,
-    "p_first": 0.013,
-    "p_top3": 0.096,
-    "p_last": 0.126,
+    "exp_pts": 54.9,
+    "exp_rank": 5.81,
+    "p_first": 0.035,
+    "p_top3": 0.194,
+    "p_last": 0.065,
     "dist": [
-     0.013,
-     0.03,
-     0.053,
-     0.083,
-     0.106,
-     0.139,
-     0.155,
-     0.153,
-     0.141,
-     0.126
-    ]
-   },
-   {
-    "le": 243916,
-    "exp_pts": 47.2,
-    "exp_rank": 7.35,
-    "p_first": 0.007,
-    "p_top3": 0.061,
-    "p_last": 0.18,
-    "dist": [
-     0.007,
-     0.019,
      0.035,
-     0.058,
-     0.083,
-     0.114,
-     0.147,
-     0.172,
-     0.184,
-     0.18
+     0.067,
+     0.093,
+     0.12,
+     0.137,
+     0.14,
+     0.135,
+     0.117,
+     0.093,
+     0.065
     ]
    },
    {
-    "le": 50414,
-    "exp_pts": 44.5,
-    "exp_rank": 7.87,
-    "p_first": 0.004,
-    "p_top3": 0.038,
-    "p_last": 0.261,
+    "le": 33708,
+    "exp_pts": 52.3,
+    "exp_rank": 6.55,
+    "p_first": 0.019,
+    "p_top3": 0.124,
+    "p_last": 0.103,
     "dist": [
-     0.004,
-     0.011,
-     0.023,
+     0.019,
      0.041,
-     0.065,
-     0.088,
-     0.124,
-     0.168,
-     0.215,
-     0.261
+     0.064,
+     0.087,
+     0.112,
+     0.134,
+     0.149,
+     0.152,
+     0.139,
+     0.103
     ]
    },
    {
     "le": 205703,
-    "exp_pts": 43.7,
-    "exp_rank": 8.03,
-    "p_first": 0.004,
-    "p_top3": 0.034,
-    "p_last": 0.29,
+    "exp_pts": 51.1,
+    "exp_rank": 6.8,
+    "p_first": 0.017,
+    "p_top3": 0.102,
+    "p_last": 0.127,
     "dist": [
-     0.004,
+     0.017,
+     0.033,
+     0.052,
+     0.075,
+     0.107,
+     0.127,
+     0.151,
+     0.158,
+     0.152,
+     0.127
+    ]
+   },
+   {
+    "le": 50414,
+    "exp_pts": 45.5,
+    "exp_rank": 8.01,
+    "p_first": 0.003,
+    "p_top3": 0.036,
+    "p_last": 0.285,
+    "dist": [
+     0.003,
      0.01,
-     0.02,
-     0.032,
-     0.056,
-     0.083,
-     0.122,
-     0.165,
-     0.218,
-     0.29
+     0.023,
+     0.036,
+     0.057,
+     0.08,
+     0.117,
+     0.16,
+     0.228,
+     0.285
+    ]
+   },
+   {
+    "le": 243916,
+    "exp_pts": 44.7,
+    "exp_rank": 8.24,
+    "p_first": 0.003,
+    "p_top3": 0.026,
+    "p_last": 0.335,
+    "dist": [
+     0.003,
+     0.008,
+     0.015,
+     0.031,
+     0.046,
+     0.073,
+     0.104,
+     0.16,
+     0.224,
+     0.335
     ]
    }
   ],
@@ -758,18 +719,18 @@
    "from": 7,
    "to": 12,
    "p_win": {
-    "205703": 0.007,
+    "205703": 0.028,
     "243916": 0.0,
-    "294024": 0.022,
-    "50414": 0.001,
-    "265639": 0.97
+    "294024": 0.051,
+    "50414": 0.0,
+    "265639": 0.921
    }
   },
   "calibration": {
-   "bias": 2.97,
-   "sd": 10.36,
-   "fav_won": 32,
-   "fav_n": 40,
+   "bias": 2.49,
+   "sd": 10.8,
+   "fav_won": 36,
+   "fav_n": 45,
    "rounds": [
     3,
     4,
@@ -778,7 +739,8 @@
     7,
     8,
     9,
-    10
+    10,
+    11
    ]
   },
   "drift_sd": 3.0,
@@ -796,15 +758,16 @@
    7,
    8,
    9,
-   10
+   10,
+   11
   ],
   "table": [
    {
     "le": 33708,
-    "out": 23,
-    "injured": 21,
-    "suspended": 2,
-    "doubtful": 6,
+    "out": 26,
+    "injured": 23,
+    "suspended": 3,
+    "doubtful": 8,
     "players": [
      {
       "id": 6,
@@ -838,13 +801,14 @@
       "id": 223,
       "name": "Mateta",
       "club": "CRY",
-      "out": 4,
+      "out": 5,
       "doubtful": 0,
       "gws": [
        5,
        6,
        9,
-       10
+       10,
+       11
       ],
       "now": {
        "status": "s",
@@ -856,16 +820,34 @@
       "id": 12,
       "name": "Saka",
       "club": "ARS",
-      "out": 3,
+      "out": 4,
       "doubtful": 1,
       "gws": [
        8,
        9,
-       10
+       10,
+       11
       ],
       "now": {
        "status": "i",
        "news": "Thigh injury - Expected back 20 Dec",
+       "chance": 0
+      }
+     },
+     {
+      "id": 552,
+      "name": "Brobbey",
+      "club": "SUN",
+      "out": 3,
+      "doubtful": 1,
+      "gws": [
+       5,
+       10,
+       11
+      ],
+      "now": {
+       "status": "i",
+       "news": "Muscular injury - Unknown return date",
        "chance": 0
       }
      },
@@ -879,22 +861,6 @@
        4,
        5
       ]
-     },
-     {
-      "id": 552,
-      "name": "Brobbey",
-      "club": "SUN",
-      "out": 2,
-      "doubtful": 1,
-      "gws": [
-       5,
-       10
-      ],
-      "now": {
-       "status": "i",
-       "news": "Muscular injury - Unknown return date",
-       "chance": 0
-      }
      },
      {
       "id": 463,
@@ -929,7 +895,7 @@
       "name": "Awoniyi",
       "club": "COV",
       "out": 0,
-      "doubtful": 0,
+      "doubtful": 1,
       "gws": [],
       "now": {
        "status": "d",
@@ -942,7 +908,7 @@
       "name": "Hall",
       "club": "NEW",
       "out": 0,
-      "doubtful": 0,
+      "doubtful": 1,
       "gws": [],
       "now": {
        "status": "d",
@@ -956,16 +922,16 @@
    },
    {
     "le": 239612,
-    "out": 12,
-    "injured": 10,
-    "suspended": 2,
+    "out": 15,
+    "injured": 12,
+    "suspended": 3,
     "doubtful": 4,
     "players": [
      {
       "id": 439,
       "name": "Šeško",
       "club": "MUN",
-      "out": 6,
+      "out": 7,
       "doubtful": 0,
       "gws": [
        5,
@@ -973,7 +939,8 @@
        7,
        8,
        9,
-       10
+       10,
+       11
       ],
       "now": {
        "status": "i",
@@ -985,12 +952,13 @@
       "id": 165,
       "name": "João Pedro",
       "club": "CHE",
-      "out": 3,
+      "out": 4,
       "doubtful": 1,
       "gws": [
        8,
        9,
-       10
+       10,
+       11
       ],
       "now": {
        "status": "i",
@@ -1020,6 +988,21 @@
       ]
      },
      {
+      "id": 229,
+      "name": "Tarkowski",
+      "club": "EVE",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       11
+      ],
+      "now": {
+       "status": "s",
+       "news": "Suspended until 13 Dec",
+       "chance": 0
+      }
+     },
+     {
       "id": 595,
       "name": "Dedić",
       "club": "NEW",
@@ -1042,22 +1025,192 @@
       "out": 0,
       "doubtful": 1,
       "gws": []
-     },
-     {
-      "id": 229,
-      "name": "Tarkowski",
-      "club": "EVE",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "s",
-       "news": "Suspended until 13 Dec",
-       "chance": 0
-      }
      }
     ],
     "now_out": 3,
+    "now_doubtful": 0
+   },
+   {
+    "le": 1850,
+    "out": 10,
+    "injured": 9,
+    "suspended": 1,
+    "doubtful": 6,
+    "players": [
+     {
+      "id": 380,
+      "name": "Ekitiké",
+      "club": "LIV",
+      "out": 5,
+      "doubtful": 0,
+      "gws": [
+       7,
+       8,
+       9,
+       10,
+       11
+      ],
+      "now": {
+       "status": "i",
+       "news": "Achilles injury - Unknown return date",
+       "chance": 0
+      }
+     },
+     {
+      "id": 208,
+      "name": "Sarr",
+      "club": "CRY",
+      "out": 2,
+      "doubtful": 0,
+      "gws": [
+       1,
+       2
+      ]
+     },
+     {
+      "id": 368,
+      "name": "Szoboszlai",
+      "club": "LIV",
+      "out": 1,
+      "doubtful": 2,
+      "gws": [
+       7
+      ]
+     },
+     {
+      "id": 499,
+      "name": "Pedro Porro",
+      "club": "TOT",
+      "out": 1,
+      "doubtful": 1,
+      "gws": [
+       5
+      ]
+     },
+     {
+      "id": 119,
+      "name": "Costinha",
+      "club": "BHA",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       11
+      ],
+      "now": {
+       "status": "s",
+       "news": "Suspended until 2 Dec",
+       "chance": 0
+      }
+     },
+     {
+      "id": 16,
+      "name": "Madueke",
+      "club": "ARS",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 346,
+      "name": "Calvert-Lewin",
+      "club": "LEE",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 37,
+      "name": "Lindelöf",
+      "club": "AVL",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     }
+    ],
+    "now_out": 2,
+    "now_doubtful": 0
+   },
+   {
+    "le": 294024,
+    "out": 9,
+    "injured": 9,
+    "suspended": 0,
+    "doubtful": 12,
+    "players": [
+     {
+      "id": 397,
+      "name": "Semenyo",
+      "club": "MCI",
+      "out": 5,
+      "doubtful": 1,
+      "gws": [
+       7,
+       8,
+       9,
+       10,
+       11
+      ],
+      "now": {
+       "status": "i",
+       "news": "Knee injury - Unknown return date",
+       "chance": 0
+      }
+     },
+     {
+      "id": 465,
+      "name": "Osula",
+      "club": "NEW",
+      "out": 4,
+      "doubtful": 2,
+      "gws": [
+       1,
+       2,
+       3,
+       4
+      ]
+     },
+     {
+      "id": 389,
+      "name": "Matheus N.",
+      "club": "MCI",
+      "out": 0,
+      "doubtful": 3,
+      "gws": []
+     },
+     {
+      "id": 452,
+      "name": "Bruno G.",
+      "club": "ARS",
+      "out": 0,
+      "doubtful": 2,
+      "gws": []
+     },
+     {
+      "id": 533,
+      "name": "Mukiele",
+      "club": "SUN",
+      "out": 0,
+      "doubtful": 2,
+      "gws": []
+     },
+     {
+      "id": 56,
+      "name": "Abraham",
+      "club": "AVL",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 429,
+      "name": "Rashford",
+      "club": "MUN",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     }
+    ],
+    "now_out": 1,
     "now_doubtful": 0
    },
    {
@@ -1167,79 +1320,120 @@
     "now_doubtful": 0
    },
    {
-    "le": 294024,
-    "out": 8,
-    "injured": 8,
-    "suspended": 0,
-    "doubtful": 12,
+    "le": 50414,
+    "out": 7,
+    "injured": 2,
+    "suspended": 5,
+    "doubtful": 11,
     "players": [
      {
-      "id": 465,
-      "name": "Osula",
-      "club": "NEW",
-      "out": 4,
-      "doubtful": 2,
+      "id": 223,
+      "name": "Mateta",
+      "club": "CRY",
+      "out": 2,
+      "doubtful": 0,
       "gws": [
-       1,
        2,
-       3,
-       4
+       3
       ]
      },
      {
-      "id": 397,
-      "name": "Semenyo",
-      "club": "MCI",
-      "out": 4,
-      "doubtful": 1,
+      "id": 492,
+      "name": "Awoniyi",
+      "club": "COV",
+      "out": 2,
+      "doubtful": 0,
       "gws": [
-       7,
-       8,
-       9,
-       10
+       4,
+       5
+      ]
+     },
+     {
+      "id": 106,
+      "name": "Thiago",
+      "club": "BRE",
+      "out": 2,
+      "doubtful": 0,
+      "gws": [
+       10,
+       11
       ],
       "now": {
-       "status": "i",
-       "news": "Knee injury - Unknown return date",
+       "status": "s",
+       "news": "Suspended until 5 Dec",
        "chance": 0
       }
      },
      {
-      "id": 389,
-      "name": "Matheus N.",
-      "club": "MCI",
+      "id": 98,
+      "name": "Janelt",
+      "club": "BRE",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       7
+      ]
+     },
+     {
+      "id": 233,
+      "name": "Mykolenko",
+      "club": "EVE",
       "out": 0,
-      "doubtful": 3,
+      "doubtful": 2,
       "gws": []
      },
      {
-      "id": 452,
-      "name": "Bruno G.",
+      "id": 13,
+      "name": "Rice",
       "club": "ARS",
       "out": 0,
       "doubtful": 2,
       "gws": []
      },
      {
-      "id": 533,
-      "name": "Mukiele",
+      "id": 553,
+      "name": "Isidor",
       "club": "SUN",
       "out": 0,
       "doubtful": 2,
       "gws": []
      },
      {
-      "id": 56,
-      "name": "Abraham",
-      "club": "AVL",
+      "id": 152,
+      "name": "Palestra",
+      "club": "CHE",
       "out": 0,
       "doubtful": 1,
       "gws": []
      },
      {
-      "id": 429,
-      "name": "Rashford",
-      "club": "MUN",
+      "id": 469,
+      "name": "N.Williams",
+      "club": "NFO",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 483,
+      "name": "Ndoye",
+      "club": "NFO",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 491,
+      "name": "Igor Jesus",
+      "club": "NFO",
+      "out": 0,
+      "doubtful": 1,
+      "gws": []
+     },
+     {
+      "id": 388,
+      "name": "Guéhi",
+      "club": "MCI",
       "out": 0,
       "doubtful": 1,
       "gws": []
@@ -1247,108 +1441,6 @@
     ],
     "now_out": 1,
     "now_doubtful": 0
-   },
-   {
-    "le": 1850,
-    "out": 8,
-    "injured": 8,
-    "suspended": 0,
-    "doubtful": 5,
-    "players": [
-     {
-      "id": 380,
-      "name": "Ekitiké",
-      "club": "LIV",
-      "out": 4,
-      "doubtful": 0,
-      "gws": [
-       7,
-       8,
-       9,
-       10
-      ],
-      "now": {
-       "status": "i",
-       "news": "Achilles injury - Unknown return date",
-       "chance": 0
-      }
-     },
-     {
-      "id": 208,
-      "name": "Sarr",
-      "club": "CRY",
-      "out": 2,
-      "doubtful": 0,
-      "gws": [
-       1,
-       2
-      ]
-     },
-     {
-      "id": 368,
-      "name": "Szoboszlai",
-      "club": "LIV",
-      "out": 1,
-      "doubtful": 2,
-      "gws": [
-       7
-      ]
-     },
-     {
-      "id": 499,
-      "name": "Pedro Porro",
-      "club": "TOT",
-      "out": 1,
-      "doubtful": 1,
-      "gws": [
-       5
-      ]
-     },
-     {
-      "id": 16,
-      "name": "Madueke",
-      "club": "ARS",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 346,
-      "name": "Calvert-Lewin",
-      "club": "LEE",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 37,
-      "name": "Lindelöf",
-      "club": "AVL",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "d",
-       "news": "Illness - 75% chance of playing",
-       "chance": 75
-      }
-     },
-     {
-      "id": 119,
-      "name": "Costinha",
-      "club": "BHA",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "s",
-       "news": "Suspended until 2 Dec",
-       "chance": 0
-      }
-     }
-    ],
-    "now_out": 2,
-    "now_doubtful": 1
    },
    {
     "le": 274299,
@@ -1430,87 +1522,94 @@
     "now_doubtful": 0
    },
    {
-    "le": 50414,
-    "out": 6,
-    "injured": 2,
-    "suspended": 4,
-    "doubtful": 11,
+    "le": 265639,
+    "out": 7,
+    "injured": 6,
+    "suspended": 1,
+    "doubtful": 5,
     "players": [
      {
-      "id": 223,
-      "name": "Mateta",
-      "club": "CRY",
-      "out": 2,
+      "id": 582,
+      "name": "Madjo",
+      "club": "AVL",
+      "out": 3,
       "doubtful": 0,
       "gws": [
+       1,
        2,
        3
       ]
      },
      {
-      "id": 492,
-      "name": "Awoniyi",
-      "club": "COV",
-      "out": 2,
-      "doubtful": 0,
-      "gws": [
-       4,
-       5
-      ]
-     },
-     {
-      "id": 98,
-      "name": "Janelt",
-      "club": "BRE",
+      "id": 123,
+      "name": "Hinshelwood",
+      "club": "BHA",
       "out": 1,
       "doubtful": 0,
       "gws": [
-       7
+       3
       ]
      },
      {
-      "id": 106,
-      "name": "Thiago",
-      "club": "BRE",
+      "id": 514,
+      "name": "Tel",
+      "club": "TOT",
       "out": 1,
       "doubtful": 0,
       "gws": [
        10
+      ]
+     },
+     {
+      "id": 211,
+      "name": "Yeremy",
+      "club": "CRY",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       11
       ],
       "now": {
        "status": "s",
-       "news": "Suspended until 5 Dec",
+       "news": "Suspended until 2 Dec",
        "chance": 0
       }
      },
      {
-      "id": 233,
-      "name": "Mykolenko",
-      "club": "EVE",
+      "id": 429,
+      "name": "Rashford",
+      "club": "MUN",
+      "out": 1,
+      "doubtful": 0,
+      "gws": [
+       11
+      ],
+      "now": {
+       "status": "i",
+       "news": "Hip injury - Unknown return date",
+       "chance": 0
+      }
+     },
+     {
+      "id": 649,
+      "name": "Fernandez-Pardo",
+      "club": "NEW",
       "out": 0,
       "doubtful": 2,
       "gws": []
      },
      {
-      "id": 13,
-      "name": "Rice",
-      "club": "ARS",
+      "id": 450,
+      "name": "Livramento",
+      "club": "NEW",
       "out": 0,
-      "doubtful": 2,
+      "doubtful": 1,
       "gws": []
      },
      {
-      "id": 553,
-      "name": "Isidor",
-      "club": "SUN",
-      "out": 0,
-      "doubtful": 2,
-      "gws": []
-     },
-     {
-      "id": 152,
-      "name": "Palestra",
-      "club": "CHE",
+      "id": 471,
+      "name": "Milenković",
+      "club": "NFO",
       "out": 0,
       "doubtful": 1,
       "gws": []
@@ -1522,33 +1621,9 @@
       "out": 0,
       "doubtful": 1,
       "gws": []
-     },
-     {
-      "id": 483,
-      "name": "Ndoye",
-      "club": "NFO",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 491,
-      "name": "Igor Jesus",
-      "club": "NFO",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 388,
-      "name": "Guéhi",
-      "club": "MCI",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
      }
     ],
-    "now_out": 1,
+    "now_out": 2,
     "now_doubtful": 0
    },
    {
@@ -1556,7 +1631,7 @@
     "out": 6,
     "injured": 6,
     "suspended": 0,
-    "doubtful": 10,
+    "doubtful": 11,
     "players": [
      {
       "id": 28,
@@ -1575,7 +1650,7 @@
       "name": "Gakpo",
       "club": "LIV",
       "out": 1,
-      "doubtful": 2,
+      "doubtful": 3,
       "gws": [
        5
       ],
@@ -1650,112 +1725,11 @@
     "now_doubtful": 1
    },
    {
-    "le": 265639,
-    "out": 5,
-    "injured": 5,
-    "suspended": 0,
-    "doubtful": 5,
-    "players": [
-     {
-      "id": 582,
-      "name": "Madjo",
-      "club": "AVL",
-      "out": 3,
-      "doubtful": 0,
-      "gws": [
-       1,
-       2,
-       3
-      ]
-     },
-     {
-      "id": 123,
-      "name": "Hinshelwood",
-      "club": "BHA",
-      "out": 1,
-      "doubtful": 0,
-      "gws": [
-       3
-      ]
-     },
-     {
-      "id": 514,
-      "name": "Tel",
-      "club": "TOT",
-      "out": 1,
-      "doubtful": 0,
-      "gws": [
-       10
-      ]
-     },
-     {
-      "id": 649,
-      "name": "Fernandez-Pardo",
-      "club": "NEW",
-      "out": 0,
-      "doubtful": 2,
-      "gws": []
-     },
-     {
-      "id": 450,
-      "name": "Livramento",
-      "club": "NEW",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 471,
-      "name": "Milenković",
-      "club": "NFO",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 469,
-      "name": "N.Williams",
-      "club": "NFO",
-      "out": 0,
-      "doubtful": 1,
-      "gws": []
-     },
-     {
-      "id": 429,
-      "name": "Rashford",
-      "club": "MUN",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "i",
-       "news": "Hip injury - Unknown return date",
-       "chance": 0
-      }
-     },
-     {
-      "id": 211,
-      "name": "Yeremy",
-      "club": "CRY",
-      "out": 0,
-      "doubtful": 0,
-      "gws": [],
-      "now": {
-       "status": "s",
-       "news": "Suspended until 2 Dec",
-       "chance": 0
-      }
-     }
-    ],
-    "now_out": 2,
-    "now_doubtful": 0
-   },
-   {
     "le": 263989,
     "out": 1,
     "injured": 0,
     "suspended": 1,
-    "doubtful": 7,
+    "doubtful": 8,
     "players": [
      {
       "id": 371,
@@ -1804,7 +1778,7 @@
       "name": "Raya",
       "club": "ARS",
       "out": 0,
-      "doubtful": 0,
+      "doubtful": 1,
       "gws": [],
       "now": {
        "status": "d",
@@ -1867,57 +1841,61 @@
        "a": {
         "name": "Kasper F",
         "le": 1850,
-        "score": null,
+        "score": 44,
         "seed": 1
        },
        "b": {
         "name": "Lasse",
         "le": 265639,
-        "score": null,
+        "score": 50,
         "seed": 2
-       }
+       },
+       "winner": "b"
       },
       {
        "a": {
         "name": "Draft Rank 5 - Ludvig",
         "le": 243916,
-        "score": null,
+        "score": 14,
         "seed": 3
        },
        "b": {
         "name": "Draft Rank 6 - Malte",
         "le": 263989,
-        "score": null,
+        "score": 24,
         "seed": 4
-       }
+       },
+       "winner": "b"
       },
       {
        "a": {
         "name": "Draft Rank 7 - Oskar",
         "le": 294024,
-        "score": null,
+        "score": 54,
         "seed": 5
        },
        "b": {
         "name": "Draft Rank 8 - Jakob",
         "le": 33708,
-        "score": null,
+        "score": 37,
         "seed": 6
-       }
+       },
+       "winner": "a"
       },
       {
        "a": {
         "name": "Draft Rank 9 - Kasper S",
         "le": 205703,
-        "score": null,
+        "score": 57,
         "seed": 7
        },
        "b": {
         "name": "Draft Rank 10 - Marc",
         "le": 50414,
-        "score": null,
+        "score": 44,
         "seed": 8
-       }
+       },
+       "winner": "a"
       }
      ]
     },
@@ -2135,6 +2113,14 @@
      265639
     ],
     "double": false
+   },
+   {
+    "gw": 11,
+    "score": 57,
+    "winners": [
+     205703
+    ],
+    "double": false
    }
   ],
   "standings": [
@@ -2170,9 +2156,9 @@
    },
    {
     "le": 205703,
-    "best": 56,
-    "best_gw": 4,
-    "gw_wins": 0
+    "best": 57,
+    "best_gw": 11,
+    "gw_wins": 1
    },
    {
     "le": 265639,
@@ -3106,71 +3092,71 @@
    "le": 263989,
    "rank": 1,
    "last_rank": 1,
-   "w": 7,
+   "w": 8,
    "d": 0,
    "l": 3,
-   "pf": 490,
-   "pa": 432,
-   "pts": 21,
+   "pf": 514,
+   "pa": 446,
+   "pts": 24,
    "form": [
     "W",
     "W",
     "W",
     "W",
+    "W"
+   ]
+  },
+  {
+   "le": 1850,
+   "rank": 2,
+   "last_rank": 4,
+   "w": 7,
+   "d": 0,
+   "l": 4,
+   "pf": 518,
+   "pa": 460,
+   "pts": 21,
+   "form": [
+    "W",
+    "W",
+    "W",
+    "L",
     "W"
    ]
   },
   {
    "le": 274299,
-   "rank": 2,
+   "rank": 3,
    "last_rank": 2,
    "w": 7,
    "d": 0,
-   "l": 3,
-   "pf": 463,
-   "pa": 418,
+   "l": 4,
+   "pf": 501,
+   "pa": 475,
    "pts": 21,
    "form": [
-    "L",
     "W",
     "W",
     "W",
-    "W"
-   ]
-  },
-  {
-   "le": 239612,
-   "rank": 3,
-   "last_rank": 3,
-   "w": 6,
-   "d": 1,
-   "l": 3,
-   "pf": 464,
-   "pa": 448,
-   "pts": 19,
-   "form": [
     "W",
-    "W",
-    "L",
-    "L",
     "L"
    ]
   },
   {
-   "le": 1850,
+   "le": 239612,
    "rank": 4,
-   "last_rank": 4,
+   "last_rank": 3,
    "w": 6,
-   "d": 0,
+   "d": 1,
    "l": 4,
-   "pf": 474,
-   "pa": 423,
-   "pts": 18,
+   "pf": 490,
+   "pa": 498,
+   "pts": 19,
    "form": [
     "W",
-    "W",
-    "W",
-    "W",
+    "L",
+    "L",
+    "L",
     "L"
    ]
   },
@@ -3178,12 +3164,12 @@
    "le": 265639,
    "rank": 5,
    "last_rank": 5,
-   "w": 5,
+   "w": 6,
    "d": 1,
    "l": 4,
-   "pf": 418,
-   "pa": 428,
-   "pts": 16,
+   "pf": 468,
+   "pa": 454,
+   "pts": 19,
    "form": [
     "W",
     "W",
@@ -3196,36 +3182,36 @@
    "le": 205703,
    "rank": 6,
    "last_rank": 6,
-   "w": 4,
+   "w": 5,
    "d": 0,
    "l": 6,
-   "pf": 407,
-   "pa": 421,
-   "pts": 12,
+   "pf": 464,
+   "pa": 459,
+   "pts": 15,
    "form": [
     "L",
     "L",
     "L",
-    "L",
+    "W",
     "W"
    ]
   },
   {
-   "le": 243916,
+   "le": 294024,
    "rank": 7,
-   "last_rank": 7,
+   "last_rank": 9,
    "w": 4,
    "d": 0,
-   "l": 6,
-   "pf": 373,
-   "pa": 393,
+   "l": 7,
+   "pf": 478,
+   "pa": 474,
    "pts": 12,
    "form": [
     "L",
     "L",
     "W",
     "L",
-    "L"
+    "W"
    ]
   },
   {
@@ -3234,12 +3220,12 @@
    "last_rank": 8,
    "w": 4,
    "d": 0,
-   "l": 6,
-   "pf": 364,
-   "pa": 396,
+   "l": 7,
+   "pf": 401,
+   "pa": 440,
    "pts": 12,
    "form": [
-    "W",
+    "L",
     "L",
     "L",
     "L",
@@ -3247,20 +3233,20 @@
    ]
   },
   {
-   "le": 294024,
+   "le": 243916,
    "rank": 9,
-   "last_rank": 9,
-   "w": 3,
+   "last_rank": 7,
+   "w": 4,
    "d": 0,
    "l": 7,
-   "pf": 424,
-   "pa": 430,
-   "pts": 9,
+   "pf": 387,
+   "pa": 417,
+   "pts": 12,
    "form": [
     "L",
-    "L",
-    "L",
     "W",
+    "L",
+    "L",
     "L"
    ]
   },
@@ -3270,47 +3256,27 @@
    "last_rank": 10,
    "w": 3,
    "d": 0,
-   "l": 7,
-   "pf": 362,
-   "pa": 450,
+   "l": 8,
+   "pf": 406,
+   "pa": 504,
    "pts": 9,
    "form": [
     "L",
     "L",
     "L",
-    "L",
-    "W"
+    "W",
+    "L"
    ]
   }
  ],
  "points_table": [
   {
-   "le": 263989,
-   "total": 490,
-   "avg": 49.0,
-   "best": 62,
-   "worst": 35,
-   "recent": 212,
-   "by_gw": [
-    58,
-    49,
-    38,
-    51,
-    35,
-    47,
-    58,
-    49,
-    62,
-    43
-   ]
-  },
-  {
    "le": 1850,
-   "total": 474,
-   "avg": 47.4,
+   "total": 518,
+   "avg": 47.1,
    "best": 73,
    "worst": 34,
-   "recent": 190,
+   "recent": 166,
    "by_gw": [
     47,
     38,
@@ -3321,36 +3287,38 @@
     68,
     47,
     35,
-    40
+    40,
+    44
    ]
   },
   {
-   "le": 239612,
-   "total": 464,
-   "avg": 46.4,
-   "best": 72,
+   "le": 263989,
+   "total": 514,
+   "avg": 46.7,
+   "best": 62,
    "worst": 24,
-   "recent": 142,
+   "recent": 178,
    "by_gw": [
-    55,
-    50,
-    36,
-    62,
-    72,
+    58,
+    49,
+    38,
+    51,
+    35,
     47,
-    37,
-    44,
-    37,
+    58,
+    49,
+    62,
+    43,
     24
    ]
   },
   {
    "le": 274299,
-   "total": 463,
-   "avg": 46.3,
+   "total": 501,
+   "avg": 45.5,
    "best": 52,
-   "worst": 40,
-   "recent": 206,
+   "worst": 38,
+   "recent": 193,
    "by_gw": [
     44,
     43,
@@ -3361,16 +3329,38 @@
     51,
     51,
     52,
-    52
+    52,
+    38
+   ]
+  },
+  {
+   "le": 239612,
+   "total": 490,
+   "avg": 44.5,
+   "best": 72,
+   "worst": 24,
+   "recent": 131,
+   "by_gw": [
+    55,
+    50,
+    36,
+    62,
+    72,
+    47,
+    37,
+    44,
+    37,
+    24,
+    26
    ]
   },
   {
    "le": 294024,
-   "total": 424,
-   "avg": 42.4,
+   "total": 478,
+   "avg": 43.5,
    "best": 54,
    "worst": 27,
-   "recent": 167,
+   "recent": 174,
    "by_gw": [
     30,
     43,
@@ -3381,13 +3371,14 @@
     47,
     43,
     50,
-    27
+    27,
+    54
    ]
   },
   {
    "le": 265639,
-   "total": 418,
-   "avg": 41.8,
+   "total": 468,
+   "avg": 42.5,
    "best": 55,
    "worst": 20,
    "recent": 194,
@@ -3401,16 +3392,17 @@
     50,
     34,
     55,
-    55
+    55,
+    50
    ]
   },
   {
    "le": 205703,
-   "total": 407,
-   "avg": 40.7,
-   "best": 56,
+   "total": 464,
+   "avg": 42.2,
+   "best": 57,
    "worst": 25,
-   "recent": 161,
+   "recent": 175,
    "by_gw": [
     45,
     45,
@@ -3421,56 +3413,17 @@
     43,
     25,
     43,
-    50
-   ]
-  },
-  {
-   "le": 243916,
-   "total": 373,
-   "avg": 37.3,
-   "best": 64,
-   "worst": 27,
-   "recent": 128,
-   "by_gw": [
-    40,
-    64,
-    43,
-    36,
-    29,
-    33,
-    29,
-    37,
-    27,
-    35
-   ]
-  },
-  {
-   "le": 33708,
-   "total": 364,
-   "avg": 36.4,
-   "best": 59,
-   "worst": 19,
-   "recent": 118,
-   "by_gw": [
-    43,
-    59,
-    35,
-    29,
-    37,
-    43,
-    38,
-    31,
-    19,
-    30
+    50,
+    57
    ]
   },
   {
    "le": 50414,
-   "total": 362,
-   "avg": 36.2,
+   "total": 406,
+   "avg": 36.9,
    "best": 49,
    "worst": 25,
-   "recent": 152,
+   "recent": 166,
    "by_gw": [
     32,
     25,
@@ -3481,18 +3434,61 @@
     30,
     42,
     49,
-    31
+    31,
+    44
+   ]
+  },
+  {
+   "le": 33708,
+   "total": 401,
+   "avg": 36.5,
+   "best": 59,
+   "worst": 19,
+   "recent": 117,
+   "by_gw": [
+    43,
+    59,
+    35,
+    29,
+    37,
+    43,
+    38,
+    31,
+    19,
+    30,
+    37
+   ]
+  },
+  {
+   "le": 243916,
+   "total": 387,
+   "avg": 35.2,
+   "best": 64,
+   "worst": 14,
+   "recent": 113,
+   "by_gw": [
+    40,
+    64,
+    43,
+    36,
+    29,
+    33,
+    29,
+    37,
+    27,
+    35,
+    14
    ]
   }
  ],
  "luck": [
   {
    "le": 263989,
-   "w": 63,
+   "w": 64,
    "d": 3,
-   "l": 24,
-   "xpts": 21.34,
-   "pts": 21,
+   "l": 32,
+   "xpts": 21.67,
+   "pts": 24,
    "series": [
     {
      "gw": 1,
@@ -3543,16 +3539,21 @@
      "gw": 10,
      "xpts": 21.34,
      "pts": 21
+    },
+    {
+     "gw": 11,
+     "xpts": 21.67,
+     "pts": 24
     }
    ],
-   "luck": -0.34
+   "luck": 2.33
   },
   {
    "le": 274299,
-   "w": 60,
+   "w": 64,
    "d": 3,
-   "l": 27,
-   "xpts": 20.33,
+   "l": 32,
+   "xpts": 21.66,
    "pts": 21,
    "series": [
     {
@@ -3604,17 +3605,22 @@
      "gw": 10,
      "xpts": 20.33,
      "pts": 21
+    },
+    {
+     "gw": 11,
+     "xpts": 21.66,
+     "pts": 21
     }
    ],
-   "luck": 0.67
+   "luck": -0.66
   },
   {
    "le": 1850,
-   "w": 55,
-   "d": 0,
-   "l": 35,
-   "xpts": 18.33,
-   "pts": 18,
+   "w": 60,
+   "d": 1,
+   "l": 38,
+   "xpts": 20.11,
+   "pts": 21,
    "series": [
     {
      "gw": 1,
@@ -3665,16 +3671,87 @@
      "gw": 10,
      "xpts": 18.33,
      "pts": 18
+    },
+    {
+     "gw": 11,
+     "xpts": 20.11,
+     "pts": 21
     }
    ],
-   "luck": -0.33
+   "luck": 0.89
+  },
+  {
+   "le": 265639,
+   "w": 54,
+   "d": 3,
+   "l": 42,
+   "xpts": 18.33,
+   "pts": 19,
+   "series": [
+    {
+     "gw": 1,
+     "xpts": 0.0,
+     "pts": 0
+    },
+    {
+     "gw": 2,
+     "xpts": 2.11,
+     "pts": 1
+    },
+    {
+     "gw": 3,
+     "xpts": 3.67,
+     "pts": 1
+    },
+    {
+     "gw": 4,
+     "xpts": 4.67,
+     "pts": 1
+    },
+    {
+     "gw": 5,
+     "xpts": 4.67,
+     "pts": 1
+    },
+    {
+     "gw": 6,
+     "xpts": 7.67,
+     "pts": 4
+    },
+    {
+     "gw": 7,
+     "xpts": 9.67,
+     "pts": 7
+    },
+    {
+     "gw": 8,
+     "xpts": 10.33,
+     "pts": 10
+    },
+    {
+     "gw": 9,
+     "xpts": 13.0,
+     "pts": 13
+    },
+    {
+     "gw": 10,
+     "xpts": 16.0,
+     "pts": 16
+    },
+    {
+     "gw": 11,
+     "xpts": 18.33,
+     "pts": 19
+    }
+   ],
+   "luck": 0.67
   },
   {
    "le": 239612,
-   "w": 51,
+   "w": 53,
    "d": 3,
-   "l": 36,
-   "xpts": 17.33,
+   "l": 43,
+   "xpts": 18.0,
    "pts": 19,
    "series": [
     {
@@ -3726,78 +3803,22 @@
      "gw": 10,
      "xpts": 17.33,
      "pts": 19
+    },
+    {
+     "gw": 11,
+     "xpts": 18.0,
+     "pts": 19
     }
    ],
-   "luck": 1.67
-  },
-  {
-   "le": 265639,
-   "w": 47,
-   "d": 3,
-   "l": 40,
-   "xpts": 16.0,
-   "pts": 16,
-   "series": [
-    {
-     "gw": 1,
-     "xpts": 0.0,
-     "pts": 0
-    },
-    {
-     "gw": 2,
-     "xpts": 2.11,
-     "pts": 1
-    },
-    {
-     "gw": 3,
-     "xpts": 3.67,
-     "pts": 1
-    },
-    {
-     "gw": 4,
-     "xpts": 4.67,
-     "pts": 1
-    },
-    {
-     "gw": 5,
-     "xpts": 4.67,
-     "pts": 1
-    },
-    {
-     "gw": 6,
-     "xpts": 7.67,
-     "pts": 4
-    },
-    {
-     "gw": 7,
-     "xpts": 9.67,
-     "pts": 7
-    },
-    {
-     "gw": 8,
-     "xpts": 10.33,
-     "pts": 10
-    },
-    {
-     "gw": 9,
-     "xpts": 13.0,
-     "pts": 13
-    },
-    {
-     "gw": 10,
-     "xpts": 16.0,
-     "pts": 16
-    }
-   ],
-   "luck": 0.0
+   "luck": 1.0
   },
   {
    "le": 294024,
-   "w": 42,
+   "w": 50,
    "d": 4,
-   "l": 44,
-   "xpts": 14.44,
-   "pts": 9,
+   "l": 45,
+   "xpts": 17.11,
+   "pts": 12,
    "series": [
     {
      "gw": 1,
@@ -3848,17 +3869,22 @@
      "gw": 10,
      "xpts": 14.44,
      "pts": 9
+    },
+    {
+     "gw": 11,
+     "xpts": 17.11,
+     "pts": 12
     }
    ],
-   "luck": -5.44
+   "luck": -5.11
   },
   {
    "le": 205703,
-   "w": 37,
+   "w": 46,
    "d": 0,
    "l": 53,
-   "xpts": 12.33,
-   "pts": 12,
+   "xpts": 15.33,
+   "pts": 15,
    "series": [
     {
      "gw": 1,
@@ -3909,15 +3935,152 @@
      "gw": 10,
      "xpts": 12.33,
      "pts": 12
+    },
+    {
+     "gw": 11,
+     "xpts": 15.33,
+     "pts": 15
     }
    ],
    "luck": -0.33
   },
   {
+   "le": 50414,
+   "w": 33,
+   "d": 2,
+   "l": 64,
+   "xpts": 11.22,
+   "pts": 9,
+   "series": [
+    {
+     "gw": 1,
+     "xpts": 0.67,
+     "pts": 0
+    },
+    {
+     "gw": 2,
+     "xpts": 0.67,
+     "pts": 0
+    },
+    {
+     "gw": 3,
+     "xpts": 1.45,
+     "pts": 3
+    },
+    {
+     "gw": 4,
+     "xpts": 2.11,
+     "pts": 3
+    },
+    {
+     "gw": 5,
+     "xpts": 4.11,
+     "pts": 6
+    },
+    {
+     "gw": 6,
+     "xpts": 5.11,
+     "pts": 6
+    },
+    {
+     "gw": 7,
+     "xpts": 5.45,
+     "pts": 6
+    },
+    {
+     "gw": 8,
+     "xpts": 6.78,
+     "pts": 6
+    },
+    {
+     "gw": 9,
+     "xpts": 8.45,
+     "pts": 6
+    },
+    {
+     "gw": 10,
+     "xpts": 9.45,
+     "pts": 9
+    },
+    {
+     "gw": 11,
+     "xpts": 11.22,
+     "pts": 9
+    }
+   ],
+   "luck": -2.22
+  },
+  {
+   "le": 33708,
+   "w": 31,
+   "d": 0,
+   "l": 68,
+   "xpts": 10.33,
+   "pts": 12,
+   "series": [
+    {
+     "gw": 1,
+     "xpts": 1.33,
+     "pts": 3
+    },
+    {
+     "gw": 2,
+     "xpts": 4.0,
+     "pts": 6
+    },
+    {
+     "gw": 3,
+     "xpts": 4.33,
+     "pts": 6
+    },
+    {
+     "gw": 4,
+     "xpts": 4.33,
+     "pts": 6
+    },
+    {
+     "gw": 5,
+     "xpts": 5.33,
+     "pts": 9
+    },
+    {
+     "gw": 6,
+     "xpts": 7.33,
+     "pts": 12
+    },
+    {
+     "gw": 7,
+     "xpts": 8.33,
+     "pts": 12
+    },
+    {
+     "gw": 8,
+     "xpts": 8.67,
+     "pts": 12
+    },
+    {
+     "gw": 9,
+     "xpts": 8.67,
+     "pts": 12
+    },
+    {
+     "gw": 10,
+     "xpts": 9.33,
+     "pts": 12
+    },
+    {
+     "gw": 11,
+     "xpts": 10.33,
+     "pts": 12
+    }
+   ],
+   "luck": 1.67
+  },
+  {
    "le": 243916,
    "w": 30,
    "d": 1,
-   "l": 59,
+   "l": 68,
    "xpts": 10.11,
    "pts": 12,
    "series": [
@@ -3970,137 +4133,20 @@
      "gw": 10,
      "xpts": 10.11,
      "pts": 12
+    },
+    {
+     "gw": 11,
+     "xpts": 10.11,
+     "pts": 12
     }
    ],
    "luck": 1.89
-  },
-  {
-   "le": 50414,
-   "w": 28,
-   "d": 1,
-   "l": 61,
-   "xpts": 9.45,
-   "pts": 9,
-   "series": [
-    {
-     "gw": 1,
-     "xpts": 0.67,
-     "pts": 0
-    },
-    {
-     "gw": 2,
-     "xpts": 0.67,
-     "pts": 0
-    },
-    {
-     "gw": 3,
-     "xpts": 1.45,
-     "pts": 3
-    },
-    {
-     "gw": 4,
-     "xpts": 2.11,
-     "pts": 3
-    },
-    {
-     "gw": 5,
-     "xpts": 4.11,
-     "pts": 6
-    },
-    {
-     "gw": 6,
-     "xpts": 5.11,
-     "pts": 6
-    },
-    {
-     "gw": 7,
-     "xpts": 5.45,
-     "pts": 6
-    },
-    {
-     "gw": 8,
-     "xpts": 6.78,
-     "pts": 6
-    },
-    {
-     "gw": 9,
-     "xpts": 8.45,
-     "pts": 6
-    },
-    {
-     "gw": 10,
-     "xpts": 9.45,
-     "pts": 9
-    }
-   ],
-   "luck": -0.45
-  },
-  {
-   "le": 33708,
-   "w": 28,
-   "d": 0,
-   "l": 62,
-   "xpts": 9.33,
-   "pts": 12,
-   "series": [
-    {
-     "gw": 1,
-     "xpts": 1.33,
-     "pts": 3
-    },
-    {
-     "gw": 2,
-     "xpts": 4.0,
-     "pts": 6
-    },
-    {
-     "gw": 3,
-     "xpts": 4.33,
-     "pts": 6
-    },
-    {
-     "gw": 4,
-     "xpts": 4.33,
-     "pts": 6
-    },
-    {
-     "gw": 5,
-     "xpts": 5.33,
-     "pts": 9
-    },
-    {
-     "gw": 6,
-     "xpts": 7.33,
-     "pts": 12
-    },
-    {
-     "gw": 7,
-     "xpts": 8.33,
-     "pts": 12
-    },
-    {
-     "gw": 8,
-     "xpts": 8.67,
-     "pts": 12
-    },
-    {
-     "gw": 9,
-     "xpts": 8.67,
-     "pts": 12
-    },
-    {
-     "gw": 10,
-     "xpts": 9.33,
-     "pts": 12
-    }
-   ],
-   "luck": 2.67
   }
  ],
  "streaks": {
   "1850": {
    "current": {
-    "kind": "L",
+    "kind": "W",
     "n": 1
    },
    "best_win": 4,
@@ -4109,14 +4155,14 @@
   "33708": {
    "current": {
     "kind": "L",
-    "n": 4
+    "n": 5
    },
    "best_win": 2,
-   "worst_loss": 4
+   "worst_loss": 5
   },
   "50414": {
    "current": {
-    "kind": "W",
+    "kind": "L",
     "n": 1
    },
    "best_win": 1,
@@ -4125,7 +4171,7 @@
   "205703": {
    "current": {
     "kind": "W",
-    "n": 1
+    "n": 2
    },
    "best_win": 2,
    "worst_loss": 5
@@ -4133,15 +4179,15 @@
   "239612": {
    "current": {
     "kind": "L",
-    "n": 3
+    "n": 4
    },
    "best_win": 5,
-   "worst_loss": 3
+   "worst_loss": 4
   },
   "243916": {
    "current": {
     "kind": "L",
-    "n": 2
+    "n": 3
    },
    "best_win": 3,
    "worst_loss": 4
@@ -4149,30 +4195,30 @@
   "263989": {
    "current": {
     "kind": "W",
-    "n": 5
+    "n": 6
    },
-   "best_win": 5,
+   "best_win": 6,
    "worst_loss": 2
   },
   "265639": {
    "current": {
     "kind": "W",
-    "n": 5
+    "n": 6
    },
-   "best_win": 5,
+   "best_win": 6,
    "worst_loss": 3
   },
   "274299": {
    "current": {
-    "kind": "W",
-    "n": 4
+    "kind": "L",
+    "n": 1
    },
    "best_win": 4,
    "worst_loss": 2
   },
   "294024": {
    "current": {
-    "kind": "L",
+    "kind": "W",
     "n": 1
    },
    "best_win": 1,
@@ -4182,11 +4228,11 @@
  "h2h": {
   "1850": {
    "33708": {
-    "w": 0,
+    "w": 1,
     "d": 0,
     "l": 1,
-    "pf": 38,
-    "pa": 59
+    "pf": 82,
+    "pa": 96
    },
    "50414": {
     "w": 1,
@@ -4249,9 +4295,9 @@
    "1850": {
     "w": 1,
     "d": 0,
-    "l": 0,
-    "pf": 59,
-    "pa": 38
+    "l": 1,
+    "pf": 96,
+    "pa": 82
    },
    "50414": {
     "w": 1,
@@ -4370,9 +4416,9 @@
    "294024": {
     "w": 0,
     "d": 0,
-    "l": 1,
-    "pf": 25,
-    "pa": 43
+    "l": 2,
+    "pf": 69,
+    "pa": 97
    }
   },
   "205703": {
@@ -4426,11 +4472,11 @@
     "pa": 55
    },
    "274299": {
-    "w": 1,
+    "w": 2,
     "d": 0,
     "l": 0,
-    "pf": 45,
-    "pa": 43
+    "pf": 102,
+    "pa": 81
    },
    "294024": {
     "w": 2,
@@ -4486,9 +4532,9 @@
    "265639": {
     "w": 0,
     "d": 1,
-    "l": 0,
-    "pf": 50,
-    "pa": 50
+    "l": 1,
+    "pf": 76,
+    "pa": 100
    },
    "274299": {
     "w": 1,
@@ -4544,9 +4590,9 @@
    "263989": {
     "w": 1,
     "d": 0,
-    "l": 0,
-    "pf": 64,
-    "pa": 49
+    "l": 1,
+    "pf": 78,
+    "pa": 73
    },
    "265639": {
     "w": 1,
@@ -4607,11 +4653,11 @@
     "pa": 37
    },
    "243916": {
-    "w": 0,
+    "w": 1,
     "d": 0,
     "l": 1,
-    "pf": 49,
-    "pa": 64
+    "pf": 73,
+    "pa": 78
    },
    "265639": {
     "w": 1,
@@ -4665,11 +4711,11 @@
     "pa": 43
    },
    "239612": {
-    "w": 0,
+    "w": 1,
     "d": 1,
     "l": 0,
-    "pf": 50,
-    "pa": 50
+    "pf": 100,
+    "pa": 76
    },
    "243916": {
     "w": 1,
@@ -4725,9 +4771,9 @@
    "205703": {
     "w": 0,
     "d": 0,
-    "l": 1,
-    "pf": 43,
-    "pa": 45
+    "l": 2,
+    "pf": 81,
+    "pa": 102
    },
    "239612": {
     "w": 1,
@@ -4781,11 +4827,11 @@
     "pa": 19
    },
    "50414": {
-    "w": 1,
+    "w": 2,
     "d": 0,
     "l": 0,
-    "pf": 43,
-    "pa": 25
+    "pf": 97,
+    "pa": 69
    },
    "205703": {
     "w": 0,
@@ -4833,16 +4879,16 @@
  },
  "schedule_swap": {
   "1850": {
-   "1850": 18,
-   "33708": 24,
+   "1850": 21,
+   "33708": 27,
    "50414": 18,
-   "205703": 21,
+   "205703": 24,
    "239612": 15,
-   "243916": 18,
-   "263989": 15,
-   "265639": 18,
+   "243916": 21,
+   "263989": 18,
+   "265639": 21,
    "274299": 15,
-   "294024": 21
+   "294024": 22
   },
   "33708": {
    "1850": 6,
@@ -4850,35 +4896,35 @@
    "50414": 12,
    "205703": 12,
    "239612": 9,
-   "243916": 15,
-   "263989": 6,
-   "265639": 12,
+   "243916": 18,
+   "263989": 9,
+   "265639": 15,
    "274299": 6,
    "294024": 6
   },
   "50414": {
-   "1850": 6,
-   "33708": 13,
+   "1850": 9,
+   "33708": 14,
    "50414": 9,
-   "205703": 18,
+   "205703": 21,
    "239612": 9,
-   "243916": 12,
-   "263989": 6,
-   "265639": 6,
+   "243916": 15,
+   "263989": 9,
+   "265639": 9,
    "274299": 9,
    "294024": 6
   },
   "205703": {
-   "1850": 9,
-   "33708": 15,
-   "50414": 12,
-   "205703": 12,
-   "239612": 9,
-   "243916": 12,
-   "263989": 12,
-   "265639": 12,
-   "274299": 15,
-   "294024": 15
+   "1850": 12,
+   "33708": 18,
+   "50414": 15,
+   "205703": 15,
+   "239612": 12,
+   "243916": 15,
+   "263989": 15,
+   "265639": 15,
+   "274299": 18,
+   "294024": 18
   },
   "239612": {
    "1850": 12,
@@ -4886,8 +4932,8 @@
    "50414": 15,
    "205703": 19,
    "239612": 19,
-   "243916": 24,
-   "263989": 15,
+   "243916": 27,
+   "263989": 18,
    "265639": 19,
    "274299": 15,
    "294024": 16
@@ -4910,95 +4956,95 @@
    "50414": 25,
    "205703": 27,
    "239612": 18,
-   "243916": 19,
-   "263989": 21,
+   "243916": 22,
+   "263989": 24,
    "265639": 21,
    "274299": 21,
    "294024": 15
   },
   "265639": {
-   "1850": 15,
-   "33708": 18,
+   "1850": 18,
+   "33708": 21,
    "50414": 18,
-   "205703": 18,
-   "239612": 13,
-   "243916": 19,
-   "263989": 12,
-   "265639": 16,
+   "205703": 21,
+   "239612": 16,
+   "243916": 22,
+   "263989": 15,
+   "265639": 19,
    "274299": 19,
-   "294024": 12
+   "294024": 15
   },
   "274299": {
-   "1850": 24,
+   "1850": 27,
    "33708": 27,
    "50414": 22,
    "205703": 18,
    "239612": 18,
-   "243916": 21,
-   "263989": 22,
-   "265639": 15,
+   "243916": 24,
+   "263989": 25,
+   "265639": 18,
    "274299": 21,
    "294024": 16
   },
   "294024": {
-   "1850": 13,
-   "33708": 18,
-   "50414": 9,
-   "205703": 13,
-   "239612": 12,
-   "243916": 18,
-   "263989": 15,
-   "265639": 16,
+   "1850": 16,
+   "33708": 21,
+   "50414": 12,
+   "205703": 16,
+   "239612": 15,
+   "243916": 21,
+   "263989": 18,
+   "265639": 19,
    "274299": 16,
-   "294024": 9
+   "294024": 12
   }
  },
  "bench": [
   {
    "le": 263989,
-   "total": 107,
+   "total": 116,
    "worst_gw": 1,
    "worst": 16
   },
   {
    "le": 274299,
-   "total": 106,
+   "total": 109,
    "worst_gw": 8,
    "worst": 22
   },
   {
    "le": 50414,
-   "total": 86,
+   "total": 91,
    "worst_gw": 4,
    "worst": 19
   },
   {
    "le": 294024,
-   "total": 69,
+   "total": 85,
    "worst_gw": 10,
    "worst": 33
   },
   {
+   "le": 243916,
+   "total": 76,
+   "worst_gw": 11,
+   "worst": 22
+  },
+  {
    "le": 205703,
-   "total": 67,
+   "total": 71,
    "worst_gw": 6,
    "worst": 14
   },
   {
    "le": 265639,
-   "total": 61,
+   "total": 64,
    "worst_gw": 5,
    "worst": 14
   },
   {
-   "le": 243916,
-   "total": 54,
-   "worst_gw": 9,
-   "worst": 16
-  },
-  {
    "le": 33708,
-   "total": 52,
+   "total": 54,
    "worst_gw": 5,
    "worst": 17
   },
@@ -5018,63 +5064,63 @@
  "waivers": [
   {
    "le": 294024,
-   "pts": 209,
-   "share": 0.493,
+   "pts": 251,
+   "share": 0.525,
    "claims_won": 14,
    "claims_lost": 21,
    "free_agents": 3
   },
   {
    "le": 265639,
-   "pts": 204,
-   "share": 0.488,
+   "pts": 235,
+   "share": 0.502,
    "claims_won": 30,
    "claims_lost": 34,
    "free_agents": 12
   },
   {
    "le": 50414,
-   "pts": 180,
-   "share": 0.497,
+   "pts": 220,
+   "share": 0.542,
    "claims_won": 26,
    "claims_lost": 26,
    "free_agents": 13
   },
   {
    "le": 1850,
-   "pts": 169,
-   "share": 0.357,
+   "pts": 178,
+   "share": 0.344,
    "claims_won": 18,
    "claims_lost": 40,
    "free_agents": 8
   },
   {
-   "le": 243916,
-   "pts": 134,
-   "share": 0.359,
-   "claims_won": 11,
-   "claims_lost": 13,
-   "free_agents": 6
-  },
-  {
    "le": 33708,
-   "pts": 115,
-   "share": 0.316,
+   "pts": 142,
+   "share": 0.354,
    "claims_won": 8,
    "claims_lost": 14,
    "free_agents": 2
   },
   {
+   "le": 243916,
+   "pts": 142,
+   "share": 0.367,
+   "claims_won": 11,
+   "claims_lost": 13,
+   "free_agents": 6
+  },
+  {
    "le": 239612,
-   "pts": 101,
-   "share": 0.218,
+   "pts": 113,
+   "share": 0.231,
    "claims_won": 11,
    "claims_lost": 17,
    "free_agents": 12
   },
   {
    "le": 263989,
-   "pts": 97,
+   "pts": 102,
    "share": 0.198,
    "claims_won": 10,
    "claims_lost": 6,
@@ -5082,16 +5128,16 @@
   },
   {
    "le": 274299,
-   "pts": 82,
-   "share": 0.177,
+   "pts": 83,
+   "share": 0.166,
    "claims_won": 2,
    "claims_lost": 5,
    "free_agents": 4
   },
   {
    "le": 205703,
-   "pts": 40,
-   "share": 0.098,
+   "pts": 56,
+   "share": 0.121,
    "claims_won": 9,
    "claims_lost": 18,
    "free_agents": 1
@@ -5099,8 +5145,8 @@
  ],
  "best_pickups": [
   {
-   "pts": 56,
-   "starts": 10,
+   "pts": 58,
+   "starts": 11,
    "le": 1850,
    "name": "Muharemović",
    "pos": "DEF",
@@ -5108,17 +5154,8 @@
    "acq": "waiver"
   },
   {
-   "pts": 56,
-   "starts": 7,
-   "le": 265639,
-   "name": "Vuskovic",
-   "pos": "DEF",
-   "club": "BHA",
-   "acq": "waiver"
-  },
-  {
-   "pts": 56,
-   "starts": 8,
+   "pts": 57,
+   "starts": 9,
    "le": 274299,
    "name": "Konsa",
    "pos": "DEF",
@@ -5126,8 +5163,17 @@
    "acq": "waiver"
   },
   {
-   "pts": 48,
+   "pts": 56,
    "starts": 8,
+   "le": 265639,
+   "name": "Vuskovic",
+   "pos": "DEF",
+   "club": "BHA",
+   "acq": "waiver"
+  },
+  {
+   "pts": 50,
+   "starts": 9,
    "le": 265639,
    "name": "N.Jackson",
    "pos": "FWD",
@@ -5135,8 +5181,8 @@
    "acq": "waiver"
   },
   {
-   "pts": 46,
-   "starts": 9,
+   "pts": 47,
+   "starts": 10,
    "le": 294024,
    "name": "Kostoulas",
    "pos": "FWD",
@@ -5144,17 +5190,8 @@
    "acq": "free"
   },
   {
-   "pts": 43,
+   "pts": 46,
    "starts": 9,
-   "le": 33708,
-   "name": "Hall",
-   "pos": "DEF",
-   "club": "NEW",
-   "acq": "waiver"
-  },
-  {
-   "pts": 40,
-   "starts": 8,
    "le": 50414,
    "name": "Jacquet",
    "pos": "DEF",
@@ -5162,8 +5199,8 @@
    "acq": "free"
   },
   {
-   "pts": 39,
-   "starts": 8,
+   "pts": 46,
+   "starts": 9,
    "le": 239612,
    "name": "Barnes",
    "pos": "MID",
@@ -5171,22 +5208,31 @@
    "acq": "free"
   },
   {
-   "pts": 31,
-   "starts": 6,
-   "le": 294024,
-   "name": "Silva",
-   "pos": "DEF",
-   "club": "BOU",
-   "acq": "waiver"
-  },
-  {
-   "pts": 29,
-   "starts": 9,
+   "pts": 45,
+   "starts": 10,
    "le": 33708,
    "name": "Lewis-Potter",
    "pos": "MID",
    "club": "BRE",
    "acq": "free"
+  },
+  {
+   "pts": 44,
+   "starts": 10,
+   "le": 33708,
+   "name": "Hall",
+   "pos": "DEF",
+   "club": "NEW",
+   "acq": "waiver"
+  },
+  {
+   "pts": 39,
+   "starts": 7,
+   "le": 294024,
+   "name": "Silva",
+   "pos": "DEF",
+   "club": "BOU",
+   "acq": "waiver"
   }
  ],
  "records": {
@@ -5196,9 +5242,9 @@
    "value": 73
   },
   "low_score": {
-   "gw": 9,
-   "le": 33708,
-   "value": 19
+   "gw": 11,
+   "le": 243916,
+   "value": 14
   },
   "biggest_win": {
    "event": 4,
@@ -5211,14 +5257,14 @@
    "value": 36
   },
   "luckiest_win": {
-   "event": 10,
-   "a": 33708,
-   "b": 50414,
-   "pa": 30,
-   "pb": 31,
+   "event": 11,
+   "a": 243916,
+   "b": 263989,
+   "pa": 14,
+   "pb": 24,
    "finished": true,
    "started": true,
-   "value": 31
+   "value": 24
   },
   "unluckiest_loss": {
    "event": 4,
@@ -5249,20 +5295,22 @@
    "biggest_win": 1,
    "bench_shame": 2,
    "low_score": 2,
-   "luckiest_win": 1
+   "luckiest_win": 1,
+   "best_player": 1
   },
   "50414": {
    "low_score": 1,
    "luckiest_win": 2,
    "bench_shame": 2,
-   "unluckiest_loss": 1
+   "unluckiest_loss": 2
   },
   "205703": {
    "biggest_win": 1,
    "bench_shame": 1,
    "low_score": 3,
    "best_player": 2,
-   "unluckiest_loss": 1
+   "unluckiest_loss": 1,
+   "top_score": 1
   },
   "239612": {
    "best_player": 2,
@@ -5276,21 +5324,23 @@
    "luckiest_win": 1,
    "top_score": 1,
    "waiver_hero": 1,
-   "low_score": 1,
-   "best_player": 1
+   "low_score": 2,
+   "best_player": 1,
+   "bench_shame": 1
   },
   "263989": {
    "top_score": 2,
    "bench_shame": 1,
    "unluckiest_loss": 2,
-   "best_player": 1
+   "best_player": 1,
+   "luckiest_win": 1
   },
   "265639": {
    "low_score": 2,
    "best_player": 1,
    "unluckiest_loss": 1,
    "top_score": 2,
-   "biggest_win": 1,
+   "biggest_win": 2,
    "waiver_hero": 3,
    "luckiest_win": 1
   },
@@ -5305,11 +5355,11 @@
   "294024": {
    "luckiest_win": 1,
    "unluckiest_loss": 4,
-   "waiver_hero": 5,
+   "waiver_hero": 6,
    "biggest_win": 2,
    "best_player": 1,
    "bench_shame": 2
   }
  },
- "updated": "2026-11-24T04:59+00:00"
+ "updated": "2026-11-24T16:29+00:00"
 }
